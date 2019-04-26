@@ -1,0 +1,35 @@
+Metadata-Version: 2.1
+Name: quasinet
+Version: 0.0.25
+Summary: Decision tree
+Home-page: https://github.com/zeroknowledgediscovery/
+Author: zed.uchicago.edu
+Author-email: ishanu@uchicago.edu
+License: LICENSE.txt
+Download-URL: https://github.com/zeroknowledgediscovery/Cynet/archive/0.0.25.tar.gz
+Description: ===============
+        cynet
+        ===============
+        
+        .. image:: http://zed.uchicago.edu/logo/logozed1.png
+           :height: 400px
+           :scale: 50 %
+           :alt: alternate text
+           :align: center
+        
+        
+        .. class:: no-web no-pdf
+        
+        :Author: ZeD@UChicago <zed.uchicago.edu>
+        :Description: Machine Learning To Unravel Cellular Circuitry
+Keywords: decision,trees
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Software Development :: Libraries
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2.7
+Requires-Python: ==2.7.*
+Description-Content-Type: text/x-rst
