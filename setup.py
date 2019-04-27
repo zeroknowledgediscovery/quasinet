@@ -24,7 +24,7 @@ setup(
     author='zed.uchicago.edu',
     author_email='ishanu@uchicago.edu',
     version = str(version['__version__']),
-    packages=['mlexpress'],
+    packages=['quasinet'],
     scripts=[],
     url='https://github.com/zeroknowledgediscovery/',
     license='LICENSE.txt',
