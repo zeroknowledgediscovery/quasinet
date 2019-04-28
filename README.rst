@@ -5,8 +5,6 @@ quasinet
 
 .. figure:: https://badge.fury.io/py/quasinet.svg
    :alt: ehrzero PyPI Downloads
-.. figure:: https://img.shields.io/pypi/dm/quasinet.svg
-   :alt: ehrzero PyPI Downloads
 
 .. image:: http://zed.uchicago.edu/logo/logozed1.png
    :height: 400px

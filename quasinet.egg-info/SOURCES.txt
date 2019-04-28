@@ -13,8 +13,8 @@ bin/networkx_qnets.py
 bin/out.dot
 bin/qNet.py
 bin/run_qnet_local.py
-mlexpress/__init__.py
-mlexpress/mlx.py
+quasinet/__init__.py
+quasinet/mlx.py
 quasinet.egg-info/PKG-INFO
 quasinet.egg-info/SOURCES.txt
 quasinet.egg-info/dependency_links.txt
