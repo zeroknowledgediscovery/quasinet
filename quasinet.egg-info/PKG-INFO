@@ -1,15 +1,21 @@
 Metadata-Version: 2.1
 Name: quasinet
-Version: 0.0.25
-Summary: Decision tree
+Version: 0.0.26
+Summary: Utitilies for constructing and manipulating models for non-local structural dependencies in genomic sequences
 Home-page: https://github.com/zeroknowledgediscovery/
 Author: zed.uchicago.edu
 Author-email: ishanu@uchicago.edu
 License: LICENSE.txt
-Download-URL: https://github.com/zeroknowledgediscovery/Cynet/archive/0.0.25.tar.gz
+Download-URL: https://github.com/zeroknowledgediscovery/quasinet/archive/0.0.26.tar.gz
 Description: ===============
-        cynet
+        quasinet
         ===============
+        
+        
+        .. figure:: https://badge.fury.io/py/quasinet.svg
+           :alt: ehrzero PyPI Downloads
+        .. figure:: https://img.shields.io/pypi/dm/quasinet.svg
+           :alt: ehrzero PyPI Downloads
         
         .. image:: http://zed.uchicago.edu/logo/logozed1.png
            :height: 400px
@@ -21,13 +27,22 @@ Description: ===============
         .. class:: no-web no-pdf
         
         :Author: ZeD@UChicago <zed.uchicago.edu>
-        :Description: Machine Learning To Unravel Cellular Circuitry
+        :Description: Infer Non-local Structural Dependencies In Genomic Sequences. Genomic sequences are esentially compressed encodings of phenotypic information. This package provides a novel set of tools to extract long-range structural dependencies in genotypic data that define the phenotypic outcomes. The key capabilities implemented here are as follows: 1. computing the q-net given a databse of nucleic acid sequences, which is a family of conditional inference trees capturing the predictability of each nucleotide position given the rest of the genome. 2. Computing a structure-aware evolution-adaptive notion of distance between genomes, which demonstrably is much more biologically relevant compared to the standard edit distance 3. Ability to draw samples in-silico, that have a high probability of being biologically correct. For example, given a database of HIV sequences, we can generate a new genomic sequence, which has a high probability of being a valid encoding of a HIV virion. The constructed q-net for long term non-progressor clinical phenotype in HIV-1 infection is shown below.
+        
+        
+        .. image:: https://zed.uchicago.edu/data/img/q-ltnr.png
+           :height: 400px
+           :scale: 50 %
+           :alt: q-net for long term non-progressor clinical phenotype in HIV-1 infection
+           :align: center
+        
 Keywords: decision,trees
 Platform: UNKNOWN
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Science/Research
 Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
 Classifier: Topic :: Software Development :: Libraries
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 2.7
