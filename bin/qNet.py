@@ -5,7 +5,7 @@ import pandas as pd
 import subprocess
 import os
 import sys
-from mlexpress import mlx
+from quasinet import mlx
 import scipy.stats as stat
 import argparse
 import warnings
