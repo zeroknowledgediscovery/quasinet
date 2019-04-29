@@ -2,6 +2,8 @@
 quasinet
 ===============
 
+.. figure:: https://img.shields.io/pypi/dm/quasinet.svg
+   :alt: quasinet PyPI Downloads
 
 .. figure:: https://badge.fury.io/py/quasinet.svg
    :alt: ehrzero PyPI Downloads
