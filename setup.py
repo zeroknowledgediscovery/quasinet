@@ -34,7 +34,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/x-rst',
     install_requires=["numpy >= 1.6","pandas >= 0.22.0","matplotlib >= 2.0.2","rpy2 == 2.8.6",\
-    "scipy>=1.1.0","ascii_graph >= 1.5.1", 'graphviz>=0.10.1'],
+    "scipy>=1.1.0","ascii_graph >= 1.5.1", 'graphviz>=0.10.1','networkx>=2.2','scikit-learn>=0.20.3',\
+    'pygraphviz>=1.5'],
     python_requires='==2.7.*',
     classifiers=[\
     'Development Status :: 4 - Beta',
