@@ -45,6 +45,7 @@ setup(
     "Topic :: Software Development :: Libraries",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 2.7"],
-    data_files=[('qnet_example/',['bin/cchfl_test.csv','bin/cchfl_train.csv','bin/demo1.sh','bin/demo2.sh',\
-    							  'bin/networkx_qnets.py','bin/qNet.py','bin/README.md','bin/run_qnet_local.py'])],
+    data_files=[('qnet_example/example1',['bin/cchfl_test.csv','bin/cchfl_train.csv','bin/demo1.sh','bin/demo2.sh',\
+    							  'bin/networkx_qnets.py','bin/qNet.py','bin/README.md','bin/run_qnet_local.py']),
+                ('qnet_example/example2',['bin/sequences.txt','bin/example2_script.py'])],
     include_package_data=True)
