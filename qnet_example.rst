@@ -32,6 +32,16 @@ quasinet
 
 **Requirements:**
 
+    The recommended way of trying the quasinet is to build and run a Docker image. 
+    First clone this repository, and change into this directory. Then run:
+
+    .. code-block:: bash
+
+         docker build -t quasinet .
+         docker run -it quasinet bash
+
+    Alternatively, you can manually install all the dependencies.
+    
     The graphviz dependency requires some software to be installed first. Please run:
 
     .. code-block:: bash
