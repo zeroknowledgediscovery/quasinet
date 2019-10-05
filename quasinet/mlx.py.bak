@@ -187,13 +187,13 @@ def xplot(NAMES,DATA,LABEL=None):
 
 #------------------------------------------
 def trim_(A):
-    for key in list(A.keys()):
+    for key in A.keys():
         if key[0] == key[1]:
             A.pop(key, None)
     return
 
 def trim__(A,keys):
-    for key in list(A.keys()):
+    for key in A.keys():
         if key not in keys:
             A.pop(key, None)
     return
@@ -208,9 +208,9 @@ def getlist_(class_vec_,CLS):
 #------------------------------------------
 def sumlist_(c1,c2):
     clsv={}
-    for key in list(c1.keys()):
-        if key not in list(c2.keys()):
-            print("ERR in sum")
+    for key in c1.keys():
+        if key not in c2.keys():
+            print "ERR in sum"
             break
         else:
             clsv[key]=c1[key]+c2[key]
@@ -220,8 +220,8 @@ def sumlist_(c1,c2):
 
 def eqlist_(c1,c2):
     eq=True
-    for key in list(c1.keys()):
-        if (key in list(c2.keys())) and eq:
+    for key in c1.keys():
+        if (key in c2.keys()) and eq:
             eq=(c1[key]==c2[key])
         else:
             return False
@@ -230,7 +230,7 @@ def eqlist_(c1,c2):
 #------------------------------------------
 
 def getParent(children,nodeid_):
-    for key in list(children.keys()):
+    for key in children.keys():
         if nodeid_ in children[key]:
             return key
     return -1
@@ -282,7 +282,7 @@ def get_terminal_distinction_coeff(terminal_class_vector,
     Max_class=set()
     for node in  terminal_node_list:
         thisvalue=0
-        for class__,value__ in list(terminal_class_vector[node].items()):
+        for class__,value__ in terminal_class_vector[node].items():
             if value__ > thisvalue:
                 thisvalue=value__
                 max_class=class__
@@ -304,7 +304,7 @@ def feature_importance(significant_dec_path,
 
     feature_imp={}
     #print "Significant decision paths: ",significant_dec_path
-    for key__,path__ in list(significant_dec_path.items()):
+    for key__,path__ in significant_dec_path.items():
         old_num=0
         augmented_path=[]
         for this_node_ in path__:
@@ -336,7 +336,7 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
            for j in CLASSES])
           for i in ID]
     tprob=getterminalprob(MODEL,PR)
-    tprob_significant={key__:tval for key__,tval in list(tprob.items())
+    tprob_significant={key__:tval for key__,tval in tprob.items()
                        if tval >= PROB_MIN}
 
     #if DEBUG__:
@@ -370,16 +370,16 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
     for node in ndid(MODEL):
         A=sapply(nodeapply(assimpleparty(MODEL), ids = node,
                            FUN=infonode),criteria="distribution")
-        class_vector_[node]=dict(list(zip(A.names[0],list(A))))
+        class_vector_[node]=dict(zip(A.names[0],list(A)))
 
         A=sapply(nodeapply(assimpleparty(MODEL),ids = node,
                            FUN=infonode),criteria="error")
-        A=dict(list(zip(A.names[0].replace(str(node),'E'),list(A))))
+        A=dict(zip(A.names[0].replace(str(node),'E'),list(A)))
         error_[node]=A['E']
 
         A=sapply(nodeapply(assimpleparty(MODEL), ids = node,
                            FUN=infonode),criteria="n")
-        A=dict(list(zip(A.names[0].replace(str(node),'N'),list(A))))
+        A=dict(zip(A.names[0].replace(str(node),'N'),list(A)))
         num_pass_[node]=A['N']
 
         if not (node in ID):
@@ -428,8 +428,8 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
                                     break
                         if CHECK_A_ & CHECK_B_:
                             if DEBUG__:
-                                print(thisnode, "children ", node1,node2)
-                                print(num_pass_[thisnode], "n1 :", num_pass_[node1], "n2 :",num_pass_[node2])
+                                print thisnode, "children ", node1,node2
+                                print num_pass_[thisnode], "n1 :", num_pass_[node1], "n2 :",num_pass_[node2]
 
                             children[thisnode]=set([node1,node2])
                             childnodes.add(node1)
@@ -449,8 +449,8 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
     count=0
 
     if DEBUG__:
-        print(RLS)
-        print(RLS_)
+        print RLS
+        print RLS_
 
     if rules_empty(RLS_):
             return None
@@ -461,11 +461,11 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
         _prev_key_=0
 
         if DEBUG__:
-            print('rl: ', rl)
+            print 'rl: ', rl
 
         for edg in rl:
             if DEBUG___:
-                print('edg: ', edg)
+                print 'edg: ', edg
 
             var_node_=edg[0].strip()
             var_values_=list(set(edg[1].strip().replace('c(','')
@@ -477,17 +477,17 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
 
 
         if DEBUG__:
-            print('children: ',children)
+            print 'children: ',children
 
         while path_to_root[-1] > 1:
             if DEBUG__:
-                print("--> path_to_root:", path_to_root)
+                print "--> path_to_root:", path_to_root
             path_to_root.append(getParent(children,path_to_root[-1]))
 
         if DEBUG__:
-            print("===> path_to_root:", path_to_root)
+            print "===> path_to_root:", path_to_root
 
-        if ID[count] in list(tprob_significant.keys()):
+        if ID[count] in tprob_significant.keys():
             sig_dec_paths_[ID[count]]=np.array(path_to_root)
 
         decision_rules[ID[count]]=rl
@@ -503,7 +503,7 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
         decision_rules__[ID[tnd]]=RLS[tnd]
 
     if DEBUG__:
-        print("######## sdr:",sig_dec_paths_)
+        print "######## sdr:",sig_dec_paths_
 
     sig_feature_weight=feature_importance(sig_dec_paths_,
                                           num_pass_,
@@ -528,57 +528,57 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
 
     if VERBOSE:
         sys.stdout.write(WHITE)
-        print()
-        print("========= DECISION TREE ================  ")
+        print
+        print "========= DECISION TREE ================  "
         sys.stdout.write(BOLD)
-        print("#Feature name--: ")
+        print "#Feature name--: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.feature)
         sys.stdout.write(BOLD)
-        print("#Leaf----------: ")
+        print "#Leaf----------: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.TREE_LEAF)
         sys.stdout.write(BOLD)
-        print("#Children------: ")
+        print "#Children------: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.children)
         sys.stdout.write(BOLD)
-        print("#Edge condition: ")
+        print "#Edge condition: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.edge_cond_)
         sys.stdout.write(BOLD)
-        print("#Error(%)------: ")
+        print "#Error(%)------: "
         sys.stdout.write(WHITE)
         pp.pprint(dround(TR.error))
         sys.stdout.write(BOLD)
-        print("#Pvalue--------: ")
+        print "#Pvalue--------: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.pvalue)
         sys.stdout.write(BOLD)
-        print("#Classes-------: ")
+        print "#Classes-------: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.CLASSES)
         sys.stdout.write(BOLD)
-        print("#Num_passes----: ")
+        print "#Num_passes----: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.num_pass_)
         sys.stdout.write(BOLD)
-        print("#Terminal_prob-: ")
+        print "#Terminal_prob-: "
         sys.stdout.write(WHITE)
         pp.pprint(dround(TR.tprob_))
         sys.stdout.write(BOLD)
-        print("#Class_pred----: ")
+        print "#Class_pred----: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.class_pred_)
         sys.stdout.write(BOLD)
-        print("#RULES---------: ")
+        print "#RULES---------: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.decision_rules_)
-        print("#SIGNIFICANT_FEATURES---------: ")
+        print "#SIGNIFICANT_FEATURES---------: "
         sys.stdout.write(WHITE)
         pp.pprint(TR.significant_feature_weight_)
-        print("----------------------------------")
-        print()
+        print "----------------------------------"
+        print
 
         sys.stdout.write(RESET)
 
@@ -588,7 +588,7 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
 
 def nameclean(str_):
     str_.replace('-','x').replace('+','p').replace('*','s').replace('.','d')
-    if str(str_).isdigit():
+    if unicode(str_).isdigit():
         str_='P'+str_
 
     return str_
@@ -605,7 +605,7 @@ def setdataframe(file1,outname="",
     MINCLASSNUM=70
     D1=pd.read_csv(file1,delimiter=",",index_col=None,
                    engine='python')
-    D1.columns = list(map(nameclean,D1.columns.values))
+    D1.columns = map(nameclean,D1.columns.values)
 
     X_train=D1.values
     datatrain = pd.DataFrame(X_train,columns=D1.columns).dropna('columns')
@@ -629,7 +629,7 @@ def setdataframe(file1,outname="",
                 DD__.append(DD[i].sample(n=minlen))
             datatrain=pd.concat(DD__)
             sys.stdout.write(PURPLE)
-            print("Balancing complete: ",DDlen, len(datatrain.index.values))
+            print "Balancing complete: ",DDlen, len(datatrain.index.values)
             sys.stdout.write(WHITE)
 
 
@@ -653,7 +653,7 @@ def setdataframe(file1,outname="",
     datatrain=datatrain.reset_index().drop('index', axis=1)
 
     if VERBOSE:
-        print("(samples,features): ", datatrain.shape, "deleted: ", delete_)
+        print "(samples,features): ", datatrain.shape, "deleted: ", delete_
 
     if outname != "":
         datatrain.to_csv(outname,index=False)
@@ -688,8 +688,8 @@ def getresponseframe(DATA,MODEL,RESPONSE_,olddata=False):
     for i in set(PRs.pred_response.values):
         for j in set(PRs.orig_response.values):
             A[(i,j)]=PRs[(PRs.pred_response==i)&(PRs.orig_response==j)].index.size
-    data = list(map(list, list(zip(*list(A.keys()))))) + [list(A.values())]
-    cf = pd.DataFrame(list(zip(*data))).set_index([0, 1])[2].unstack()
+    data = map(list, zip(*A.keys())) + [A.values()]
+    cf = pd.DataFrame(zip(*data)).set_index([0, 1])[2].unstack()
     cf=cf.combine_first(cf.T).fillna(0)
     cf.index.name='pred.'
     cf=cf.astype(int)
@@ -723,8 +723,8 @@ def getresponseframe_RF(DATA,MODEL,RESPONSE_,olddata=False):
     for i in set(PRs.pred_response.values):
         for j in set(PRs.orig_response.values):
             A[(i,j)]=PRs[(PRs.pred_response==i)&(PRs.orig_response==j)].index.size
-    data = list(map(list, list(zip(*list(A.keys()))))) + [list(A.values())]
-    cf = pd.DataFrame(list(zip(*data))).set_index([0, 1])[2].unstack()
+    data = map(list, zip(*A.keys())) + [A.values()]
+    cf = pd.DataFrame(zip(*data)).set_index([0, 1])[2].unstack()
     cf=cf.combine_first(cf.T).fillna(0)
     cf.index.name='pred.'
     cf=cf.astype(int)
@@ -897,7 +897,7 @@ def tree_export(TR,outfilename='out.dot',
              for triplet in COLORS]
 
     node_color={}
-    for node_id in list(TR.class_pred_.keys()):
+    for node_id in TR.class_pred_.keys():
         cls_prd_n=normalize(np.array(getlist_(TR.class_pred_[node_id],TR.CLASSES)))
         COL=np.zeros(3)
         for j in np.arange(len(cls_prd_n)):
@@ -907,7 +907,7 @@ def tree_export(TR,outfilename='out.dot',
                                 np.array(COL).astype(int))).encode('hex')
 
     node_str={}
-    for node_id in list(TR.feature.keys()):
+    for node_id in TR.feature.keys():
         STR=""
         if TR.TREE_LEAF[node_id]:
             STR=STR+str(TR.CLASSES[np.argmax(np.array(getlist_(TR.class_pred_[node_id],TR.CLASSES)))])
@@ -927,13 +927,13 @@ def tree_export(TR,outfilename='out.dot',
             LEGENDSTR=LEGENDSTR+"Out ACC: "+str(round(TR.ACCx_,2))+"\n"
         out_file.write('LEGEND [label="%s",shape=note,align=left,style=filled,fillcolor="slategray",fontcolor="white",fontsize=10];' % LEGENDSTR)
 
-    for node_id in list(TR.feature.keys()):
+    for node_id in TR.feature.keys():
         out_file.write('%d [label="%s"' % (node_id , node_str[node_id]))
         if filled:
             out_file.write(', fillcolor="%s",fontcolor="%s"' % (node_color[node_id],TEXTCOL))
         out_file.write('] ;\n')
 
-    for parent in list(TR.children.keys()):
+    for parent in TR.children.keys():
         if not TR.TREE_LEAF[parent]:
             out_file.write('%d -> %d [%s="%s",fontcolor=%s' % (parent,
                                                      TR.children_left[parent],LABELTYPE,
@@ -946,7 +946,7 @@ def tree_export(TR,outfilename='out.dot',
 
     if leaves_parallel:
         STR="{rank = same; "
-        for node_id in list(TR.feature.keys()):
+        for node_id in TR.feature.keys():
             if TR.TREE_LEAF[node_id]:
                 STR=STR+str(node_id)+";"
         STR=STR+"}"
@@ -984,7 +984,7 @@ def randomForestX(RESPONSE__,
     RFimp=None
 
     if VERBOSE:
-        print("Growing forest..(using ",CORES," cores)")
+        print "Growing forest..(using ",CORES," cores)"
 
     fmla__ = Formula(RESPONSE__+' ~ .')
     RF=randomForest(fmla__,data=datatrain__,
@@ -1000,19 +1000,19 @@ def randomForestX(RESPONSE__,
         if PLOT:
             plotfi(RFimp)
         else:
-            print(RFimp.head(20))
+            print RFimp.head(20)
 
         PrRF,ACCRF,CF_=getresponseframe_RF(datatrain__,
                                            RF__,
                                            RESPONSE__,
                                            olddata=True)
         sys.stdout.write(WHITE)
-        print()
-        print("ACC (in  sample, randomForest package): ",ACCRF)
+        print
+        print "ACC (in  sample, randomForest package): ",ACCRF
         sys.stdout.write(RESET)
         EFI=stat.entropy(RFimp.MeanDecreaseGini.values,base=2)
-        print()
-        print("Entropy of Feature Importance: ",EFI)
+        print
+        print "Entropy of Feature Importance: ",EFI
 
 
     PrRF,ACCRF,CFRF=getresponseframe_RF(datatrain__,
@@ -1024,14 +1024,14 @@ def randomForestX(RESPONSE__,
                                                   RESPONSE__)
 
     sys.stdout.write(RED)
-    print()
-    print("ACC (in  sample, Random Forest): ",ACCRF)
+    print
+    print "ACC (in  sample, Random Forest): ",ACCRF
     if datatest__ is not None:
-        print()
-        print("ACC (out sample, Random Forest): ",ACCxRF)
+        print
+        print "ACC (out sample, Random Forest): ",ACCxRF
         sys.stdout.write(CYAN)
-        print("Out of Sample Confusion Matrix:")
-        print(CFxRF)
+        print "Out of Sample Confusion Matrix:"
+        print CFxRF
         sys.stdout.write(RESET)
 
 
@@ -1046,7 +1046,7 @@ def dictprod(dict_,a=1.0):
         represented as such: {'key1': val1, ... ,'keyn':valn}
         multiply all values with the second argument `a`
     '''
-    return {key:value*a for (key,value) in dict_.items()}
+    return {key:value*a for (key,value) in dict_.iteritems()}
  
 def normalizedict(dict_):
     '''
@@ -1054,9 +1054,9 @@ def normalizedict(dict_):
         scale all values such that they sum to 1.0    
     '''
     s=0.0
-    for key in list(dict_.keys()):
+    for key in dict_.keys():
         s=s+dict_[key]
-    return {key:(value/s) for (key,value) in dict_.items()}
+    return {key:(value/s) for (key,value) in dict_.iteritems()}
 
 def mergedistributions(dist_):
     '''
@@ -1066,20 +1066,20 @@ def mergedistributions(dist_):
         to key1 is the average over 
         all component dicts
     '''
-    num=len(list(dist_.keys()))
+    num=len(dist_.keys())
     key_list=[]
-    for key in list(dist_.keys()):
-        key_list=np.append(key_list,list(dist_[key].keys()))
+    for key in dist_.keys():
+        key_list=np.append(key_list,dist_[key].keys())
         
     D={}
     for key in key_list:
         D[key]=0.0
         
-    for count in list(dist_.keys()):
-        for key_ in list(dist_[count].keys()):
+    for count in dist_.keys():
+        for key_ in dist_[count].keys():
             if key_ in dist_[count]:
                 D[key_]=D[key_]+dist_[count][key_]
-    return {key:value/(num+0.0) for (key,value) in D.items() }
+    return {key:value/(num+0.0) for (key,value) in D.iteritems() }
 
 def getMergedDistribution(tree,cond={}):
     '''
@@ -1094,15 +1094,15 @@ def getMergedDistribution(tree,cond={}):
         
     '''
     node_id_map={feature_name:np.array([], dtype=int)
-                 for (i,feature_name) in tree.feature.items()}
-    for (i,feature_name) in tree.feature.items():
+                 for (i,feature_name) in tree.feature.iteritems()}
+    for (i,feature_name) in tree.feature.iteritems():
         node_id_map[feature_name]=np.append(node_id_map[feature_name],int(i))
     
     if DEBUG:
         print(node_id_map)
     #propagate to find current nodes
-    children={i:set() for i in list(cond.keys())}
-    for feature_name in list(cond.keys()):
+    children={i:set() for i in cond.keys()}
+    for feature_name in cond.keys():
         for node_id in tree.feature:
             if tree.feature[node_id] == feature_name:
                 children[feature_name]=children[feature_name].union(tree.children[node_id])
@@ -1110,14 +1110,14 @@ def getMergedDistribution(tree,cond={}):
         print(children)
 
     current_active_nodes=np.array([],int)
-    for feature_name in list(cond.keys()):
+    for feature_name in cond.keys():
         for child in children[feature_name]:
             for parent in node_id_map[feature_name]:
                 if (parent,child) in tree.edge_cond_:
                     for edge_var in cond[feature_name]:
                         if edge_var in tree.edge_cond_[(parent,child)]:
                             if DEBUG:
-                                print((parent,child,"::",tree.edge_cond_[(parent,child)]))
+                                print(parent,child,"::",tree.edge_cond_[(parent,child)])
                             current_active_nodes=np.append(current_active_nodes,child)
     
     S=0.0
@@ -1133,9 +1133,9 @@ def getMergedDistribution(tree,cond={}):
     if DEBUG:
         print(children)
         print(current_active_nodes)
-        print(("ID",indexed_dist))
-        print(("MD",mergedistributions(indexed_dist)))
-        print(("ND",normalizedict(mergedistributions(indexed_dist))))
+        print("ID",indexed_dist)
+        print("MD",mergedistributions(indexed_dist))
+        print("ND",normalizedict(mergedistributions(indexed_dist)))
         
     return dist_  
     
@@ -1168,10 +1168,10 @@ def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
     '''
     dist_=getMergedDistribution(tree,cond=cond)
     if sample is 'mle':
-        sample=max(iter(dist_.items()), key=operator.itemgetter(1))[0]
+        sample=max(dist_.iteritems(), key=operator.itemgetter(1))[0]
     if sample is 'random':
-        probs = list(dist_.values())
-        keys =  list(dist_.keys())
+        probs = dist_.values()
+        keys =  dist_.keys()
 
         sample = np.random.choice(keys,NUMSAMPLE, replace=True, p=probs)
     if DIST:
@@ -1190,7 +1190,7 @@ def getFmap(PATH_TO_TREES):
         #print index
         F[index]=[]
         TREE[index]=TR
-        for key,value in TR.feature.items():
+        for key,value in TR.feature.iteritems():
             if not TR.TREE_LEAF[key]:
                 F[index]=np.append(F[index],value)
     return F,TREE
@@ -1198,7 +1198,7 @@ def getFmap(PATH_TO_TREES):
 def getPerturbation(seq,PATH_TO_TREES):
     F,TREES=getFmap(PATH_TO_TREES)
     P={}
-    for KEY in list(F.keys()):
+    for KEY in F.keys():
         I=[int(x.replace('P','')) for x in F[KEY]]
         DICT_={'P'+str(i):seq[i] for i in I}
         D=sampleTree(TREES[KEY],DICT_,sample='random',DIST=True)[1]
@@ -1237,8 +1237,8 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     nCount=0
 
     # @TIMMY parallelize the following loop
-    for key0 in list(P0.keys()):
-        if key0 in list(P1.keys()):
+    for key0 in P0.keys():
+        if key0 in P1.keys():
             S=S+jsdiv(P0[key0],P1[key0])
             nCount=nCount+1
     if nCount == 0:

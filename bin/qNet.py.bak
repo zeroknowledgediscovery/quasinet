@@ -124,7 +124,7 @@ ZERODEL=results.ZERODEL
 FEATURE_IMP_THRESHOLD=results.FEATURE_IMP_THRESHOLD
 EDGEFILE=results.EDGEFILE
 DOTFILE=results.DOTFILE
-RESPONSE = list(map(mlx.nameclean,RESPONSE))
+RESPONSE = map(mlx.nameclean,RESPONSE)
 RS = RESPONSE
 TREE_PREFIX = results.TREE_PREFIX
 OUTPUT_DIR = results.OUTPUT_DIR
@@ -146,7 +146,7 @@ DIFF=[]
 
 def getDot(edges,RESPONSE,DOTFILE='out.dot',EDGEFILE=None):
     dot = Digraph()
-    for key,values in edges.items():
+    for key,values in edges.iteritems():
             if key[0] is not "":
                 dot.edge(key[0],key[1])
     # dot.node(RESPONSE[0],shape='circle')
@@ -198,7 +198,7 @@ def getTree(RS_=[], prefix = []):
             pickle.dump(TR, fh)
 
         sorted_feature_imp\
-            = sorted(list(TR.significant_feature_weight_.items()),
+            = sorted(TR.significant_feature_weight_.items(),
                                     key=operator.itemgetter(1))
         edges_ = {(i[0],RS_[0]):i[1] for i in sorted_feature_imp
                       if i[1] > FEATURE_IMP_THRESHOLD  }
@@ -260,7 +260,7 @@ def apply_threshold_to_tree(RS_=[], prefix = []):
         TR = pickle.load(fh)
 
     sorted_feature_imp\
-        = sorted(list(TR.significant_feature_weight_.items()),
+        = sorted(TR.significant_feature_weight_.items(),
                                 key=operator.itemgetter(1))
     edges_ = {(i[0],RS_[0]):i[1] for i in sorted_feature_imp
                   if i[1] > FEATURE_IMP_THRESHOLD  }
@@ -271,8 +271,8 @@ def apply_threshold_to_tree(RS_=[], prefix = []):
 
 
 def processEdgeUpdate(edges_):
-    SOURCES_=[i[0] for  i in list(edges_.keys()) if edges_[i]>0.0]
-    PROCESSED_=list(set([i[1] for  i in list(edges_.keys())]))
+    SOURCES_=[i[0] for  i in edges_.keys() if edges_[i]>0.0]
+    PROCESSED_=list(set([i[1] for  i in edges_.keys()]))
     return SOURCES_,PROCESSED_
 
 
@@ -290,7 +290,7 @@ def apply_threshold(RS,CORES,DOTFILE,EDGEFILE):
         edges__ = pool.map(apply_threshold_to_tree,RS)
 
         if DEBUG:
-            print(edges__)
+            print edges__
 
         for edges_ in edges__:
             SOURCES_,PROCESSED_ = processEdgeUpdate(edges_)
@@ -309,7 +309,7 @@ def apply_threshold(RS,CORES,DOTFILE,EDGEFILE):
             RS=None
 
         if DEBUG:
-            print("CURRENT RS--> ", RS)
+            print "CURRENT RS--> ", RS
 
         getDot(edges,RESPONSE,
                DOTFILE=DOTFILE,EDGEFILE=EDGEFILE)
@@ -318,7 +318,7 @@ def apply_threshold(RS,CORES,DOTFILE,EDGEFILE):
     pool.join()
 
 def printf(RS):
-    print(RS)
+    print RS
 
 #########Make Trees only ###############
 '''
@@ -342,7 +342,7 @@ while RS is not None:
     edges__ = pool.map(getTree,RS)
 
     if DEBUG:
-        print(edges__)
+        print edges__
 
     for edges_ in edges__:
         SOURCES_,PROCESSED_ = processEdgeUpdate(edges_)
@@ -361,7 +361,7 @@ while RS is not None:
         RS=None
 
     if DEBUG:
-        print("CURRENT RS--> ", RS)
+        print "CURRENT RS--> ", RS
 
     getDot(edges,RESPONSE,
            DOTFILE=DOTFILE,EDGEFILE=EDGEFILE)

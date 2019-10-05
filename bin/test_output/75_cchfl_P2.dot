@@ -1,0 +1,4 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+graph [ranksep=equally, splines=Curved, bgcolor=transparent, dpi=600] ;
+edge [fontname=helvetica,color=gray] ;

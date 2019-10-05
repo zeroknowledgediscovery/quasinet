@@ -19,8 +19,8 @@ bin/sequences.txt
 quasinet/Qnet.py
 quasinet/__init__.py
 quasinet/mlx.py
-quasinet.egg-info/PKG-INFO
-quasinet.egg-info/SOURCES.txt
-quasinet.egg-info/dependency_links.txt
-quasinet.egg-info/requires.txt
-quasinet.egg-info/top_level.txt
+quasinet2.egg-info/PKG-INFO
+quasinet2.egg-info/SOURCES.txt
+quasinet2.egg-info/dependency_links.txt
+quasinet2.egg-info/requires.txt
+quasinet2.egg-info/top_level.txt

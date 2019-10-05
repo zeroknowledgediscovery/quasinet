@@ -18,9 +18,9 @@ warnings.warn("WARNING: This package uses rpy2 as well as R. Please install R (3
     The R packages: partykit(1.1-1) and randomForest(4.6-14) is also necessary.")
 
 
-
+# TODO: change back the name to quasinet
 setup(
-    name='quasinet',
+    name='quasinet2',
     author='zed.uchicago.edu',
     author_email='ishanu@uchicago.edu',
     version = str(version['__version__']),
@@ -36,7 +36,7 @@ setup(
     install_requires=["numpy >= 1.6","pandas >= 0.22.0","matplotlib >= 2.0.2","rpy2 == 2.8.6",\
     "scipy>=1.1.0","ascii_graph >= 1.5.1", 'graphviz>=0.10.1','networkx>=2.2','scikit-learn>=0.20.3',\
     'pygraphviz>=1.5'],
-    python_requires='==2.7.*',
+    python_requires='==3.7.*',
     classifiers=[\
     'Development Status :: 4 - Beta',
     "Intended Audience :: Developers",
@@ -45,7 +45,7 @@ setup(
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Software Development :: Libraries",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 2.7"],
+    "Programming Language :: Python :: 3.7"],
     data_files=[('qnet_example/example1',['bin/cchfl_test.csv','bin/cchfl_train.csv','bin/demo1.sh','bin/demo2.sh',\
     							  'bin/networkx_qnets.py','bin/qNet.py','bin/README.md','bin/run_qnet_local.py']),
                 ('qnet_example/example2',['bin/sequences.txt','bin/example2_script.py'])],

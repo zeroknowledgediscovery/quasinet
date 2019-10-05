@@ -55,7 +55,7 @@ def singleTree(args):
 	tree_dir = args[3]
 	VERBOSE = args[4]
 	if VERBOSE:
-		print("Generating tree for response {}".format(response))
+		print "Generating tree for response {}".format(response)
 
 	R = 'P' + str(response)
 	datatrain = mlx.setdataframe(trainfile)
@@ -97,8 +97,8 @@ def makeQNetwork(response_set,trainfile, testfile, tree_dir='tree/',VERBOSE=Fals
 
 
 def processEdgeUpdate(edges_):
-	SOURCES_=[i[0] for  i in list(edges_.keys()) if edges_[i]>0.0]
-	PROCESSED_=list(set([i[1] for  i in list(edges_.keys())]))
+	SOURCES_=[i[0] for  i in edges_.keys() if edges_[i]>0.0]
+	PROCESSED_=list(set([i[1] for  i in edges_.keys()]))
 	return SOURCES_,PROCESSED_
 
 
@@ -125,7 +125,7 @@ def makeUnique(dict_):
 
 def getDot(edges,DOTFILE='out.dot',EDGEFILE=None):
 	dot = Digraph()
-	for key,values in edges.items():
+	for key,values in edges.iteritems():
 			if key[0] is not "":
 				dot.edge(key[0],key[1])
 	f1=open(DOTFILE,'w+')
@@ -168,7 +168,7 @@ def connectQnet(RS,FEATURE_IMP_THRESHOLD,DOTFILE,EDGEFILE,tree_dir='tree/',DEBUG
 		edges__ = pool.map(apply_threshold_to_tree,args)
 
 		if DEBUG:
-			print(edges__)
+			print edges__
 
 		for edges_ in edges__:
 			SOURCES_,PROCESSED_ = processEdgeUpdate(edges_)
@@ -187,7 +187,7 @@ def connectQnet(RS,FEATURE_IMP_THRESHOLD,DOTFILE,EDGEFILE,tree_dir='tree/',DEBUG
 			RS=None
 
 		if DEBUG:
-			print("CURRENT RS--> ", RS)
+			print "CURRENT RS--> ", RS
 
 		getDot(edges,DOTFILE=DOTFILE,EDGEFILE=EDGEFILE)
 
@@ -223,7 +223,7 @@ def apply_threshold_to_tree(args):
 		TR = pickle.load(fh)
 
 	sorted_feature_imp\
-	= sorted(list(TR.significant_feature_weight_.items()),
+	= sorted(TR.significant_feature_weight_.items(),
 								key=operator.itemgetter(1))
 	edges_ = {(i[0],R):i[1] for i in sorted_feature_imp
 		if i[1] > FEATURE_IMP_THRESHOLD  }
@@ -269,7 +269,7 @@ def draw_Qnet(edgefile,out_name='qnet.png',dim=(50,50)):
 	ax = plt.gca() # to get the current axis
 	ax.collections[0].set_edgecolor("#000000")
 
-	print(("Saving to {}".format(out_name)))
+	print("Saving to {}".format(out_name))
 	plt.savefig(
 		out_name,
 		bbox_inches = 'tight',
