@@ -7,6 +7,8 @@ import os
 import sys
 import decimal
 
+import rpy2.rinterface as rinterface
+rinterface.set_initoptions(("rpy2", "--max-ppsize=500000"))
 import rpy2.robjects as robjects
 import rpy2.robjects.packages as rpackages
 from rpy2.robjects.packages import importr
@@ -331,14 +333,14 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
     RLS=rls(MODEL)
     CLASSES=PR.columns.values[1:-2]
     ID=ndid(MODEL,terminal=True)
-
+    
     CFRQ=[normalize([PR[PR.nodeid==i][PR.orig_response==j].index.size
            for j in CLASSES])
           for i in ID]
     tprob=getterminalprob(MODEL,PR)
     tprob_significant={key__:tval for key__,tval in tprob.items()
                        if tval >= PROB_MIN}
-
+    # import pdb; pdb.set_trace()
     #if DEBUG__:
     #    print "########## ", tprob_significant
 
@@ -493,8 +495,8 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
         decision_rules[ID[count]]=rl
         add_edge_conditions(edge_cond_,path_to_root,cond_list_)
 
-#        if PLOT:
-#            xplot(CLASSES,100*CFRQ[count])
+    #    if PLOT:
+    #        xplot(CLASSES,100*CFRQ[count])
         class_pred[ID[count]]=CFRQ[count]
         count=count+1
 
@@ -511,7 +513,6 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
                                           tprob_significant,
                                           children,
                                           class_vector_)
-
     TR=tree_(ndid(MODEL),feature=features,
              leaf_=leaf_,
              children=children,
@@ -601,12 +602,12 @@ def setdataframe(file1,outname="",
                  balance=False,
                  zerodel=[],
                  VERBOSE=False):
-
+    
     MINCLASSNUM=70
     D1=pd.read_csv(file1,delimiter=",",index_col=None,
                    engine='python')
     D1.columns = map(nameclean,D1.columns.values)
-
+    # import pdb; pdb.set_trace()
     X_train=D1.values
     datatrain = pd.DataFrame(X_train,columns=D1.columns).dropna('columns')
 
@@ -662,11 +663,28 @@ def setdataframe(file1,outname="",
 #------------------------------------------
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+    return 'TMP' + ''.join(random.choice(chars) for _ in range(size))
 
 #------------------------------------------
 
 def getresponseframe(DATA,MODEL,RESPONSE_,olddata=False):
+    """Using a trained ctree model, generate a response frame.
+
+    Args:
+        DATA: input data of the sequences in csv format
+        MODEL: ctree from rpy2
+        RESPONSE_: the location of the target
+        olddata: if True, DATA is train data. Otherwise, DATA is test data.
+
+    Returns:
+        PR: dataframe containing the node id, 
+            probability of each label, 
+            predicted response, 
+            and original response
+        ACC: accuracy of the prediction
+        cf: confusion matrix
+    """
+
     tmpfilename=id_generator(8)
     if(olddata):
         wrtcsv(prd(MODEL,type="prob"),tmpfilename)
@@ -838,6 +856,8 @@ def Xctree(RESPONSE__,
     if datatest__ is not None:
         Prx__,ACCx__,CFx__= getresponseframe(datatest__,CT__,
                                              RESPONSE__)
+
+
     TR__= visTree(CT__,Pr__,
                     PLOT=False,
                     VERBOSE=VERBOSE,ACC=ACC__,ACCx=ACCx__,RESP_=RESPONSE__)

@@ -9,7 +9,8 @@ import operator
 import os
 import pandas as pd
 import pickle
-from quasinet import mlx
+# from quasinet import mlx
+import mlx
 import re
 from sklearn.model_selection import train_test_split
 
@@ -28,6 +29,10 @@ def fit_sequences(sequence_file,trainfile,testfile, test_ratio=0.5):
 		contents = fh.readlines()
 		contents = [sequence.strip('\n') for sequence in contents]
 	
+	# remove empty columns
+	not_empty = lambda x: len(x) > 0
+	contents = list(filter(not_empty, contents))
+
 	df = pd.DataFrame(list(seq) for seq in contents)
 	train_df, test_df = train_test_split(df,test_size=test_ratio)
 	
@@ -41,7 +46,7 @@ def singleTree(args):
 	'''
 	Given a selected response position, generates the conditional
 	inference tree for that position as a pickle file. Uses a train
-	and test csv to do so. Saves the tree as a picle file.
+	and test csv to do so. Saves the tree as a pickle file.
 	Inputs-
 		response (int)- an integer indicating the index or position of the
 			variable which is being regressed against the other variables.
@@ -61,22 +66,29 @@ def singleTree(args):
 	datatrain = mlx.setdataframe(trainfile)
 	datatest = mlx.setdataframe(testfile)
 	
-	CT,Pr,ACC,CF,Prx,ACCx,CFx,TR = mlx.Xctree(RESPONSE__=R,
-									datatrain__=datatrain,
-									datatest__=datatest,
-									VERBOSE=False,
-									TREE_EXPORT=False)
+	
+	# if there's only 1 possible label for the responses
+	if len(datatrain[R].unique()) == 1:
+		TR = None
+	else:
+		CT,Pr,ACC,CF,Prx,ACCx,CFx,TR = mlx.Xctree(RESPONSE__=R,
+										datatrain__=datatrain,
+										datatest__=datatest,
+										VERBOSE=False,
+										TREE_EXPORT=False)
+
 
 	pickle_file = tree_dir + R + '.pkl'
 	dot_file = tree_dir + R + '.dot'
 
-	with open(pickle_file,'w') as fh:
-		pickle.dump(TR,fh)
+	if TR is not None:
+		with open(pickle_file,'w') as fh:
+			pickle.dump(TR,fh)
 
-	mlx.tree_export(TR, outfilename=dot_file, EXEC=False)
+		mlx.tree_export(TR, outfilename=dot_file, EXEC=False)
 
 
-def makeQNetwork(response_set,trainfile, testfile, tree_dir='tree/',VERBOSE=False):
+def makeQNetwork(response_set,trainfile, testfile, tree_dir='tree/',VERBOSE=False, numCPUs=None):
 	'''
 	Given a set of responses, will generate a QNet with a tree representing
 	each response variable. 
@@ -92,7 +104,10 @@ def makeQNetwork(response_set,trainfile, testfile, tree_dir='tree/',VERBOSE=Fals
 
 	arguments_set = [[R, trainfile, testfile, tree_dir,VERBOSE] for R in response_set]
 
-	pool = multiprocessing.Pool(multiprocessing.cpu_count())
+	if numCPUs is None:
+		numCPUs = multiprocessing.cpu_count()
+
+	pool = multiprocessing.Pool(numCPUs)
 	pool.map(singleTree,arguments_set)
 
 
@@ -141,7 +156,7 @@ def getDot(edges,DOTFILE='out.dot',EDGEFILE=None):
 	return
 
 
-def connectQnet(RS,FEATURE_IMP_THRESHOLD,DOTFILE,EDGEFILE,tree_dir='tree/',DEBUG=False):
+def connectQnet(RS,FEATURE_IMP_THRESHOLD,DOTFILE,EDGEFILE,tree_dir='tree/',DEBUG=False, numCPUs=None):
 	'''
 	For the purpose of generating qNetwork. We go through each node, and 
 	examine if each connection between nodes satistifes a given 
@@ -158,7 +173,10 @@ def connectQnet(RS,FEATURE_IMP_THRESHOLD,DOTFILE,EDGEFILE,tree_dir='tree/',DEBUG
 
 	'''
 	RS = ['P' + str(R) for R in RS]
-	pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
+	if numCPUs is None:
+		numCPUs = multiprocessing.cpu_count()
+	pool = multiprocessing.Pool(numCPUs)
 	edges = {}
 	SOURCES=[]
 	PROCESSED=[]
@@ -252,6 +270,10 @@ def draw_Qnet(edgefile,out_name='qnet.png',dim=(50,50)):
 			edges.add((x, y))
 			nodes.add(x)
 			nodes.add(y)
+
+	if nodes == set():
+		print 'The graph is empty for file: ', edgefile
+		return
 
 	fig = plt.figure(figsize=dim)
 	fig.tight_layout()
