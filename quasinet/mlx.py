@@ -385,7 +385,7 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
         num_pass_[node]=A['N']
 
         if not (node in ID):
-            tmpfilename_=id_generator(8)
+            tmpfilename_=id_generator(16)
             wrtcsv(sapply(nodeapply(assimpleparty(MODEL),
                                     ids = node,FUN=infonode),
                           criteria="p.value"),tmpfilename_)
@@ -685,7 +685,7 @@ def getresponseframe(DATA,MODEL,RESPONSE_,olddata=False):
         cf: confusion matrix
     """
 
-    tmpfilename=id_generator(8)
+    tmpfilename=id_generator(16)
     if(olddata):
         wrtcsv(prd(MODEL,type="prob"),tmpfilename)
     else:
@@ -720,7 +720,7 @@ def getresponseframe(DATA,MODEL,RESPONSE_,olddata=False):
 #------------------------------------------
 
 def getresponseframe_RF(DATA,MODEL,RESPONSE_,olddata=False):
-    tmpfilename=id_generator(8)
+    tmpfilename=id_generator(16)
     if(olddata):
         wrtcsv(prd(MODEL,type="prob"),tmpfilename)
     else:
@@ -755,7 +755,7 @@ def getresponseframe_RF(DATA,MODEL,RESPONSE_,olddata=False):
 #------------------------------------------
 
 def getDataFrame(VAR,COLNAME=""):
-    tmpfilename=id_generator(8)
+    tmpfilename=id_generator(16)
     wrtcsv(VAR,tmpfilename)
     VAR1=pd.read_csv(tmpfilename)
     if COLNAME!="":
