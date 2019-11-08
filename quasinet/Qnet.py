@@ -1,18 +1,29 @@
+"""API for using the quasinet.
+
+NOTE: the quasinet can not handle:
+	NaNs
+	special characters as entries
+"""
+
 import glob
+import multiprocessing
+import operator
+import os
+import pickle
+import re
+import traceback
+
 from graphviz import Digraph
 import matplotlib
 matplotlib.use("agg")
 import matplotlib.pyplot as plt
-import multiprocessing
 import networkx as nx
-import operator
-import os
 import pandas as pd
-import pickle
+from sklearn.model_selection import train_test_split
+import rpy2
+
 # from quasinet import mlx
 import mlx
-import re
-from sklearn.model_selection import train_test_split
 
 
 def fit_sequences(sequence_file,trainfile,testfile, test_ratio=0.5):
@@ -70,23 +81,35 @@ def singleTree(args):
 	columns_to_delete = args[5]
 
 	if VERBOSE:
-		print "Generating tree for response {}".format(response)
+		print "PID: {}".format(os.getpid()), "Generating tree for response {}".format(response)
 
 	R = 'P' + str(response)
 
 	datatrain = mlx.setdataframe(trainfile, delete_=columns_to_delete)
 	datatest = mlx.setdataframe(testfile, delete_=columns_to_delete)
-	
+	# import pdb; pdb.set_trace()
 	
 	# if there's only 1 possible label for the responses
 	if len(datatrain[R].unique()) == 1:
 		TR = None
 	else:
-		CT,Pr,ACC,CF,Prx,ACCx,CFx,TR = mlx.Xctree(RESPONSE__=R,
-										datatrain__=datatrain,
-										datatest__=datatest,
-										VERBOSE=False,
-										TREE_EXPORT=False)
+
+		try:
+			CT,Pr,ACC,CF,Prx,ACCx,CFx,TR = mlx.Xctree(
+				RESPONSE__=R,
+				datatrain__=datatrain,
+				datatest__=datatest,
+				VERBOSE=False,
+				TREE_EXPORT=False)
+		
+		# this is intended to catch: Error in La.svd(x, nu, nv)
+		# i.e. computing svd failed to converge
+		# however, keep in mind other errors can cause this same exception
+		except rpy2.rinterface.RRuntimeError:
+			# traceback.print_exc()
+			print "SVD failed to converge for response: ", response
+			TR = None
+			return
 
 
 	pickle_file = tree_dir + R + '.pkl'
@@ -129,6 +152,9 @@ def makeQNetwork(
 
 	pool = multiprocessing.Pool(numCPUs)
 	pool.map(singleTree,arguments_set)
+
+	pool.close()
+	pool.join()
 
 
 def processEdgeUpdate(edges_):
@@ -278,9 +304,9 @@ def apply_threshold_to_tree(args):
 	with open(file, 'r') as fh:
 		TR = pickle.load(fh)
 
-	sorted_feature_imp\
-	= sorted(TR.significant_feature_weight_.items(),
-								key=operator.itemgetter(1))
+	sorted_feature_imp = sorted(
+		TR.significant_feature_weight_.items(),
+		key=operator.itemgetter(1))
 	edges_ = {(i[0],R):i[1] for i in sorted_feature_imp
 		if i[1] > FEATURE_IMP_THRESHOLD  }
 	if not edges_:

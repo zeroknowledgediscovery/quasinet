@@ -1,12 +1,12 @@
 import string
 import random
-import numpy as np
-import pandas as pd
 import subprocess
 import os
 import sys
 import decimal
 
+import numpy as np
+import pandas as pd
 import rpy2.rinterface as rinterface
 rinterface.set_initoptions(("rpy2", "--max-ppsize=500000"))
 import rpy2.robjects as robjects
@@ -470,6 +470,7 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
                 print 'edg: ', edg
 
             var_node_=edg[0].strip()
+            # import pdb; pdb.set_trace()
             var_values_=list(set(edg[1].strip().replace('c(','')
                                  .replace(')','').replace('"','')
                                  .split(", "))-set(['NA']))
@@ -589,8 +590,8 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
 
 def nameclean(str_):
     str_.replace('-','x').replace('+','p').replace('*','s').replace('.','d')
-    if unicode(str_).isdigit():
-        str_='P'+str_
+    # if unicode(str_).isdigit():
+    str_='P'+str_
 
     return str_
 
@@ -607,9 +608,8 @@ def setdataframe(file1,outname="",
     D1=pd.read_csv(file1,delimiter=",",index_col=None,
                    engine='python')
     D1.columns = map(nameclean,D1.columns.values)
-    # import pdb; pdb.set_trace()
     X_train=D1.values
-    datatrain = pd.DataFrame(X_train,columns=D1.columns).dropna('columns')
+    datatrain = pd.DataFrame(X_train,columns=D1.columns)#.dropna('columns')
 
     if balance:
         DD={}
@@ -847,8 +847,9 @@ def Xctree(RESPONSE__,
     Prx__=None
     ACCx__=None
     CFx__=None
-
+    
     fmla__ = Formula(RESPONSE__+' ~ .')
+    import pdb; pdb.set_trace()
     CT__ = ctree(fmla__,
                 data=datatrain__)
     Pr__,ACC__,CF__= getresponseframe(datatrain__,CT__,
