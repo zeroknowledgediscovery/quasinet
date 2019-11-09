@@ -12,6 +12,11 @@ import os
 import pickle
 import re
 import traceback
+import multiprocessing
+# if python2, need to do:
+# pip install futures
+from concurrent.futures import ThreadPoolExecutor
+
 
 from graphviz import Digraph
 import matplotlib
@@ -57,6 +62,7 @@ def fit_sequences(sequence_file,trainfile,testfile, test_ratio=0.5):
 	return train_df, test_df
 
 
+
 def singleTree(args):
 	'''Given a selected response position, generates the conditional
 	inference tree for that position as a pickle file. Uses a train
@@ -88,20 +94,21 @@ def singleTree(args):
 	datatrain = mlx.setdataframe(trainfile, delete_=columns_to_delete)
 	datatest = mlx.setdataframe(testfile, delete_=columns_to_delete)
 	# import pdb; pdb.set_trace()
-	
+
 	# if there's only 1 possible label for the responses
 	if len(datatrain[R].unique()) == 1:
 		TR = None
 	else:
 
 		try:
+
 			CT,Pr,ACC,CF,Prx,ACCx,CFx,TR = mlx.Xctree(
 				RESPONSE__=R,
 				datatrain__=datatrain,
 				datatest__=datatest,
 				VERBOSE=False,
 				TREE_EXPORT=False)
-		
+
 		# this is intended to catch: Error in La.svd(x, nu, nv)
 		# i.e. computing svd failed to converge
 		# however, keep in mind other errors can cause this same exception
@@ -122,22 +129,79 @@ def singleTree(args):
 		mlx.tree_export(TR, outfilename=dot_file, EXEC=False)
 
 
+def timer(f):
+	"""Decorator for timing a process and ending it if it takes too long.
+
+	Args:
+		f: function to time
+
+	Returns:
+		the wrapper function
+	"""
+
+    def wrapper(job_args, *args, **kwargs):
+		"""
+
+		Args:
+			job_args: [arguments to pass to the function, 
+				time (in seconds) to wait,
+				function to call to when finished.
+				]
+		"""
+        fn_args, timeout, timeout_callback = job_args[:3]
+        q = multiprocessing.Queue()
+        p = multiprocessing.Process(
+			target=f, 
+			args=(q, fn_args), 
+			kwargs=kwargs)
+        p.start()
+        p.join(timeout=timeout)
+        p.terminate()
+        p.join()
+        if not q.empty():
+            return q.get()
+        return timeout_callback(fn_args, args, kwargs)
+    return wrapper
+
+
+def timeout_callback(*args, **kwargs):
+	# print "Tree generation took too long for response: ", args[0]
+	return
+
+
+@timer
+def singleTreeTimed(q, args):
+	"""Same as singleTree, but the process that uses this 
+	function will be stopped after a certain time frame.
+
+	Args:
+		q: multiprocessing queue
+		args: arguments to pass to singleTree
+
+	Returns:
+		None
+	"""
+
+	singleTree(args)
+
+
 def makeQNetwork(
 	response_set,
 	trainfile, 
 	testfile, 
 	tree_dir='tree/',
 	VERBOSE=False, 
-	numCPUs=None):
+	numCPUs=None,
+	timeout=100):
 	'''Given a set of responses, will generate a QNet with a tree 
 	representing each response variable. 
 	
 	Args:
-		response (int): an integer indicating the index or position of the
-			variable which is being regressed against the other variables
+		response_set (list): list of responses
 		trainfile (str): the csv file containing the training sequences
 		testfile (str): the csv file containing the test sequences
 		tree_dir (str): directory to store trees
+		timeout (int): time to wait before ending a process
 	
 	Returns:
 		None
@@ -145,16 +209,24 @@ def makeQNetwork(
 
 	make_dir(tree_dir)
 
-	arguments_set = [[R, trainfile, testfile, tree_dir, VERBOSE, []] for R in response_set]
-
 	if numCPUs is None:
 		numCPUs = multiprocessing.cpu_count()
 
-	pool = multiprocessing.Pool(numCPUs)
-	pool.map(singleTree,arguments_set)
+	tp = ThreadPoolExecutor(numCPUs)
+	arguments_set = []
+	for R in response_set:
+		inputs = [R, trainfile, testfile, tree_dir, VERBOSE, []]
+		all_inputs = (inputs, timeout, timeout_callback)
+		arguments_set.append(all_inputs)
+	tp.map(singleTreeTimed, arguments_set)
 
-	pool.close()
-	pool.join()
+	# arguments_set = [[R, trainfile, testfile, tree_dir, VERBOSE, []] for R in response_set]
+	# pool = multiprocessing.Pool(numCPUs)
+	# pool_result = pool.map_async(singleTree,arguments_set)
+	# pool_result.wait(timeout=500)
+	# pool_result.wait()
+	# pool.close()
+	# pool.join()
 
 
 def processEdgeUpdate(edges_):
@@ -371,7 +443,8 @@ def makeHigherOrderQnetwork(
 	dotfiles, 
 	tree_dir='tree2/',
 	VERBOSE=False, 
-	numCPUs=None):
+	numCPUs=None,
+	timeout=100):
 	"""Create the next order qnet.
 
 	To generate the next order qnet, we take the previously created qnets
@@ -419,11 +492,16 @@ def makeHigherOrderQnetwork(
 		else:
 			parents = []
 
+		inputs = [R, trainfile, testfile, tree_dir, VERBOSE, parents]
+		all_inputs = (inputs, timeout, timeout_callback)
 		arguments_set.append(
-			[R, trainfile, testfile, tree_dir, VERBOSE, parents])
+			all_inputs)
 
 	if numCPUs is None:
 		numCPUs = multiprocessing.cpu_count()
 
-	pool = multiprocessing.Pool(numCPUs)
-	pool.map(singleTree,arguments_set)
+	tp = ThreadPoolExecutor(numCPUs)
+	tp.map(singleTreeTimed, arguments_set)
+	
+	# pool = multiprocessing.Pool(numCPUs)
+	# pool.map(singleTree,arguments_set)
