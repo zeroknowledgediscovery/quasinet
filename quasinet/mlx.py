@@ -4,6 +4,10 @@ import subprocess
 import os
 import sys
 import decimal
+import operator
+import glob
+import pickle
+import copy
 
 import numpy as np
 import pandas as pd
@@ -849,9 +853,12 @@ def Xctree(RESPONSE__,
     CFx__=None
     
     fmla__ = Formula(RESPONSE__+' ~ .')
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     CT__ = ctree(fmla__,
-                data=datatrain__)
+                data=datatrain__,
+
+                # maxdepth=1
+                )
     Pr__,ACC__,CF__= getresponseframe(datatrain__,CT__,
                                         RESPONSE__,olddata=True)
     if datatest__ is not None:
@@ -1190,11 +1197,12 @@ def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
     dist_=getMergedDistribution(tree,cond=cond)
     if sample is 'mle':
         sample=max(dist_.iteritems(), key=operator.itemgetter(1))[0]
-    if sample is 'random':
+    elif sample is 'random':
         probs = dist_.values()
         keys =  dist_.keys()
-
         sample = np.random.choice(keys,NUMSAMPLE, replace=True, p=probs)
+    else:
+        raise ValueError('Not a correct sampling method.')
     if DIST:
         return sample,dist_
     return sample
@@ -1265,3 +1273,95 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     if nCount == 0:
         nCount=1
     return S/(nCount+0.0)
+
+
+def dissonanceVector(dists, labels):
+    """Calculate the dissonance vector for a single instance.
+
+    Args:
+        dists: list of dictionary that map label name to probability.
+        labels: list of labels for the distributions
+
+    Returns:
+        numpy vector
+    """
+
+    vs = []
+    for i, dist in enumerate(dists):
+        label = labels[i]
+        prob = dist[label]
+        v = 1 - 2 ** (prob * np.log2(prob))
+        vs.append(v)
+
+    vs = np.array(vs)
+
+    return vs
+
+
+
+def sampleDissonanceVector(df, tree_dir):
+    """For each sample in a dataframe, find the dissonance vector.
+
+    Args:
+        df: dataframe containing the data
+        tree_dir: directory that the trees were saved
+
+    Returns:
+        2d numpy array of size 
+            (number of samples, number of pickle files in tree_dir)
+    """
+
+    pickled_tree_files = glob.glob(tree_dir + '*.pkl')
+
+    # responses are the file names gathered from the pickle file name
+    responses = [file_.split('/')[-1].split('.')[0][1:] \
+        for file_ in pickled_tree_files]
+
+    # read all the pickled files into a list of tree
+    trees = []
+    for pickled_tree_file in pickled_tree_files:
+        with open(pickled_tree_file, 'rb') as f:
+            tree = pickle.load(f)
+        trees.append(tree)
+
+    samples = df.shape[0]
+
+    # store a matrix of dissonance vectors
+    all_vecs = np.empty((samples, len(trees)))
+
+    # iterate over the rows of the dataframe
+    for row_index in range(samples):
+
+        # cond_dict maps item names to actual values from the data
+        col_names = df.columns
+        cond_dict = {}
+        for col_name in col_names:
+            cond_dict[col_name] = df[col_name][row_index]
+
+        # labels are a list of actual values for each response
+        labels = []
+
+        # dists is a list of dictionaries
+        # each map possible labels to probabilities of that label
+        dists = []
+
+        # iterate over the responses to find the distribution
+        for i, response in enumerate(responses):
+            labels.append(df[response][row_index])
+            tree = trees[i]
+
+            distrib_dict = copy.deepcopy(cond_dict)
+            del distrib_dict[response]
+
+            result, dist_ = sampleTree(
+                tree, 
+                cond=distrib_dict,
+                DIST=True,
+                sample='random')
+
+            dists.append(dist_)
+
+        v = dissonanceVector(dists, labels)
+        all_vecs[row_index] = v
+
+    return all_vecs
