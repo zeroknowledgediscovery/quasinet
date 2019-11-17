@@ -1312,6 +1312,7 @@ def sampleDissonanceVector(df, tree_dir):
     """
 
     pickled_tree_files = glob.glob(tree_dir + '*.pkl')
+    pickled_tree_files.sort()
 
     # responses are the file names gathered from the pickle file name
     responses = [file_.split('/')[-1].split('.')[0][1:] \
@@ -1364,4 +1365,4 @@ def sampleDissonanceVector(df, tree_dir):
         v = dissonanceVector(dists, labels)
         all_vecs[row_index] = v
 
-    return all_vecs
+    return all_vecs, responses
