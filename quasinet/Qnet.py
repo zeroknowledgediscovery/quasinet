@@ -67,6 +67,8 @@ def singleTree(args):
     '''Given a selected response position, generates the conditional
     inference tree for that position as a pickle file. Uses a train
     and test csv to do so. Saves the tree as a pickle file.
+
+    NOTE: This drops rows where the response is NaN.
     
     Args:
         response (int): an integer indicating the index or position of the
@@ -93,7 +95,10 @@ def singleTree(args):
 
     datatrain = mlx.setdataframe(trainfile, delete_=columns_to_delete)
     datatest = mlx.setdataframe(testfile, delete_=columns_to_delete)
-    # import pdb; pdb.set_trace()
+
+    # drop rows where the response is NaN
+    datatrain.dropna(subset=[R],inplace=True)
+    datatest.dropna(subset=[R],inplace=True)
 
     # if there's only 1 possible label for the responses
     if len(datatrain[R].unique()) == 1:
