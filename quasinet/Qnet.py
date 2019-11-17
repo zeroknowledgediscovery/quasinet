@@ -136,10 +136,10 @@ def singleTree(args):
 
 def timer(f):
     """Decorator for timing a process and ending it if it takes too long.
-
+    
     Args:
         f: function to time
-
+    
     Returns:
         the wrapper function
     """
