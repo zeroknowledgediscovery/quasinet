@@ -4,10 +4,10 @@ import subprocess
 responses = list(range(0,400))
 
 #Step 1:
-#Qnet.fit_sequences('sequences.txt','train.csv','test.csv', test_ratio=0.2)
+# Qnet.fit_sequences('sequences.txt','train.csv','test.csv', test_ratio=0.2)
 
 #Step 2:
-#Qnet.makeQNetwork(responses, 'train.csv','test.csv',tree_dir='tree/', VERBOSE=True)
+# Qnet.makeQNetwork(responses, 'train.csv','test.csv',tree_dir='tree/', VERBOSE=True)
 
 #Step 3:
 #Qnet.connectQnet(responses, 0.50, '50network.dot','50network.dat',tree_dir='tree/',DEBUG=True)

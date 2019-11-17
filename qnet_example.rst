@@ -38,7 +38,7 @@ quasinet
     .. code-block:: bash
 
          docker build -t quasinet .
-         docker run -it quasinet bash
+         docker run -it -v $PWD:/tmp quasinet bash
 
     Alternatively, you can manually install all the dependencies.
     

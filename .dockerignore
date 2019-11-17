@@ -2,3 +2,4 @@
 Dockerfile
 dist/
 quasinet.egg-info/
+*.pyc
