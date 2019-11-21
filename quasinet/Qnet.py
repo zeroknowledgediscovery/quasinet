@@ -97,8 +97,12 @@ def singleTree(args):
     datatest = mlx.setdataframe(testfile, delete_=columns_to_delete)
 
     # drop rows where the response is NaN
-    datatrain.dropna(subset=[R],inplace=True)
-    datatest.dropna(subset=[R],inplace=True)
+    datatrain = datatrain.dropna(subset=[R])
+    datatest = datatest.dropna(subset=[R])
+
+    datatrain = datatrain.reset_index(drop=True)
+    datatest = datatest.reset_index(drop=True)
+
 
     # if there's only 1 possible label for the responses
     if len(datatrain[R].unique()) == 1:
@@ -111,6 +115,7 @@ def singleTree(args):
 
             CT,Pr,ACC,CF,Prx,ACCx,CFx,TR = mlx.Xctree(
                 RESPONSE__=R,
+                # RESPONSE__=response,
                 datatrain__=datatrain,
                 datatest__=datatest,
                 VERBOSE=False,

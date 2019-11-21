@@ -344,7 +344,6 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
     tprob=getterminalprob(MODEL,PR)
     tprob_significant={key__:tval for key__,tval in tprob.items()
                        if tval >= PROB_MIN}
-    # import pdb; pdb.set_trace()
     #if DEBUG__:
     #    print "########## ", tprob_significant
 
@@ -474,7 +473,6 @@ def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
                 print 'edg: ', edg
 
             var_node_=edg[0].strip()
-            # import pdb; pdb.set_trace()
             var_values_=list(set(edg[1].strip().replace('c(','')
                                  .replace(')','').replace('"','')
                                  .split(", "))-set(['NA']))
@@ -830,6 +828,14 @@ rls=robjects.r('partykit:::.list.rules.party')
 prd=robjects.r('predict')
 ndid=robjects.r('nodeids')
 wrtcsv=robjects.r('write.csv')
+readcsv = robjects.r(
+    '''
+    read_csv <- function(r) {
+        data <- read.csv(r, na.strings=c("NA","NaN", ""))
+        return(data)
+    }
+    ''')
+
 nodeapply=robjects.r('nodeapply')
 assimpleparty=robjects.r('as.simpleparty')
 infonode=robjects.r('info_node')
@@ -852,13 +858,24 @@ def Xctree(RESPONSE__,
     ACCx__=None
     CFx__=None
     
-    fmla__ = Formula(RESPONSE__+' ~ .')
-    # import pdb; pdb.set_trace()
-    CT__ = ctree(fmla__,
-                data=datatrain__,
+    # We need to read the data file using R. 
+    # If we don't, rpy2 will force an invalid conversion from pandas dataframe
+    # to R dataframe.
+    tmpfile = id_generator(16)
+    datatrain__.to_csv(
+        tmpfile,
+        sep=',',
+        index=None)
+    datatrain__ = readcsv(tmpfile)
+    os.remove(tmpfile)
 
-                # maxdepth=1
-                )
+    fmla__ = Formula(RESPONSE__+' ~ .')
+    import pdb; pdb.set_trace()
+
+    CT__ = ctree(
+        fmla__,
+        data=datatrain__,)
+
     Pr__,ACC__,CF__= getresponseframe(datatrain__,CT__,
                                         RESPONSE__,olddata=True)
     if datatest__ is not None:
@@ -1168,32 +1185,44 @@ def getMergedDistribution(tree,cond={}):
     return dist_  
     
 def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
+    '''Draw sample from the decision tree.
+
+    specified in the format that 
+    mlx.py returns
+    
+    Arguments:
+    
+    1. cond: dict of the format {'name': value, 'name1': value1,...}
+                specifies the constraints on the decision tree.
+                example: {'RBM34':'C','SOX2': 'A'}
+    
+    Note--> we can use arbitrary cond argument, irrespective of if the
+    names are in the decision tree at all or not. Also, we can use 
+    an empty cond dict, which corresponds to the unconstrained tree.
+    In all these cases, it makes sense to ask what is the distribution on the 
+    keys that the decision tree outputs, and we attempt to compute that.
+    
+    NOTE: cond with floats as values will be filtered out.
+
+    2. sample: 'mle'|'random' 
+                if 'mle' then return the value with maximum probability.
+                if 'random' then makes random choice NUMSAMPLE times 
+                and returns the result.
+    
+    3. DIST: TRUE|FALSE
+                if TRUE returns the distribution from the tree 
+                after applying the constraints
     '''
-        draw sample from decision tree
-        specified in the format that 
-        mlx.py returns
-        
-        Arguments:
-        
-        1. cond: dict of the format {'name': value, 'name1': value1,...}
-                 specifies the constraints on the decision tree.
-                 example: {'RBM34':'C','SOX2': 'A'}
-        
-        Note--> we can use arbitrary cond argument, irrespective of if the
-        names are in the decision tree at all or not. Also, we can use 
-        an empty cond dict, which corresponds to the unconstrained tree.
-        In all these cases, it makes sense to ask what is the distribution on the 
-        keys that the decision tree outputs, and we attempt to compute that.
-        
-        2. sample: 'mle'|'random' 
-                   if 'mle' then return the value with maximum probability.
-                   if 'random' then makes random choice NUMSAMPLE times 
-                   and returns the result.
-        
-        3. DIST: TRUE|FALSE
-                 if TRUE returns the distribution from the tree 
-                 after applying the constraints
-    '''
+
+    items = list(cond.keys())
+    for item in items:
+        if not item.startswith('P'):
+            raise ValueError('The response name must start with P!')
+
+    # filter out values with floats
+    cond = {k:v for (k,v) in cond.items() if type(v) is not float}
+
+    # import pdb; pdb.set_trace()
     dist_=getMergedDistribution(tree,cond=cond)
     if sample is 'mle':
         sample=max(dist_.iteritems(), key=operator.itemgetter(1))[0]
@@ -1275,12 +1304,28 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     return S/(nCount+0.0)
 
 
-def dissonanceVector(dists, labels):
+def dissonance(dist, response):
+    """Compute the dissonance for item i.
+
+    Args:
+        dist: a dictionary that map label name to probability.
+        response: the actual response for the distribution
+
+    Returns:
+        dissonance scalar for item i
+    """
+
+    prob = dist[response]
+    v = 1 - 2 ** (prob * np.log2(prob))
+    return v
+
+
+def dissonanceVector(dists, responses):
     """Calculate the dissonance vector for a single instance.
 
     Args:
         dists: list of dictionary that map label name to probability.
-        labels: list of labels for the distributions
+        responses: list of responses for the distributions
 
     Returns:
         numpy vector
@@ -1288,9 +1333,8 @@ def dissonanceVector(dists, labels):
 
     vs = []
     for i, dist in enumerate(dists):
-        label = labels[i]
-        prob = dist[label]
-        v = 1 - 2 ** (prob * np.log2(prob))
+        response = responses[i]
+        v = dissonance(dist, response)
         vs.append(v)
 
     vs = np.array(vs)
@@ -1366,3 +1410,116 @@ def sampleDissonanceVector(df, tree_dir):
         all_vecs[row_index] = v
 
     return all_vecs, responses
+
+
+def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_times=100):
+    """Compute the alpha parameter for item i.
+
+    Alpha measures the difficulty of reducing dissonance when
+    responses other than i are perturbed.
+
+    Alpha is calculated by:
+        1. fixing the response i
+        2. randomly selecting an item j that is not i
+        3. randomly sampling a response from j using tree j
+        4. replacing the original response of j with the sampled j response
+        5. recomputing the dissonance of i
+        6. repeating step 1 to 5 n times
+        7. calculating the proportion of times the recomputed dissonance is less than the original dissonance
+
+    Args:
+        orig_dissonance: original dissonance of item i
+        cond_dict: dict that maps item names to actual responses
+        item_i: name of item i
+        trees: dictionary mapping each item to its corresponding tree
+        num_times: number of times of resampling
+
+    Returns:
+        proportion of sampled dissonance less than original dissonance
+    """
+
+    all_items = list(trees.keys())
+    items_except_i = [x for x in all_items if x != item_i]
+    tree_i = trees[item_i]
+    sampled_dissonances = []
+
+    j_choices = set(tree_i.feature.values())
+    j_choices = j_choices.intersection(set(items_except_i))
+    j_choices = list(j_choices)
+
+    assert len(j_choices) != 0
+
+    j_samples = []
+    j_items = []
+
+    for _ in range(num_times):
+        item_j = random.choice(j_choices)
+        j_items.append(item_j)
+        tree = trees[item_j]
+        sample_j = sampleTree(
+            tree,
+            cond={},
+            sample='random',
+            DIST=False,
+            NUMSAMPLE=1)
+
+        sample_j = sample_j[0]
+        j_samples.append(sample_j)
+
+        new_cond_dict = copy.deepcopy(cond_dict)
+        new_cond_dict[item_j] = sample_j
+        response_i = new_cond_dict[item_i]
+        del new_cond_dict[item_i]
+
+        _, dist_i = sampleTree(
+            tree_i, 
+            cond=new_cond_dict,
+            DIST=True,
+            sample='random')
+
+        dissonance_i = dissonance(dist_i, response_i)
+        sampled_dissonances.append(dissonance_i)
+
+    sampled_dissonances = np.array(sampled_dissonances)
+
+    alpha = np.sum(sampled_dissonances <= orig_dissonance) \
+        / len(sampled_dissonances)
+
+    return alpha
+
+
+def alpha_vector(orig_dissonance_vec, cond_dict, trees, num_times=100):
+    """Compute the alpha vector for all the items.
+
+    Args:
+        orig_dissonance_vec: original dissonance vector
+        cond_dict: dict that maps item names to actual responses
+        trees: dictionary mapping each item to its corresponding tree
+        num_times: number of times of resampling
+
+    Returns:
+        alpha vector
+    """
+
+    all_items = list(trees.keys())
+    all_items.sort()
+
+    alphas = []
+
+    for i, item_i in enumerate(all_items):
+        orig_dissonance = orig_dissonance_vec[i]
+
+        alpha = alpha_i(
+            orig_dissonance, 
+            cond_dict,
+            item_i,
+            trees,
+            num_times=num_times)
+
+        alphas.append(alpha)
+
+    alphas = np.array(alphas)
+
+    import pdb; pdb.set_trace()
+    return alphas
+
