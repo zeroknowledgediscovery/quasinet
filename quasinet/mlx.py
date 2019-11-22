@@ -8,6 +8,7 @@ import operator
 import glob
 import pickle
 import copy
+import math
 
 import numpy as np
 import pandas as pd
@@ -1304,6 +1305,35 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     return S/(nCount+0.0)
 
 
+def load_trees(tree_dir):
+    """Load the trees into a dictionary from a directory.
+
+    Args:
+        tree_dir: directory to the store trees
+
+    Returns:
+        dictionary mapping response name to the corresponding tree
+    """
+
+    if not tree_dir.endswith('/'):
+        raise ValueError("The tree directory must end with: /")
+
+    pickled_tree_files = glob.glob(tree_dir + '*.pkl')
+    pickled_tree_files.sort()
+
+    # responses are the file names gathered from the pickle file name
+    responses = [file_.split('/')[-1].split('.')[0][1:] \
+        for file_ in pickled_tree_files]
+
+    trees = {}
+    for i, pickled_tree_file in enumerate(pickled_tree_files):
+        with open(pickled_tree_file, 'rb') as f:
+            tree = pickle.load(f)
+        trees['P' + responses[i]] = tree
+
+    return trees
+
+
 def dissonance(dist, response):
     """Compute the dissonance for item i.
 
@@ -1345,6 +1375,8 @@ def dissonanceVector(dists, responses):
 
 def sampleDissonanceVector(df, tree_dir):
     """For each sample in a dataframe, find the dissonance vector.
+
+    TODO: refactor this code to use load_trees
 
     Args:
         df: dataframe containing the data
@@ -1412,7 +1444,7 @@ def sampleDissonanceVector(df, tree_dir):
     return all_vecs, responses
 
 
-def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_times=100):
+def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
     """Compute the alpha parameter for item i.
 
     Alpha measures the difficulty of reducing dissonance when
@@ -1432,29 +1464,35 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_times=100):
         cond_dict: dict that maps item names to actual responses
         item_i: name of item i
         trees: dictionary mapping each item to its corresponding tree
-        num_times: number of times of resampling
+        num_samples: number of times of resampling
 
     Returns:
         proportion of sampled dissonance less than original dissonance
+        nan if the response of item i is nan
     """
+
+    print(item_i)
 
     all_items = list(trees.keys())
     items_except_i = [x for x in all_items if x != item_i]
     tree_i = trees[item_i]
+    response_i = cond_dict[item_i]
+
+    if type(response_i) is float and math.isnan(response_i):
+        return float('nan')
+
     sampled_dissonances = []
 
     j_choices = set(tree_i.feature.values())
     j_choices = j_choices.intersection(set(items_except_i))
     j_choices = list(j_choices)
 
-    assert len(j_choices) != 0
+    if len(j_choices) == 0:
+        return float('nan')
 
-    j_samples = []
-    j_items = []
-
-    for _ in range(num_times):
+    # import pdb; pdb.set_trace()
+    for _ in range(num_samples):
         item_j = random.choice(j_choices)
-        j_items.append(item_j)
         tree = trees[item_j]
         sample_j = sampleTree(
             tree,
@@ -1464,11 +1502,9 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_times=100):
             NUMSAMPLE=1)
 
         sample_j = sample_j[0]
-        j_samples.append(sample_j)
 
         new_cond_dict = copy.deepcopy(cond_dict)
         new_cond_dict[item_j] = sample_j
-        response_i = new_cond_dict[item_i]
         del new_cond_dict[item_i]
 
         _, dist_i = sampleTree(
@@ -1488,38 +1524,170 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_times=100):
     return alpha
 
 
-def alpha_vector(orig_dissonance_vec, cond_dict, trees, num_times=100):
-    """Compute the alpha vector for all the items.
+def beta_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
+    """Compute the beta parameter for item i.
+
+    Beta measures the difficulty of reducing dissonance when
+    response i is perturbed.
+
+    Beta is calculated by:
+        1. randomly sampling i
+        2. recomputing the dissonance of i
+        3. repeating step 1 to 2 n times
+        4. calculating the proportion of times the recomputed dissonance is less than the original dissonance
+
+    Args:
+        orig_dissonance: original dissonance of item i
+        cond_dict: dict that maps item names to actual responses
+        item_i: name of item i
+        trees: dictionary mapping each item to its corresponding tree
+        num_samples: number of times of resampling
+
+    Returns:
+        proportion of sampled dissonance less than original dissonance
+        nan if the response of item i is nan
+    """
+
+    tree_i = trees[item_i]
+    response_i = cond_dict[item_i]
+    del cond_dict[item_i]
+
+    if type(response_i) is float and math.isnan(response_i):
+        return float('nan')
+
+    sampled_dissonances = []
+
+    for _ in range(num_samples):
+
+        sample_i = sampleTree(
+            tree_i,
+            cond={},
+            sample='random',
+            DIST=False,
+            NUMSAMPLE=1)
+
+        _, dist_i = sampleTree(
+            tree_i, 
+            cond=cond_dict,
+            DIST=True,
+            sample='random')
+
+        dissonance_i = dissonance(dist_i, sample_i)
+        sampled_dissonances.append(dissonance_i)
+
+    sampled_dissonances = np.array(sampled_dissonances)
+
+    beta = np.sum(sampled_dissonances <= orig_dissonance) \
+        / len(sampled_dissonances)
+
+    return beta
+
+
+def trivializationVector(
+    orig_dissonance_vec, 
+    cond_dict, 
+    trees, 
+    parameter='alpha', 
+    num_samples=100):
+    """Compute the trivialization vector for all the items.
+
+    The parameter may either be alpha or beta.
 
     Args:
         orig_dissonance_vec: original dissonance vector
         cond_dict: dict that maps item names to actual responses
         trees: dictionary mapping each item to its corresponding tree
-        num_times: number of times of resampling
+        parameter: alpha or beta
+        num_samples: number of times of resampling
 
     Returns:
-        alpha vector
+        trivialization vector
     """
+
+    if parameter == 'alpha':
+        param_type = alpha_i
+    elif parameter == 'beta':
+        param_type = beta_i
+    else:
+        raise ValueError('Not a correct parameter type.')
 
     all_items = list(trees.keys())
     all_items.sort()
 
-    alphas = []
+    param_vector = []
+
 
     for i, item_i in enumerate(all_items):
         orig_dissonance = orig_dissonance_vec[i]
 
-        alpha = alpha_i(
+        param = param_type(
             orig_dissonance, 
             cond_dict,
             item_i,
             trees,
-            num_times=num_times)
+            num_samples=num_samples)
 
-        alphas.append(alpha)
+        param_vector.append(param)
 
-    alphas = np.array(alphas)
+    param_vector = np.array(param_vector)
 
     import pdb; pdb.set_trace()
-    return alphas
+    return param_vector
+
+
+def trivializationVectors(
+    df, 
+    dissonance_matrix, 
+    tree_dir, 
+    parameter='alpha', 
+    num_samples=100):
+    """Compute the trivialization vectors for each sample.
+
+    TODO: still need to test this
+
+    Args:
+        df: dataframe containing the data
+        dissonance_matrix: matrix of dissonance vectors where rows
+            are the dissonance vector for each instance
+        tree_dir: directory that the trees were saved
+        parameter: alpha or beta
+        num_samples: number of times of resampling
+
+    Returns:
+        2d numpy array of size 
+            (number of samples, number responses)
+    """
+
+    
+    # import pdb; pdb.set_trace()
+    if dissonance_matrix.shape[0] != df.shape[0]:
+        raise ValueError("Number of instances must be the same.")
+
+    num_samples = dissonance_matrix.shape[0]
+
+    trees = load_trees(tree_dir)
+
+    all_vecs = np.empty(dissonance_matrix.shape)
+
+    for row_index in range(num_samples):
+        # cond_dict maps response names to actual values from the data
+        col_names = dissonance_matrix.columns
+        cond_dict = {}
+        for col_name in col_names:
+            cond_dict['P' + col_name] = df[col_name][row_index]
+
+        dissonance_vector = dissonance_matrix.iloc[row_index]
+
+        trivialization_vec = trivializationVector(
+            dissonance_vector.values, 
+            cond_dict, 
+            trees, 
+            num_samples=num_samples,
+            parameter=parameter)
+
+        all_vecs[row_index] = trivialization_vec
+
+        import pdb; pdb.set_trace()
+
+    return all_vecs
 
