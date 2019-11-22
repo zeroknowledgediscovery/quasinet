@@ -1557,6 +1557,12 @@ def beta_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
 
     sampled_dissonances = []
 
+    _, dist_i = sampleTree(
+        tree_i, 
+        cond=cond_dict,
+        DIST=True,
+        sample='random')
+
     for _ in range(num_samples):
 
         sample_i = sampleTree(
@@ -1566,12 +1572,7 @@ def beta_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
             DIST=False,
             NUMSAMPLE=1)
 
-        _, dist_i = sampleTree(
-            tree_i, 
-            cond=cond_dict,
-            DIST=True,
-            sample='random')
-
+        sample_i = sample_i[0]
         dissonance_i = dissonance(dist_i, sample_i)
         sampled_dissonances.append(dissonance_i)
 
@@ -1659,7 +1660,6 @@ def trivializationVectors(
     """
 
     
-    # import pdb; pdb.set_trace()
     if dissonance_matrix.shape[0] != df.shape[0]:
         raise ValueError("Number of instances must be the same.")
 
@@ -1686,8 +1686,6 @@ def trivializationVectors(
             parameter=parameter)
 
         all_vecs[row_index] = trivialization_vec
-
-        import pdb; pdb.set_trace()
 
     return all_vecs
 
