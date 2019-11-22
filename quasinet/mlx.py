@@ -67,6 +67,11 @@ ranks = {'leaves': []}
         # The colors to render each node with
 colors = {'bounds': None}
 out_file = open('out.dot', "w")
+
+#------------------------------------------
+
+isnan = lambda x: type(x) is float and math.isnan(x)
+
 #------------------------------------------
 
 class tree_(object):
@@ -849,15 +854,30 @@ def sapply(node,arg2="[[",criteria="error"):
 
 #------------------------------------------------------------
 
-def Xctree(RESPONSE__,
-           datatrain__,
-           datatest__=None,
-           VERBOSE=False,
-           TREE_EXPORT=True):
+def Xctree(
+    RESPONSE__,
+    datatrain__,
+    datatest__=None,
+    VERBOSE=False,
+    TREE_EXPORT=True):
+    """Train the conditional tree.
+    
+    NOTE: for some reason, sometimes getresponseframe doesn't work
 
-    Prx__=None
-    ACCx__=None
-    CFx__=None
+    Args:
+        RESPONSE__ (str): response name
+        datatrain__ (pandas df): train data
+        datatest__ (pandas df): evaluation data
+        VERBOSE (bool): whether to print out extra info
+        TREE_EXPORT (bool): whether to export the tree to a file
+
+    Returns:
+
+    """
+
+    Prx__  = None
+    ACCx__ = None
+    CFx__ = None
     
     # We need to read the data file using R. 
     # If we don't, rpy2 will force an invalid conversion from pandas dataframe
@@ -867,30 +887,45 @@ def Xctree(RESPONSE__,
         tmpfile,
         sep=',',
         index=None)
-    datatrain__ = readcsv(tmpfile)
+    datatrain__2 = readcsv(tmpfile)
     os.remove(tmpfile)
 
     fmla__ = Formula(RESPONSE__+' ~ .')
-    import pdb; pdb.set_trace()
-
     CT__ = ctree(
         fmla__,
-        data=datatrain__,)
+        data=datatrain__2)
 
-    Pr__,ACC__,CF__= getresponseframe(datatrain__,CT__,
-                                        RESPONSE__,olddata=True)
+    Pr__, ACC__, CF__= getresponseframe(
+        datatrain__,
+        CT__,
+        RESPONSE__,
+        olddata=True)
+
     if datatest__ is not None:
-        Prx__,ACCx__,CFx__= getresponseframe(datatest__,CT__,
-                                             RESPONSE__)
+        try:
+            Prx__, ACCx__, CFx__ = getresponseframe(
+                datatest__,
+                CT__,
+                RESPONSE__)
 
+        # some weird error regarding a column name not found
+        except rinterface.RRuntimeError:
+            Prx__ = ACCx__ = CFx__ = None
+            
+    TR__ = visTree(
+        CT__,
+        Pr__,
+        PLOT=False,
+        VERBOSE=VERBOSE,
+        ACC=ACC__,
+        ACCx=ACCx__,
+        RESP_=RESPONSE__)
 
-    TR__= visTree(CT__,Pr__,
-                    PLOT=False,
-                    VERBOSE=VERBOSE,ACC=ACC__,ACCx=ACCx__,RESP_=RESPONSE__)
     if TR__ is not None:
         if TREE_EXPORT:
             tree_export(TR__,TYPE='polyline',EXEC=True)
-    return CT__,Pr__,ACC__,CF__,Prx__,ACCx__,CFx__,TR__
+
+    return CT__, Pr__, ACC__, CF__, Prx__, ACCx__, CFx__, TR__
 
 #------------------------------------------------------------
 
@@ -1012,7 +1047,7 @@ def tree_export(TR,outfilename='out.dot',
 
 
 
-#------------------------------------------------------------
+#---------------------------------------------------------------
 #---------------------------------------------------------------
 def randomForestX(RESPONSE__,
                   datatrain__,
@@ -1305,11 +1340,12 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     return S/(nCount+0.0)
 
 
-def load_trees(tree_dir):
+def load_trees(tree_dir, return_response=False):
     """Load the trees into a dictionary from a directory.
 
     Args:
-        tree_dir: directory to the store trees
+        tree_dir (str): directory to the store trees
+        return_response (bool): whether to return responses or not
 
     Returns:
         dictionary mapping response name to the corresponding tree
@@ -1322,16 +1358,19 @@ def load_trees(tree_dir):
     pickled_tree_files.sort()
 
     # responses are the file names gathered from the pickle file name
-    responses = [file_.split('/')[-1].split('.')[0][1:] \
+    responses = [file_.split('/')[-1].split('.')[0] \
         for file_ in pickled_tree_files]
 
     trees = {}
     for i, pickled_tree_file in enumerate(pickled_tree_files):
         with open(pickled_tree_file, 'rb') as f:
             tree = pickle.load(f)
-        trees['P' + responses[i]] = tree
+        trees[responses[i]] = tree
 
-    return trees
+    if return_response:
+        return trees, responses
+    else:
+        return trees
 
 
 def dissonance(dist, response):
@@ -1343,11 +1382,20 @@ def dissonance(dist, response):
 
     Returns:
         dissonance scalar for item i
+        NaN if the probability that we got is 0
+        NaN if the response given is NaN
     """
 
+    if isnan(response):
+        return float('nan')
+
     prob = dist[response]
-    v = 1 - 2 ** (prob * np.log2(prob))
-    return v
+
+    if prob == 0.0 or math.isnan(prob):
+        return float('nan')
+    else:
+        v = 1 - 2 ** (prob * np.log2(prob))
+        return v
 
 
 def dissonanceVector(dists, responses):
@@ -1361,6 +1409,9 @@ def dissonanceVector(dists, responses):
         numpy vector
     """
 
+    if len(dists) != len(responses):
+        raise ValueError('Number of distributions must match number of responses.')
+
     vs = []
     for i, dist in enumerate(dists):
         response = responses[i]
@@ -1373,35 +1424,23 @@ def dissonanceVector(dists, responses):
 
 
 
-def sampleDissonanceVector(df, tree_dir):
+def sampleDissonanceVector(df, tree_dir, save_file=None):
     """For each sample in a dataframe, find the dissonance vector.
 
-    TODO: refactor this code to use load_trees
-
     Args:
-        df: dataframe containing the data
-        tree_dir: directory that the trees were saved
+        df (pandas df): dataframe containing the data
+        tree_dir (str): directory that the trees were saved
+        save_file (str): file to save the dissonance vectors
 
     Returns:
         2d numpy array of size 
             (number of samples, number of pickle files in tree_dir)
     """
 
-    pickled_tree_files = glob.glob(tree_dir + '*.pkl')
-    pickled_tree_files.sort()
-
-    # responses are the file names gathered from the pickle file name
-    responses = [file_.split('/')[-1].split('.')[0][1:] \
-        for file_ in pickled_tree_files]
-
-    # read all the pickled files into a list of tree
-    trees = []
-    for pickled_tree_file in pickled_tree_files:
-        with open(pickled_tree_file, 'rb') as f:
-            tree = pickle.load(f)
-        trees.append(tree)
+    trees, responses = load_trees(tree_dir, return_response=True)
 
     samples = df.shape[0]
+    col_names = df.columns
 
     # store a matrix of dissonance vectors
     all_vecs = np.empty((samples, len(trees)))
@@ -1410,7 +1449,6 @@ def sampleDissonanceVector(df, tree_dir):
     for row_index in range(samples):
 
         # cond_dict maps item names to actual values from the data
-        col_names = df.columns
         cond_dict = {}
         for col_name in col_names:
             cond_dict[col_name] = df[col_name][row_index]
@@ -1423,10 +1461,9 @@ def sampleDissonanceVector(df, tree_dir):
         dists = []
 
         # iterate over the responses to find the distribution
-        for i, response in enumerate(responses):
+        for response in responses:
             labels.append(df[response][row_index])
-            tree = trees[i]
-
+            tree = trees[response]
             distrib_dict = copy.deepcopy(cond_dict)
             del distrib_dict[response]
 
@@ -1440,6 +1477,16 @@ def sampleDissonanceVector(df, tree_dir):
 
         v = dissonanceVector(dists, labels)
         all_vecs[row_index] = v
+
+
+    # save the dissonance vectors to file
+    if save_file is not None:
+        df = pd.DataFrame(
+            data=all_vecs, 
+            columns=responses)
+        df.to_csv(
+            save_file, 
+            index=None)
 
     return all_vecs, responses
 
@@ -1471,14 +1518,14 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
         nan if the response of item i is nan
     """
 
-    print(item_i)
+    # print(item_i)
 
     all_items = list(trees.keys())
     items_except_i = [x for x in all_items if x != item_i]
     tree_i = trees[item_i]
     response_i = cond_dict[item_i]
 
-    if type(response_i) is float and math.isnan(response_i):
+    if isnan(response_i):
         return float('nan')
 
     sampled_dissonances = []
@@ -1490,7 +1537,6 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
     if len(j_choices) == 0:
         return float('nan')
 
-    # import pdb; pdb.set_trace()
     for _ in range(num_samples):
         item_j = random.choice(j_choices)
         tree = trees[item_j]
@@ -1552,7 +1598,7 @@ def beta_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
     response_i = cond_dict[item_i]
     del cond_dict[item_i]
 
-    if type(response_i) is float and math.isnan(response_i):
+    if isnan(response_i):
         return float('nan')
 
     sampled_dissonances = []
@@ -1621,18 +1667,20 @@ def trivializationVector(
     for i, item_i in enumerate(all_items):
         orig_dissonance = orig_dissonance_vec[i]
 
-        param = param_type(
-            orig_dissonance, 
-            cond_dict,
-            item_i,
-            trees,
-            num_samples=num_samples)
+        if isnan(orig_dissonance):
+            param = float('nan')
+        else:
+            param = param_type(
+                orig_dissonance, 
+                cond_dict,
+                item_i,
+                trees,
+                num_samples=num_samples)
 
         param_vector.append(param)
 
     param_vector = np.array(param_vector)
 
-    import pdb; pdb.set_trace()
     return param_vector
 
 
@@ -1674,6 +1722,7 @@ def trivializationVectors(
         col_names = dissonance_matrix.columns
         cond_dict = {}
         for col_name in col_names:
+            # TODO: not sure if we need to include P
             cond_dict['P' + col_name] = df[col_name][row_index]
 
         dissonance_vector = dissonance_matrix.iloc[row_index]

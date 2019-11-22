@@ -89,7 +89,8 @@ def singleTree(args):
     columns_to_delete = args[5]
 
     if VERBOSE:
-        print "PID: {}".format(os.getpid()), "Generating tree for response {}".format(response)
+        print "PID: {}".format(os.getpid()), \
+            "Generating tree for response {}".format(response)
 
     R = 'P' + str(response)
 
@@ -237,7 +238,8 @@ def makeQNetwork(
     tp.map(singleTreeTimed, arguments_set)
 
     tp.shutdown(wait=True)
-    # arguments_set = [[R, trainfile, testfile, tree_dir, VERBOSE, []] for R in response_set]
+    # arguments_set = [[R, trainfile, testfile, tree_dir, VERBOSE, []] \
+    # for R in response_set]
     # pool = multiprocessing.Pool(numCPUs)
     # pool_result = pool.map_async(singleTree,arguments_set)
     # pool_result.wait(timeout=500)
