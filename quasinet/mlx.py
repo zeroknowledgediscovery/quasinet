@@ -1265,9 +1265,7 @@ def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
             cond_[k] = str(v)
         else:
             cond_[k] = v
-    # cond_ = {k:v for (k,v) in cond.items() if type(v) is not float}
 
-    # import pdb; pdb.set_trace()
     dist_=getMergedDistribution(tree,cond=cond_)
     if sample is 'mle':
         sample=max(dist_.iteritems(), key=operator.itemgetter(1))[0]
@@ -1471,14 +1469,11 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
         
         # iterate over the responses to find the distribution
         for response in responses:
-            # if response == 'Pintlincs':
-            #     import pdb; pdb.set_trace()
 
             labels.append(df[response][row_index])
             tree = trees[response]
             distrib_dict = copy.deepcopy(cond_dict)
             del distrib_dict[response]
-            # print(response)
             result, dist_ = sampleTree(
                 tree, 
                 cond=distrib_dict,
@@ -1497,8 +1492,6 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
         v = dissonanceVector(dists, labels_)
         all_vecs[row_index] = v
 
-        # import pdb; pdb.set_trace()
-
 
     # save the dissonance vectors to file
     if save_file is not None:
@@ -1512,9 +1505,18 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
     return all_vecs, responses
 
 
-def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
+def alpha_i(
+    orig_dissonance, 
+    cond_dict, 
+    item_i,
+    trees, 
+    response_to_labels,
+    num_samples=100):
     """Compute the alpha parameter for item i.
 
+    TODO: this needs to take in another argument that basically maps response
+    name to all possible choices for the response.
+    
     Alpha measures the difficulty of reducing dissonance when
     responses other than i are perturbed.
 
@@ -1539,40 +1541,44 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
         nan if the response of item i is nan
     """
 
-    # print(item_i)
-
     all_items = list(trees.keys())
     items_except_i = [x for x in all_items if x != item_i]
     tree_i = trees[item_i]
     response_i = cond_dict[item_i]
+    del cond_dict[item_i]
 
     if isnan(response_i):
         return float('nan')
 
     sampled_dissonances = []
-
-    j_choices = set(tree_i.feature.values())
-    j_choices = j_choices.intersection(set(items_except_i))
-    j_choices = list(j_choices)
+    # note that there may be less choices than there are features in tree i
+    # this is because even though a response label j influences i, j itself
+    # may not have a tree
+    # j_choices = set(tree_i.feature.values())
+    # j_choices = j_choices.intersection(set(items_except_i))
+    # j_choices = list(j_choices)
+    j_choices = tree_i.significant_feature_weight_.keys()
 
     if len(j_choices) == 0:
         return float('nan')
 
     for _ in range(num_samples):
         item_j = random.choice(j_choices)
-        tree = trees[item_j]
-        sample_j = sampleTree(
-            tree,
-            cond={},
-            sample='random',
-            DIST=False,
-            NUMSAMPLE=1)
-
-        sample_j = sample_j[0]
+        # tree_j = trees[item_j]
+        # sample_j = random.choice(tree_j.CLASSES)
+        sample_j = random.choice(response_to_labels[item_j])
+        # sample_j = sampleTree(
+        #     tree_j,
+        #     cond={},
+        #     sample='random',
+        #     DIST=False,
+        #     NUMSAMPLE=1)
+        # sample_j = sample_j[0]
 
         new_cond_dict = copy.deepcopy(cond_dict)
+
         new_cond_dict[item_j] = sample_j
-        del new_cond_dict[item_i]
+        
 
         _, dist_i = sampleTree(
             tree_i, 
@@ -1586,12 +1592,18 @@ def alpha_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
     sampled_dissonances = np.array(sampled_dissonances)
 
     alpha = np.sum(sampled_dissonances <= orig_dissonance) \
-        / len(sampled_dissonances)
+        / float(len(sampled_dissonances))
 
     return alpha
 
 
-def beta_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
+def beta_i(
+    orig_dissonance, 
+    cond_dict, 
+    item_i, 
+    trees, 
+    response_to_labels, 
+    num_samples=100):
     """Compute the beta parameter for item i.
 
     Beta measures the difficulty of reducing dissonance when
@@ -1632,21 +1644,21 @@ def beta_i(orig_dissonance, cond_dict, item_i, trees, num_samples=100):
 
     for _ in range(num_samples):
 
-        sample_i = sampleTree(
-            tree_i,
-            cond={},
-            sample='random',
-            DIST=False,
-            NUMSAMPLE=1)
+        # sample_i = sampleTree(
+        #     tree_i,
+        #     cond={},
+        #     sample='random',
+        #     DIST=False,
+        #     NUMSAMPLE=1)
+        # sample_i = sample_i[0]
 
-        sample_i = sample_i[0]
+        sample_i = random.choice(response_to_labels[item_i])
         dissonance_i = dissonance(dist_i, sample_i)
         sampled_dissonances.append(dissonance_i)
 
     sampled_dissonances = np.array(sampled_dissonances)
-
     beta = np.sum(sampled_dissonances <= orig_dissonance) \
-        / len(sampled_dissonances)
+        / float(len(sampled_dissonances))
 
     return beta
 
@@ -1655,6 +1667,7 @@ def trivializationVector(
     orig_dissonance_vec, 
     cond_dict, 
     trees, 
+    response_to_labels,
     parameter='alpha', 
     num_samples=100):
     """Compute the trivialization vector for all the items.
@@ -1662,14 +1675,15 @@ def trivializationVector(
     The parameter may either be alpha or beta.
 
     Args:
-        orig_dissonance_vec: original dissonance vector
-        cond_dict: dict that maps item names to actual responses
-        trees: dictionary mapping each item to its corresponding tree
-        parameter: alpha or beta
-        num_samples: number of times of resampling
+        orig_dissonance_vec (1d np array): original dissonance vector
+        cond_dict (dict): dict that maps item names to actual responses
+        trees (dict): dictionary mapping each item to its corresponding tree
+        response_to_labels (dict): map responses to the possible labels
+        parameter (str): alpha or beta
+        num_samples (int): number of times of resampling
 
     Returns:
-        trivialization vector
+        (1d np array) trivialization vector
     """
 
     if parameter == 'alpha':
@@ -1696,9 +1710,11 @@ def trivializationVector(
                 cond_dict,
                 item_i,
                 trees,
+                response_to_labels,
                 num_samples=num_samples)
 
         param_vector.append(param)
+        
 
     param_vector = np.array(param_vector)
 
@@ -1709,6 +1725,7 @@ def trivializationVectors(
     df, 
     dissonance_matrix, 
     tree_dir, 
+    save_file=None,
     parameter='alpha', 
     num_samples=100):
     """Compute the trivialization vectors for each sample.
@@ -1728,23 +1745,29 @@ def trivializationVectors(
             (number of samples, number responses)
     """
 
-    
     if dissonance_matrix.shape[0] != df.shape[0]:
         raise ValueError("Number of instances must be the same.")
 
-    num_samples = dissonance_matrix.shape[0]
+    num_rows = dissonance_matrix.shape[0]
+    col_names = dissonance_matrix.columns
+
+    # map column name to possible values that the entries for that column can take
+    # also, exclude the NaNs
+    response_to_labels = {}
+    for col_name in df.columns:
+        response_to_labels['P' + col_name] = filter(
+            lambda v: v==v, df[col_name].unique())
 
     trees = load_trees(tree_dir)
 
     all_vecs = np.empty(dissonance_matrix.shape)
 
-    for row_index in range(num_samples):
+    for row_index in range(num_rows):
+        
         # cond_dict maps response names to actual values from the data
-        col_names = dissonance_matrix.columns
         cond_dict = {}
         for col_name in col_names:
-            # TODO: not sure if we need to include P
-            cond_dict['P' + col_name] = df[col_name][row_index]
+            cond_dict[col_name] = df[col_name[1:]][row_index]
 
         dissonance_vector = dissonance_matrix.iloc[row_index]
 
@@ -1752,10 +1775,21 @@ def trivializationVectors(
             dissonance_vector.values, 
             cond_dict, 
             trees, 
+            response_to_labels,
             num_samples=num_samples,
             parameter=parameter)
 
         all_vecs[row_index] = trivialization_vec
+
+
+    # save the dissonance vectors to file
+    if save_file is not None:
+        df = pd.DataFrame(
+            data=all_vecs, 
+            columns=col_names)
+        df.to_csv(
+            save_file, 
+            index=None)
 
     return all_vecs
 
