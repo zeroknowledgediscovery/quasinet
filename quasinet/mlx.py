@@ -1256,10 +1256,19 @@ def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
             raise ValueError('The response name must start with P!')
 
     # filter out values with floats
-    cond = {k:v for (k,v) in cond.items() if type(v) is not float}
+    # convert booleans to strings
+    cond_ = {}
+    for k, v in cond.items():
+        if type(v) is float:
+            pass
+        elif type(v) is bool:
+            cond_[k] = str(v)
+        else:
+            cond_[k] = v
+    # cond_ = {k:v for (k,v) in cond.items() if type(v) is not float}
 
     # import pdb; pdb.set_trace()
-    dist_=getMergedDistribution(tree,cond=cond)
+    dist_=getMergedDistribution(tree,cond=cond_)
     if sample is 'mle':
         sample=max(dist_.iteritems(), key=operator.itemgetter(1))[0]
     elif sample is 'random':
@@ -1459,14 +1468,17 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
         # dists is a list of dictionaries
         # each map possible labels to probabilities of that label
         dists = []
-
+        
         # iterate over the responses to find the distribution
         for response in responses:
+            # if response == 'Pintlincs':
+            #     import pdb; pdb.set_trace()
+
             labels.append(df[response][row_index])
             tree = trees[response]
             distrib_dict = copy.deepcopy(cond_dict)
             del distrib_dict[response]
-
+            # print(response)
             result, dist_ = sampleTree(
                 tree, 
                 cond=distrib_dict,
@@ -1475,8 +1487,17 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
 
             dists.append(dist_)
 
-        v = dissonanceVector(dists, labels)
+        # convert bools to strings
+        labels_ = []
+        for label in labels:
+            if type(label) is bool:
+                label = str(label)
+            labels_.append(label)
+
+        v = dissonanceVector(dists, labels_)
         all_vecs[row_index] = v
+
+        # import pdb; pdb.set_trace()
 
 
     # save the dissonance vectors to file
