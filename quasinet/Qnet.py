@@ -31,7 +31,12 @@ import rpy2
 import mlx
 
 
-def fit_sequences(sequence_file,trainfile,testfile, test_ratio=0.5):
+def fit_sequences(
+    sequence_file,
+    trainfile,
+    testfile, 
+    test_ratio=0.5, 
+    random_state=None):
     '''Takes a file of sequences and breaks it up into train and test csvs
     appropriate for qnets.
 
@@ -54,7 +59,10 @@ def fit_sequences(sequence_file,trainfile,testfile, test_ratio=0.5):
     contents = list(filter(not_empty, contents))
 
     df = pd.DataFrame(list(seq) for seq in contents)
-    train_df, test_df = train_test_split(df,test_size=test_ratio)
+    train_df, test_df = train_test_split(
+        df,
+        test_size=test_ratio,
+        random_state=random_state)
     
     train_df.to_csv(trainfile,index=None)
     test_df.to_csv(testfile,index=None)
@@ -229,15 +237,25 @@ def makeQNetwork(
     if numCPUs is None:
         numCPUs = multiprocessing.cpu_count()
 
-    tp = ThreadPoolExecutor(numCPUs)
-    arguments_set = []
-    for R in response_set:
-        inputs = [R, trainfile, testfile, tree_dir, VERBOSE, []]
-        all_inputs = (inputs, timeout, timeout_callback)
-        arguments_set.append(all_inputs)
-    tp.map(singleTreeTimed, arguments_set)
+    if timeout is None:
+        arguments_set = [[R, trainfile, testfile, tree_dir, VERBOSE, []] \
+            for R in response_set]
 
-    tp.shutdown(wait=True)
+        pool = multiprocessing.Pool(numCPUs)
+        pool.map(singleTree, arguments_set)
+
+    # stop process if the time exceeds a threshold
+    else:
+        tp = ThreadPoolExecutor(numCPUs)
+        arguments_set = []
+        for R in response_set:
+            inputs = [R, trainfile, testfile, tree_dir, VERBOSE, []]
+            all_inputs = (inputs, timeout, timeout_callback)
+            arguments_set.append(all_inputs)
+        tp.map(singleTreeTimed, arguments_set)
+
+        tp.shutdown(wait=True)
+
     # arguments_set = [[R, trainfile, testfile, tree_dir, VERBOSE, []] \
     # for R in response_set]
     # pool = multiprocessing.Pool(numCPUs)

@@ -13,7 +13,8 @@ import math
 import numpy as np
 import pandas as pd
 import rpy2.rinterface as rinterface
-rinterface.set_initoptions(("rpy2", "--max-ppsize=500000"))
+rinterface.set_initoptions(
+    ("rpy2", "--max-ppsize=500000", '--no-save', '--no-restore', '--quiet'))
 import rpy2.robjects as robjects
 import rpy2.robjects.packages as rpackages
 from rpy2.robjects.packages import importr
