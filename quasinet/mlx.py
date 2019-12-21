@@ -1825,6 +1825,23 @@ def trivializationVectors(
     return all_vecs
 
 
+def probTrivialization(alpha_df, beta_df):
+    """Calculate probability of trivialization or rationalization.
+
+    Args:
+        alpha_df: dataframe of alpha parameters
+        beta_df: dataframe of beta parameters
+
+    Returns:
+        df of the same shape as alpha and beta
+    """
+
+    if alpha_df.shape != beta_df.shape:
+        raise ValueError('Alpha and beta dataframes must be the same.')
+
+    return alpha_df / (alpha_df + beta_df)
+
+    
 def belief_shift_simulation(
     items_to_all_responses, 
     items_to_response,
@@ -1947,19 +1964,4 @@ def belief_shift_simulations(
         import pdb; pdb.set_trace()
     return new_df, new_dissonance
 
-    
-def probTrivialization(alpha_df, beta_df):
-    """Calculate probability of trivialization or rationalization.
 
-    Args:
-        alpha_df: dataframe of alpha parameters
-        beta_df: dataframe of beta parameters
-
-    Returns:
-        df of the same shape as alpha and beta
-    """
-
-    if alpha_df.shape != beta_df.shape:
-        raise ValueError('Alpha and beta dataframes must be the same.')
-
-    return alpha_df / (alpha_df + beta_df)
