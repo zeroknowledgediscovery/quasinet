@@ -1761,7 +1761,7 @@ def itemsToAllResponses(df):
 
 def trivializationVectors(
     df, 
-    dissonance_matrix, 
+    dissonance_df, 
     tree_dir, 
     save_file=None,
     parameter='alpha', 
@@ -1770,7 +1770,7 @@ def trivializationVectors(
 
     Args:
         df: dataframe containing the data
-        dissonance_matrix: matrix of dissonance vectors where rows
+        dissonance_df: dissonance vectors where rows
             are the dissonance vector for each instance
         tree_dir: directory that the trees were saved
         parameter: alpha or beta
@@ -1781,17 +1781,17 @@ def trivializationVectors(
             (number of samples, number responses)
     """
 
-    if dissonance_matrix.shape[0] != df.shape[0]:
+    if dissonance_df.shape[0] != df.shape[0]:
         raise ValueError("Number of instances must be the same.")
 
-    num_rows = dissonance_matrix.shape[0]
-    col_names = dissonance_matrix.columns
+    num_rows = dissonance_df.shape[0]
+    col_names = dissonance_df.columns
 
     response_to_labels = itemsToAllResponses(df)
 
     trees = load_trees(tree_dir)
 
-    all_vecs = np.empty(dissonance_matrix.shape)
+    all_vecs = np.empty(dissonance_df.shape)
 
     for row_index in range(num_rows):
         
@@ -1800,7 +1800,7 @@ def trivializationVectors(
         for col_name in col_names:
             cond_dict[col_name] = df[col_name[1:]][row_index]
 
-        dissonance_vector = dissonance_matrix.iloc[row_index]
+        dissonance_vector = dissonance_df.iloc[row_index]
 
         trivialization_vec = trivializationVector(
             dissonance_vector.values, 
@@ -1869,37 +1869,43 @@ def belief_shift_simulation(
         a vector resulting from the evolution from the belief shift simulation
     """
 
+    round_ = lambda x: round(x, 4)
+
     all_items = copy.deepcopy(list(trees.keys()))
 
-    # we do not want to choose an item i where the response is NaN because there will be no dissonance for that response
+    # we do not want to choose an item i where the response is NaN 
+    # because there will be no dissonance for that response
     for item, response in items_to_response.items():
-        if isnan(response):
+        if isnan(response) and (item in all_items):
             all_items.remove(item)
+    
+    # simulate belief shift `num_instances` number of times
+    for _ in range(num_instances):
 
-    # simulate `num_instances` number of times
-    for i in range(num_instances):
+        # TODO: include the case where item i = item j
+
         item_i = random.choice(all_items)
         response_i = items_to_response[item_i]
         tree_i = trees[item_i]
         dissonance_i = items_to_dissonance[item_i]
 
-        # 5 is arbitrary. Dissonance can not be greater than 1.
+        # 5 is arbitrary. We just want it to be greater than 1, since
+        # dissonance can not be greater than 1.
         new_dissonance = 5
 
-        # list of items that will influence i
+        # list of items that will influence item i
         j_choices = tree_i.significant_feature_weight_.keys()
+        random.shuffle(j_choices)
 
-        while (new_dissonance > dissonance_i) and (len(j_choices) != 0):
-            item_j = random.choice(j_choices)
-            j_choices.remove(item_j)
+        for item_j in j_choices:
 
             all_response_j = items_to_all_responses[item_j]
             random.shuffle(all_response_j)
 
-            for sample_j in all_response_j:
+            # iterate over possible responses for item j
+            for response_j in all_response_j:
                 new_items_to_response = copy.deepcopy(items_to_response)
-
-                new_items_to_response[item_j] = sample_j
+                new_items_to_response[item_j] = response_j
                 
                 _, dist_i = sampleTree(
                     tree_i, 
@@ -1908,13 +1914,23 @@ def belief_shift_simulation(
                     sample='random')
 
                 new_dissonance_i = dissonance(dist_i, response_i)
+                new_dissonance = new_dissonance_i
 
-                if new_dissonance_i < dissonance_i:
-                    new_dissonance = new_dissonance_i
-                    new_sample = sample_j
+                # stop loop if we find a lower dissonance for item i
+                if round_(new_dissonance_i) < round_(dissonance_i):
+                    new_response_j = response_j
                     break
 
-        items_to_response[item_j] = new_sample
+                # if we never have that the new dissonance is lower than the 
+                # original dissonance, then the response for item j remains the same
+                else:
+                    new_response_j = items_to_response[item_j]
+
+            # stop the outer loop when the inner loop also has been stopped
+            if round_(new_dissonance_i) < round_(dissonance_i):
+                break
+    
+        items_to_response[item_j] = new_response_j
         items_to_dissonance[item_i] = new_dissonance
 
     return items_to_response, items_to_dissonance
@@ -1923,45 +1939,55 @@ def belief_shift_simulation(
 
 def belief_shift_simulations(
     df, 
-    dissonance_matrix,
+    dissonance_df,
     tree_dir, 
     num_instances):
     """Simulate the belief shift for all the data.
 
     Args:
-        df: dataframe containing the all the data
-        dissonance_matrix: matrix of dissonance vectors where rows
+        df (pd.DF): dataframe containing the all the data
+        dissonance_df (pd.DF): dissonance vectors where rows
             are the dissonance vector for each instance
         tree_dir (str): directory where the trees were saved
         num_instances (int): number of times to repeat the simulation
+            for each sample instance
 
     Returns:
-        2d array
+        (pd.DF) dataframe for belief shifted responses
+        (pd.DF) dataframe for belief shifted dissonances
     """
 
-    if df.shape[0] != dissonance_matrix.shape[0]:
-        raise ValueError('df and dissonance_matrix must have the same number of instances.')
+    if df.shape[0] != dissonance_df.shape[0]:
+        raise ValueError('df and dissonance_df must have the same number of instances.')
     
     items_to_all_responses = itemsToAllResponses(df)
     trees = load_trees(tree_dir)
 
-    num_instances = df.shape[0]
+    num_samples = df.shape[0]
+
+    new_col_names = ['P' + col_name for col_name in df.columns]
+    df.columns = new_col_names
 
     new_df = pd.DataFrame(columns=df.columns)
-    new_dissonance = pd.DataFrame(columns=dissonance_matrix.columns)
+    new_dissonance_df = pd.DataFrame(columns=dissonance_df.columns)
 
-    for i in range(num_instances):
+    # iterate through all sample instances
+    for i in range(num_samples):
 
         new_x, new_dissonance = belief_shift_simulation(
             items_to_all_responses=items_to_all_responses, 
-            items_to_response=df[i:i+1].to_dict('records'),
-            items_to_dissonance=dissonance_matrix[i:i+1].to_dict('records'), 
+            items_to_response=df[i:i+1].to_dict('records')[0],
+            items_to_dissonance=dissonance_df[i:i+1].to_dict('records')[0], 
             trees=trees,
             num_instances=num_instances)
 
-        new_df.append(new_x, ignore_index=True)
-        new_dissonance.append(new_dissonance, ignore_index=True)
-        import pdb; pdb.set_trace()
-    return new_df, new_dissonance
+        new_df = new_df.append(
+            new_x, 
+            ignore_index=True)
+        new_dissonance_df = new_dissonance_df.append(
+            new_dissonance, 
+            ignore_index=True)
+
+    return new_df, new_dissonance_df
 
 
