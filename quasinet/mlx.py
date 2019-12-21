@@ -13,7 +13,8 @@ import math
 import numpy as np
 import pandas as pd
 import rpy2.rinterface as rinterface
-rinterface.set_initoptions(("rpy2", "--max-ppsize=500000"))
+rinterface.set_initoptions(
+    ("rpy2", "--max-ppsize=500000", '--no-save', '--no-restore', '--quiet'))
 import rpy2.robjects as robjects
 import rpy2.robjects.packages as rpackages
 from rpy2.robjects.packages import importr
@@ -1365,15 +1366,15 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     return S/(nCount+0.0)
 
 
-def load_trees(tree_dir, return_response=False):
+def load_trees(tree_dir, return_items=False):
     """Load the trees into a dictionary from a directory.
 
     Args:
         tree_dir (str): directory to the store trees
-        return_response (bool): whether to return responses or not
+        return_items (bool): whether to return responses or not
 
     Returns:
-        dictionary mapping response name to the corresponding tree
+        dictionary mapping item name to the corresponding tree
     """
 
     if not tree_dir.endswith('/'):
@@ -1382,18 +1383,18 @@ def load_trees(tree_dir, return_response=False):
     pickled_tree_files = glob.glob(tree_dir + '*.pkl')
     pickled_tree_files.sort()
 
-    # responses are the file names gathered from the pickle file name
-    responses = [file_.split('/')[-1].split('.')[0] \
+    # items are the file names gathered from the pickle file name
+    items = [file_.split('/')[-1].split('.')[0] \
         for file_ in pickled_tree_files]
 
     trees = {}
     for i, pickled_tree_file in enumerate(pickled_tree_files):
         with open(pickled_tree_file, 'rb') as f:
             tree = pickle.load(f)
-        trees[responses[i]] = tree
+        trees[items[i]] = tree
 
-    if return_response:
-        return trees, responses
+    if return_items:
+        return trees, items
     else:
         return trees
 
@@ -1401,23 +1402,28 @@ def load_trees(tree_dir, return_response=False):
 def dissonance(dist, response):
     """Compute the dissonance for item i.
 
+    If the response is NaN, then the probability chosen is the maximum
+    from the distribution.
+
     Args:
         dist: a dictionary that map label name to probability.
         response: the actual response for the distribution
 
     Returns:
         dissonance scalar for item i
-        NaN if the probability that we got is 0
-        NaN if the response given is NaN
+        1 if the probability that we got is 0
     """
 
+    if type(response) is bool:
+        response = str(response)
+
     if isnan(response):
-        return float('nan')
+        prob = max(dist.values())
+    else:
+        prob = dist[response]
 
-    prob = dist[response]
-
-    if prob == 0.0 or math.isnan(prob):
-        return float('nan')
+    if prob == 0.0:
+        return 1
     else:
         v = 1 - 2 ** (prob * np.log2(prob))
         return v
@@ -1431,7 +1437,7 @@ def dissonanceVector(dists, responses):
         responses: list of responses for the distributions
 
     Returns:
-        numpy vector
+        list of dissonances
     """
 
     if len(dists) != len(responses):
@@ -1442,8 +1448,6 @@ def dissonanceVector(dists, responses):
         response = responses[i]
         v = dissonance(dist, response)
         vs.append(v)
-
-    vs = np.array(vs)
 
     return vs
 
@@ -1462,13 +1466,13 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
             (number of samples, number of pickle files in tree_dir)
     """
 
-    trees, responses = load_trees(tree_dir, return_response=True)
+    trees, items = load_trees(tree_dir, return_items=True)
 
     samples = df.shape[0]
     col_names = df.columns
 
-    # store a matrix of dissonance vectors
-    all_vecs = np.empty((samples, len(trees)))
+    # store a lists of dissonance vectors
+    all_vecs = []
 
     # iterate over the rows of the dataframe
     for row_index in range(samples):
@@ -1478,20 +1482,20 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
         for col_name in col_names:
             cond_dict[col_name] = df[col_name][row_index]
 
-        # labels are a list of actual values for each response
+        # labels are a list of actual values for each item
         labels = []
 
         # dists is a list of dictionaries
         # each map possible labels to probabilities of that label
         dists = []
         
-        # iterate over the responses to find the distribution
-        for response in responses:
+        # iterate over the items to find the distribution
+        for item in items:
 
-            labels.append(df[response][row_index])
-            tree = trees[response]
+            labels.append(df[item][row_index])
+            tree = trees[item]
             distrib_dict = copy.deepcopy(cond_dict)
-            del distrib_dict[response]
+            del distrib_dict[item]
             result, dist_ = sampleTree(
                 tree, 
                 cond=distrib_dict,
@@ -1508,19 +1512,20 @@ def sampleDissonanceVector(df, tree_dir, save_file=None):
             labels_.append(label)
 
         v = dissonanceVector(dists, labels_)
-        all_vecs[row_index] = v
+        all_vecs.append(v)
 
+    all_vecs = np.array(all_vecs)
 
     # save the dissonance vectors to file
     if save_file is not None:
         df = pd.DataFrame(
             data=all_vecs, 
-            columns=responses)
+            columns=items)
         df.to_csv(
             save_file, 
             index=None)
 
-    return all_vecs, responses
+    return all_vecs, items
 
 
 def alpha_i(
@@ -1528,12 +1533,9 @@ def alpha_i(
     cond_dict, 
     item_i,
     trees, 
-    response_to_labels,
+    items_to_all_responses,
     num_samples=100):
     """Compute the alpha parameter for item i.
-
-    TODO: this needs to take in another argument that basically maps response
-    name to all possible choices for the response.
     
     Alpha measures the difficulty of reducing dissonance when
     responses other than i are perturbed.
@@ -1541,7 +1543,7 @@ def alpha_i(
     Alpha is calculated by:
         1. fixing the response i
         2. randomly selecting an item j that is not i
-        3. randomly sampling a response from j using tree j
+        3. randomly sampling a possible response from j
         4. replacing the original response of j with the sampled j response
         5. recomputing the dissonance of i
         6. repeating step 1 to 5 n times
@@ -1553,38 +1555,37 @@ def alpha_i(
         item_i: name of item i
         trees: dictionary mapping each item to its corresponding tree
         num_samples: number of times of resampling
+        items_to_all_responses: map item to all possible responses for that item
 
     Returns:
         proportion of sampled dissonance less than original dissonance
         nan if the response of item i is nan
     """
 
-    all_items = list(trees.keys())
-    items_except_i = [x for x in all_items if x != item_i]
+    # all_items = list(trees.keys())
+    # items_except_i = [x for x in all_items if x != item_i]
     tree_i = trees[item_i]
     response_i = cond_dict[item_i]
-    del cond_dict[item_i]
-
-    if isnan(response_i):
-        return float('nan')
 
     sampled_dissonances = []
-    # note that there may be less choices than there are features in tree i
-    # this is because even though a response label j influences i, j itself
-    # may not have a tree
+
     # j_choices = set(tree_i.feature.values())
     # j_choices = j_choices.intersection(set(items_except_i))
     # j_choices = list(j_choices)
+
     j_choices = tree_i.significant_feature_weight_.keys()
 
+    j_choices = [j_choice for j_choice in j_choices \
+        if len(items_to_all_responses[j_choice]) != 0 ]
+
+    # I don't think this scenario will happen
     if len(j_choices) == 0:
         return float('nan')
 
+
     for _ in range(num_samples):
-        item_j = random.choice(j_choices)
         # tree_j = trees[item_j]
         # sample_j = random.choice(tree_j.CLASSES)
-        sample_j = random.choice(response_to_labels[item_j])
         # sample_j = sampleTree(
         #     tree_j,
         #     cond={},
@@ -1593,11 +1594,14 @@ def alpha_i(
         #     NUMSAMPLE=1)
         # sample_j = sample_j[0]
 
-        new_cond_dict = copy.deepcopy(cond_dict)
+        item_j = random.choice(j_choices)
+        item_j_choices = items_to_all_responses[item_j]
 
+        sample_j = random.choice(items_to_all_responses[item_j])
+
+        new_cond_dict = copy.deepcopy(cond_dict)
         new_cond_dict[item_j] = sample_j
         
-
         _, dist_i = sampleTree(
             tree_i, 
             cond=new_cond_dict,
@@ -1620,7 +1624,7 @@ def beta_i(
     cond_dict, 
     item_i, 
     trees, 
-    response_to_labels, 
+    items_to_all_responses, 
     num_samples=100):
     """Compute the beta parameter for item i.
 
@@ -1638,6 +1642,7 @@ def beta_i(
         cond_dict: dict that maps item names to actual responses
         item_i: name of item i
         trees: dictionary mapping each item to its corresponding tree
+        items_to_all_responses: map item to all possible responses for that item
         num_samples: number of times of resampling
 
     Returns:
@@ -1646,11 +1651,6 @@ def beta_i(
     """
 
     tree_i = trees[item_i]
-    response_i = cond_dict[item_i]
-    del cond_dict[item_i]
-
-    if isnan(response_i):
-        return float('nan')
 
     sampled_dissonances = []
 
@@ -1659,6 +1659,9 @@ def beta_i(
         cond=cond_dict,
         DIST=True,
         sample='random')
+
+    if len(items_to_all_responses[item_i]) == 0:
+        return float('nan')
 
     for _ in range(num_samples):
 
@@ -1670,7 +1673,7 @@ def beta_i(
         #     NUMSAMPLE=1)
         # sample_i = sample_i[0]
 
-        sample_i = random.choice(response_to_labels[item_i])
+        sample_i = random.choice(items_to_all_responses[item_i])
         dissonance_i = dissonance(dist_i, sample_i)
         sampled_dissonances.append(dissonance_i)
 
@@ -1685,7 +1688,7 @@ def trivializationVector(
     orig_dissonance_vec, 
     cond_dict, 
     trees, 
-    response_to_labels,
+    items_to_all_responses,
     parameter='alpha', 
     num_samples=100):
     """Compute the trivialization vector for all the items.
@@ -1696,7 +1699,7 @@ def trivializationVector(
         orig_dissonance_vec (1d np array): original dissonance vector
         cond_dict (dict): dict that maps item names to actual responses
         trees (dict): dictionary mapping each item to its corresponding tree
-        response_to_labels (dict): map responses to the possible labels
+        items_to_all_responses (dict): map item to all possible responses for that item
         parameter (str): alpha or beta
         num_samples (int): number of times of resampling
 
@@ -1716,20 +1719,16 @@ def trivializationVector(
 
     param_vector = []
 
-
     for i, item_i in enumerate(all_items):
         orig_dissonance = orig_dissonance_vec[i]
 
-        if isnan(orig_dissonance):
-            param = float('nan')
-        else:
-            param = param_type(
-                orig_dissonance, 
-                cond_dict,
-                item_i,
-                trees,
-                response_to_labels,
-                num_samples=num_samples)
+        param = param_type(
+            orig_dissonance, 
+            cond_dict,
+            item_i,
+            trees,
+            items_to_all_responses,
+            num_samples=num_samples)
 
         param_vector.append(param)
         
@@ -1807,7 +1806,7 @@ def trivializationVectors(
             dissonance_vector.values, 
             cond_dict, 
             trees, 
-            response_to_labels,
+            items_to_all_responses,
             num_samples=num_samples,
             parameter=parameter)
 
@@ -1947,3 +1946,20 @@ def belief_shift_simulations(
         new_dissonance.append(new_dissonance, ignore_index=True)
         import pdb; pdb.set_trace()
     return new_df, new_dissonance
+
+    
+def probTrivialization(alpha_df, beta_df):
+    """Calculate probability of trivialization or rationalization.
+
+    Args:
+        alpha_df: dataframe of alpha parameters
+        beta_df: dataframe of beta parameters
+
+    Returns:
+        df of the same shape as alpha and beta
+    """
+
+    if alpha_df.shape != beta_df.shape:
+        raise ValueError('Alpha and beta dataframes must be the same.')
+
+    return alpha_df / (alpha_df + beta_df)
