@@ -1848,7 +1848,6 @@ def belief_shift_simulation(
     items_to_dissonance, 
     trees,
     num_instances):
-    
     """Simulate the belief shift for a single instance.
 
     The new vector is computed by:
@@ -1862,11 +1861,12 @@ def belief_shift_simulation(
         items_to_all_responses (dict): maps items to all possible responses
         items_to_response (dict): maps items to the actual response for one instance
         items_to_dissonance (dict): maps items to dissonance for one instance
-        trees (dict): dictionary mapping item name to the corresponding tree
+        trees (dict): maps item name to the corresponding tree
         num_instances (int): number of times to repeat the simulation
 
     Returns:
-        a vector resulting from the evolution from the belief shift simulation
+        (dict) mapping from items to belief shifted responses
+        (dict) mapping from items to belief shifted dissonances
     """
 
     round_ = lambda x: round(x, 4)
@@ -1882,8 +1882,6 @@ def belief_shift_simulation(
     # simulate belief shift `num_instances` number of times
     for _ in range(num_instances):
 
-        # TODO: include the case where item i = item j
-
         item_i = random.choice(all_items)
         response_i = items_to_response[item_i]
         tree_i = trees[item_i]
@@ -1893,14 +1891,37 @@ def belief_shift_simulation(
         # dissonance can not be greater than 1.
         new_dissonance = 5
 
-        # list of items that will influence item i
+        # list of items that will influence item i with item i itself
         j_choices = tree_i.significant_feature_weight_.keys()
+        j_choices.append(item_i)
         random.shuffle(j_choices)
 
         for item_j in j_choices:
 
             all_response_j = items_to_all_responses[item_j]
             random.shuffle(all_response_j)
+
+            # special case
+            if item_j == item_i:
+
+                _, dist_i = sampleTree(
+                    tree_i, 
+                    cond=items_to_response,
+                    DIST=True,
+                    sample='random')
+
+                for response_j in all_response_j:
+                    new_dissonance_i = dissonance(dist_i, response_j)
+                    if round_(new_dissonance_i) < round_(dissonance_i):
+                        new_response_j = response_j
+                        new_dissonance = new_dissonance_i 
+                        break
+                        
+                    else:
+                        new_response_j = items_to_response[item_j]
+                        new_dissonance = items_to_dissonance[item_i]
+
+                break
 
             # iterate over possible responses for item j
             for response_j in all_response_j:
@@ -1925,6 +1946,7 @@ def belief_shift_simulation(
                 # original dissonance, then the response for item j remains the same
                 else:
                     new_response_j = items_to_response[item_j]
+                    new_dissonance = items_to_dissonance[item_i]
 
             # stop the outer loop when the inner loop also has been stopped
             if round_(new_dissonance_i) < round_(dissonance_i):
