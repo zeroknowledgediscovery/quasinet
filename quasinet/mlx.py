@@ -1738,7 +1738,7 @@ def trivializationVector(
     return param_vector
 
 
-def itemsToAllLabels(df):
+def itemsToAllResponses(df):
     """Map column name (items) to possible values (responses) that 
     the entries for that column can take.
     
@@ -1787,7 +1787,7 @@ def trivializationVectors(
     num_rows = dissonance_matrix.shape[0]
     col_names = dissonance_matrix.columns
 
-    response_to_labels = itemsToAllLabels(df)
+    response_to_labels = itemsToAllResponses(df)
 
     trees = load_trees(tree_dir)
 
@@ -1806,7 +1806,7 @@ def trivializationVectors(
             dissonance_vector.values, 
             cond_dict, 
             trees, 
-            items_to_all_responses,
+            response_to_labels,
             num_samples=num_samples,
             parameter=parameter)
 
@@ -1925,7 +1925,7 @@ def belief_shift_simulations(
     if df.shape[0] != dissonance_matrix.shape[0]:
         raise ValueError('df and dissonance_matrix must have the same number of instances.')
     
-    items_to_all_responses = itemsToAllLabels(df)
+    items_to_all_responses = itemsToAllResponses(df)
     trees = load_trees(tree_dir)
 
     num_instances = df.shape[0]
