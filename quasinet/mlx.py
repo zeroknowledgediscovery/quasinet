@@ -1847,7 +1847,9 @@ def belief_shift_simulation(
     items_to_response,
     items_to_dissonance, 
     trees,
-    num_instances):
+    num_instances,
+    response_out_filename,
+    dissonance_out_filename):
     """Simulate the belief shift for a single instance.
 
     The new vector is computed by:
@@ -1863,10 +1865,11 @@ def belief_shift_simulation(
         items_to_dissonance (dict): maps items to dissonance for one instance
         trees (dict): maps item name to the corresponding tree
         num_instances (int): number of times to repeat the simulation
+        response_out_filename (str): filename to save responses for the belief shift
+        dissonance_out_filename (str): filename to save dissonances for the belief shift
 
     Returns:
-        (dict) mapping from items to belief shifted responses
-        (dict) mapping from items to belief shifted dissonances
+        None
     """
 
     round_ = lambda x: round(x, 4)
@@ -1879,6 +1882,11 @@ def belief_shift_simulation(
         if isnan(response) and (item in all_items):
             all_items.remove(item)
     
+    # the columns are the different responses (or dissonance) for different items
+    # the rows are the timesteps
+    response_belief_shift_df = pd.DataFrame(columns=items_to_response.keys())
+    dissonance_belief_shift_df = pd.DataFrame(columns=items_to_dissonance.keys())
+
     # simulate belief shift `num_instances` number of times
     for _ in range(num_instances):
 
@@ -1955,15 +1963,28 @@ def belief_shift_simulation(
         items_to_response[item_j] = new_response_j
         items_to_dissonance[item_i] = new_dissonance
 
-    return items_to_response, items_to_dissonance
+        response_belief_shift_df = response_belief_shift_df.append(
+            items_to_response, 
+            ignore_index=True)
 
+        dissonance_belief_shift_df = dissonance_belief_shift_df.append(
+            items_to_response, 
+            ignore_index=True)
+    
+    response_belief_shift_df.to_csv(
+        response_out_filename, 
+        index=None)
+    dissonance_belief_shift_df.to_csv(
+        dissonance_out_filename, 
+        index=None)
 
 
 def belief_shift_simulations(
     df, 
     dissonance_df,
     tree_dir, 
-    num_instances):
+    num_instances,
+    belief_shift_dir):
     """Simulate the belief shift for all the data.
 
     Args:
@@ -1973,6 +1994,7 @@ def belief_shift_simulations(
         tree_dir (str): directory where the trees were saved
         num_instances (int): number of times to repeat the simulation
             for each sample instance
+        belief_shift_dir (str): directory to save belief shift results
 
     Returns:
         (pd.DF) dataframe for belief shifted responses
@@ -1990,26 +2012,16 @@ def belief_shift_simulations(
     new_col_names = ['P' + col_name for col_name in df.columns]
     df.columns = new_col_names
 
-    new_df = pd.DataFrame(columns=df.columns)
-    new_dissonance_df = pd.DataFrame(columns=dissonance_df.columns)
-
     # iterate through all sample instances
     for i in range(num_samples):
 
-        new_x, new_dissonance = belief_shift_simulation(
+        belief_shift_simulation(
             items_to_all_responses=items_to_all_responses, 
             items_to_response=df[i:i+1].to_dict('records')[0],
             items_to_dissonance=dissonance_df[i:i+1].to_dict('records')[0], 
             trees=trees,
-            num_instances=num_instances)
-
-        new_df = new_df.append(
-            new_x, 
-            ignore_index=True)
-        new_dissonance_df = new_dissonance_df.append(
-            new_dissonance, 
-            ignore_index=True)
-
-    return new_df, new_dissonance_df
+            num_instances=num_instances,
+            response_out_filename=belief_shift_dir + '/response{}.csv'.format(i), 
+            dissonance_out_filename=belief_shift_dir + '/dissonance{}.csv'.format(i))
 
 
