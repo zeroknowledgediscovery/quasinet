@@ -2067,7 +2067,6 @@ def belief_shift_simulations(
     trees = load_trees(tree_dir)
 
     num_samples = df.shape[0]
-    num_samples = 30
 
     new_col_names = ['P' + col_name for col_name in df.columns]
     df.columns = new_col_names
