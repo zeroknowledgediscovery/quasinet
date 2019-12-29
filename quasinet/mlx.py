@@ -9,6 +9,7 @@ import glob
 import pickle
 import copy
 import math
+import multiprocessing
 
 import numpy as np
 import pandas as pd
@@ -1849,7 +1850,9 @@ def belief_shift_simulation(
     trees,
     num_instances,
     response_out_filename,
-    dissonance_out_filename):
+    dissonance_out_filename,
+    threshold,
+    patience):
     """Simulate the belief shift for a single instance.
 
     The new vector is computed by:
@@ -1859,6 +1862,9 @@ def belief_shift_simulation(
         3. replace response j with the new response
         4. repeat steps 1 to j n times
 
+    If the simulation stops early, then the values for the rest of the time steps
+    will not change.
+
     Args:
         items_to_all_responses (dict): maps items to all possible responses
         items_to_response (dict): maps items to the actual response for one instance
@@ -1867,10 +1873,16 @@ def belief_shift_simulation(
         num_instances (int): number of times to repeat the simulation
         response_out_filename (str): filename to save responses for the belief shift
         dissonance_out_filename (str): filename to save dissonances for the belief shift
+        threshold (float): if the difference between two time steps is lower than 
+            the threshold, then the simulation stops
+        patience (int): time inteval to decide wether to stop simulations
 
     Returns:
         None
     """
+
+    # the initial dissonances / responses count as 1 simulation
+    num_instances -= 1
 
     round_ = lambda x: round(x, 4)
 
@@ -1884,11 +1896,19 @@ def belief_shift_simulation(
     
     # the columns are the different responses (or dissonance) for different items
     # the rows are the timesteps
-    response_belief_shift_df = pd.DataFrame(columns=items_to_response.keys())
-    dissonance_belief_shift_df = pd.DataFrame(columns=items_to_dissonance.keys())
+    response_belief_shift_df = pd.DataFrame(
+        items_to_response,
+        index=[0])
+    dissonance_belief_shift_df = pd.DataFrame(
+        items_to_dissonance,
+        index=[0])
+
+    total_dissonances = np.empty(patience + 1)
+    total_dissonances.fill(np.nan)
+    total_dissonances[-1] = dissonance_belief_shift_df.iloc[0].sum()
 
     # simulate belief shift `num_instances` number of times
-    for _ in range(num_instances):
+    for i in range(num_instances):
 
         item_i = random.choice(all_items)
         response_i = items_to_response[item_i]
@@ -1968,15 +1988,44 @@ def belief_shift_simulation(
             ignore_index=True)
 
         dissonance_belief_shift_df = dissonance_belief_shift_df.append(
-            items_to_response, 
+            items_to_dissonance, 
             ignore_index=True)
-    
+
+        new_total_dissonance = dissonance_belief_shift_df.iloc[-1].sum()
+        total_dissonances = np.roll(total_dissonances, -1)
+        total_dissonances[-1] = new_total_dissonance
+
+        # i.e., if the patience has ran out
+        if total_dissonances[0] - total_dissonances[-1] < threshold:
+            break
+
+    response_belief_shift_df.sort_index(axis=1, inplace=True)
+    dissonance_belief_shift_df.sort_index(axis=1, inplace=True)
+    print(i)
     response_belief_shift_df.to_csv(
         response_out_filename, 
         index=None)
+
     dissonance_belief_shift_df.to_csv(
         dissonance_out_filename, 
         index=None)
+
+
+def bs_sim_multiprocessing(args):
+    """This is the same as belief_shift_simulation, but this 
+    is used for multiprocessing.
+    """
+
+    belief_shift_simulation(
+        items_to_all_responses=args[0], 
+        items_to_response=args[1],
+        items_to_dissonance=args[2], 
+        trees=args[3],
+        num_instances=args[4],
+        response_out_filename=args[5], 
+        dissonance_out_filename=args[6],
+        threshold=args[7],
+        patience=args[8])
 
 
 def belief_shift_simulations(
@@ -1984,7 +2033,10 @@ def belief_shift_simulations(
     dissonance_df,
     tree_dir, 
     num_instances,
-    belief_shift_dir):
+    belief_shift_dir,
+    threshold=0.05,
+    patience=10,
+    numCPUs=None):
     """Simulate the belief shift for all the data.
 
     Args:
@@ -1995,6 +2047,10 @@ def belief_shift_simulations(
         num_instances (int): number of times to repeat the simulation
             for each sample instance
         belief_shift_dir (str): directory to save belief shift results
+        threshold (float): if the difference between two time steps is lower than 
+            the threshold, then the simulation stops
+        patience (int): time inteval to decide wether to stop simulations
+        numCPUs (int): number of CPUs to use for the simulation
 
     Returns:
         (pd.DF) dataframe for belief shifted responses
@@ -2004,24 +2060,32 @@ def belief_shift_simulations(
     if df.shape[0] != dissonance_df.shape[0]:
         raise ValueError('df and dissonance_df must have the same number of instances.')
     
+    if numCPUs is None:
+        numCPUs = multiprocessing.cpu_count()
+
     items_to_all_responses = itemsToAllResponses(df)
     trees = load_trees(tree_dir)
 
     num_samples = df.shape[0]
+    num_samples = 30
 
     new_col_names = ['P' + col_name for col_name in df.columns]
     df.columns = new_col_names
 
-    # iterate through all sample instances
+    arguments_set = []
     for i in range(num_samples):
+        arguments_set.append([
+            items_to_all_responses,
+            df[i:i+1].to_dict('records')[0],
+            dissonance_df[i:i+1].to_dict('records')[0],
+            trees,
+            num_instances,
+            belief_shift_dir + '/response{}.csv'.format(i),
+            belief_shift_dir + '/dissonance{}.csv'.format(i),
+            threshold,
+            patience])
 
-        belief_shift_simulation(
-            items_to_all_responses=items_to_all_responses, 
-            items_to_response=df[i:i+1].to_dict('records')[0],
-            items_to_dissonance=dissonance_df[i:i+1].to_dict('records')[0], 
-            trees=trees,
-            num_instances=num_instances,
-            response_out_filename=belief_shift_dir + '/response{}.csv'.format(i), 
-            dissonance_out_filename=belief_shift_dir + '/dissonance{}.csv'.format(i))
+    pool = multiprocessing.Pool(numCPUs)
+    pool.map(bs_sim_multiprocessing, arguments_set)
 
 
