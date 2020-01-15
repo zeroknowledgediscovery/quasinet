@@ -9,6 +9,7 @@ import glob
 import pickle
 import copy
 import math
+import multiprocessing
 
 import numpy as np
 import pandas as pd
@@ -289,8 +290,10 @@ def get_terminal_nodes_from_here(children__,
     return term_list
  #------------------------------------------
 
-def get_terminal_distinction_coeff(terminal_class_vector,
-                                   terminal_node_list):
+def get_terminal_distinction_coeff(
+    terminal_class_vector,
+    terminal_node_list):
+
     coeff=1.0
     Max_class=set()
     for node in  terminal_node_list:
@@ -308,12 +311,13 @@ def get_terminal_distinction_coeff(terminal_class_vector,
 
 #------------------------------------------
 
-def feature_importance(significant_dec_path,
-                       num_pass__,
-                       features_,
-                       tprob_significant_,
-                       children__,
-                       class_vector_):
+def feature_importance(
+    significant_dec_path,
+    num_pass__,
+    features_,
+    tprob_significant_,
+    children__,
+    class_vector_):
 
     feature_imp={}
     #print "Significant decision paths: ",significant_dec_path
@@ -339,8 +343,16 @@ def feature_importance(significant_dec_path,
 
 #------------------------------------------
 
-def visTree(MODEL,PR,PLOT=True,VERBOSE=False,
-            ACC=None,ACCx=None,RESP_=None,PROB_MIN=0.1):
+def visTree(
+    MODEL,
+    PR,
+    PLOT=True,
+    VERBOSE=False,
+    ACC=None,
+    ACCx=None,
+    RESP_=None,
+    PROB_MIN=0.1):
+
     RLS=rls(MODEL)
     CLASSES=PR.columns.values[1:-2]
     ID=ndid(MODEL,terminal=True)
@@ -604,14 +616,17 @@ def nameclean(str_):
 
     return str_
 
-def setdataframe(file1,outname="",
-                 delete_=[],include_=[],
-                 select_col=False,
-                 rand_col_sel=10,
-                 response_var=[],
-                 balance=False,
-                 zerodel=[],
-                 VERBOSE=False):
+def setdataframe(
+    file1,
+    outname="",
+    delete_=[],
+    include_=[],
+    select_col=False,
+    rand_col_sel=10,
+    response_var=[],
+    balance=False,
+    zerodel=[],
+    VERBOSE=False):
     
     MINCLASSNUM=70
     D1=pd.read_csv(file1,delimiter=",",index_col=None,
@@ -931,18 +946,21 @@ def Xctree(
 #------------------------------------------------------------
 
 
-def tree_export(TR,outfilename='out.dot',
-                leaves_parallel=True,
-                rounded=True,
-                filled=True,
-                TYPE='Curved',
-                BGCOLOR='transparent',
-                legend=True,
-                LIGHT=1,
-                LABELCOL='deepskyblue4',
-                TEXTCOL='black',
-                EDGECOLOR='gray',
-                EXEC=True):
+def tree_export(
+    TR,
+    outfilename='out.dot',
+    leaves_parallel=True,
+    rounded=True,
+    filled=True,
+    TYPE='Curved',
+    BGCOLOR='transparent',
+    legend=True,
+    LIGHT=1,
+    LABELCOL='deepskyblue4',
+    TEXTCOL='black',
+    EDGECOLOR='gray',
+    EXEC=True):
+
     LABELTYPE='label'
     #if TYPE=='ortho':
     #    LABELTYPE='xlabel'
@@ -1050,14 +1068,15 @@ def tree_export(TR,outfilename='out.dot',
 
 #---------------------------------------------------------------
 #---------------------------------------------------------------
-def randomForestX(RESPONSE__,
-                  datatrain__,
-                  datatest__=None,
-                  NUMTREE=300,
-                  CORES=1,
-                  VERBOSE=False,
-                  VARIMP=True,
-                  PLOT=True):
+def randomForestX(
+    RESPONSE__,
+    datatrain__,
+    datatest__=None,
+    NUMTREE=300,
+    CORES=1,
+    VERBOSE=False,
+    VARIMP=True,
+    PLOT=True):
 
     PrxRF=None
     ACCxRF=None
@@ -1221,7 +1240,7 @@ def getMergedDistribution(tree,cond={}):
         
     return dist_  
     
-def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
+def sampleTree(tree, cond={}, sample='mle', DIST=False, NUMSAMPLE=10):
     '''Draw sample from the decision tree.
 
     specified in the format that 
@@ -1267,9 +1286,9 @@ def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
         else:
             cond_[k] = v
 
-    dist_=getMergedDistribution(tree,cond=cond_)
+    dist_ = getMergedDistribution(tree,cond=cond_)
     if sample is 'mle':
-        sample=max(dist_.iteritems(), key=operator.itemgetter(1))[0]
+        sample = max(dist_.iteritems(), key=operator.itemgetter(1))[0]
     elif sample is 'random':
         probs = dist_.values()
         keys =  dist_.keys()
@@ -1277,7 +1296,7 @@ def sampleTree(tree,cond={},sample='mle',DIST=False,NUMSAMPLE=10):
     else:
         raise ValueError('Not a correct sampling method.')
     if DIST:
-        return sample,dist_
+        return sample, dist_
     return sample
 
 def getFmap(PATH_TO_TREES):
@@ -1720,20 +1739,39 @@ def trivializationVector(
     return param_vector
 
 
+def itemsToAllResponses(df):
+    """Map column name (items) to possible values (responses) that 
+    the entries for that column can take.
+    
+    NOTE: exclude the NaNs
+
+    Args:
+        df (pd.DF): dataframe containing all the data
+
+    Returns:
+        dictionary
+    """
+
+    response_to_labels = {}
+    for col_name in df.columns:
+        response_to_labels['P' + col_name] = filter(
+            lambda v: v==v, df[col_name].unique())
+
+    return response_to_labels
+
+
 def trivializationVectors(
     df, 
-    dissonance_matrix, 
+    dissonance_df, 
     tree_dir, 
     save_file=None,
     parameter='alpha', 
     num_samples=100):
     """Compute the trivialization vectors for each sample.
 
-    TODO: still need to test this
-
     Args:
         df: dataframe containing the data
-        dissonance_matrix: matrix of dissonance vectors where rows
+        dissonance_df: dissonance vectors where rows
             are the dissonance vector for each instance
         tree_dir: directory that the trees were saved
         parameter: alpha or beta
@@ -1744,22 +1782,17 @@ def trivializationVectors(
             (number of samples, number responses)
     """
 
-    if dissonance_matrix.shape[0] != df.shape[0]:
+    if dissonance_df.shape[0] != df.shape[0]:
         raise ValueError("Number of instances must be the same.")
 
-    num_rows = dissonance_matrix.shape[0]
-    col_names = dissonance_matrix.columns
+    num_rows = dissonance_df.shape[0]
+    col_names = dissonance_df.columns
 
-    # map column name to possible values that the entries for that column can take
-    # also, exclude the NaNs
-    items_to_all_responses = {}
-    for col_name in df.columns:
-        items_to_all_responses['P' + col_name] = filter(
-            lambda v: v==v, df[col_name].unique())
+    response_to_labels = itemsToAllResponses(df)
 
     trees = load_trees(tree_dir)
 
-    all_vecs = np.empty(dissonance_matrix.shape)
+    all_vecs = np.empty(dissonance_df.shape)
 
     for row_index in range(num_rows):
         
@@ -1768,13 +1801,13 @@ def trivializationVectors(
         for col_name in col_names:
             cond_dict[col_name] = df[col_name[1:]][row_index]
 
-        dissonance_vector = dissonance_matrix.iloc[row_index]
+        dissonance_vector = dissonance_df.iloc[row_index]
 
         trivialization_vec = trivializationVector(
             dissonance_vector.values, 
             cond_dict, 
             trees, 
-            items_to_all_responses,
+            response_to_labels,
             num_samples=num_samples,
             parameter=parameter)
 
@@ -1808,3 +1841,250 @@ def probTrivialization(alpha_df, beta_df):
         raise ValueError('Alpha and beta dataframes must be the same.')
 
     return alpha_df / (alpha_df + beta_df)
+
+    
+def belief_shift_simulation(
+    items_to_all_responses, 
+    items_to_response,
+    items_to_dissonance, 
+    trees,
+    num_instances,
+    response_out_filename,
+    dissonance_out_filename,
+    threshold,
+    patience):
+    """Simulate the belief shift for a single instance.
+
+    The new vector is computed by:
+        1. randomly pick some item i
+        2. randomly pick some item j such that if we switch the response for j,
+            the dissonance for i does decreases. NOTE: i can equal j
+        3. replace response j with the new response
+        4. repeat steps 1 to j n times
+
+    If the simulation stops early, then the values for the rest of the time steps
+    will not change.
+
+    Args:
+        items_to_all_responses (dict): maps items to all possible responses
+        items_to_response (dict): maps items to the actual response for one instance
+        items_to_dissonance (dict): maps items to dissonance for one instance
+        trees (dict): maps item name to the corresponding tree
+        num_instances (int): number of times to repeat the simulation
+        response_out_filename (str): filename to save responses for the belief shift
+        dissonance_out_filename (str): filename to save dissonances for the belief shift
+        threshold (float): if the difference between two time steps is lower than 
+            the threshold, then the simulation stops
+        patience (int): time inteval to decide wether to stop simulations
+
+    Returns:
+        None
+    """
+
+    # the initial dissonances / responses count as 1 simulation
+    num_instances -= 1
+
+    round_ = lambda x: round(x, 4)
+
+    all_items = copy.deepcopy(list(trees.keys()))
+
+    # we do not want to choose an item i where the response is NaN 
+    # because there will be no dissonance for that response
+    for item, response in items_to_response.items():
+        if isnan(response) and (item in all_items):
+            all_items.remove(item)
+    
+    # the columns are the different responses (or dissonance) for different items
+    # the rows are the timesteps
+    response_belief_shift_df = pd.DataFrame(
+        items_to_response,
+        index=[0])
+    dissonance_belief_shift_df = pd.DataFrame(
+        items_to_dissonance,
+        index=[0])
+
+    total_dissonances = np.empty(patience + 1)
+    total_dissonances.fill(np.nan)
+    total_dissonances[-1] = dissonance_belief_shift_df.iloc[0].sum()
+
+    # simulate belief shift `num_instances` number of times
+    for i in range(num_instances):
+
+        item_i = random.choice(all_items)
+        response_i = items_to_response[item_i]
+        tree_i = trees[item_i]
+        dissonance_i = items_to_dissonance[item_i]
+
+        # 5 is arbitrary. We just want it to be greater than 1, since
+        # dissonance can not be greater than 1.
+        new_dissonance = 5
+
+        # list of items that will influence item i with item i itself
+        j_choices = tree_i.significant_feature_weight_.keys()
+        j_choices.append(item_i)
+        random.shuffle(j_choices)
+
+        for item_j in j_choices:
+
+            all_response_j = items_to_all_responses[item_j]
+            random.shuffle(all_response_j)
+
+            # special case
+            if item_j == item_i:
+
+                _, dist_i = sampleTree(
+                    tree_i, 
+                    cond=items_to_response,
+                    DIST=True,
+                    sample='random')
+
+                for response_j in all_response_j:
+                    new_dissonance_i = dissonance(dist_i, response_j)
+                    if round_(new_dissonance_i) < round_(dissonance_i):
+                        new_response_j = response_j
+                        new_dissonance = new_dissonance_i 
+                        break
+                        
+                    else:
+                        new_response_j = items_to_response[item_j]
+                        new_dissonance = items_to_dissonance[item_i]
+
+                break
+
+            # iterate over possible responses for item j
+            for response_j in all_response_j:
+                new_items_to_response = copy.deepcopy(items_to_response)
+                new_items_to_response[item_j] = response_j
+                
+                _, dist_i = sampleTree(
+                    tree_i, 
+                    cond=new_items_to_response,
+                    DIST=True,
+                    sample='random')
+
+                new_dissonance_i = dissonance(dist_i, response_i)
+                new_dissonance = new_dissonance_i
+
+                # stop loop if we find a lower dissonance for item i
+                if round_(new_dissonance_i) < round_(dissonance_i):
+                    new_response_j = response_j
+                    break
+
+                # if we never have that the new dissonance is lower than the 
+                # original dissonance, then the response for item j remains the same
+                else:
+                    new_response_j = items_to_response[item_j]
+                    new_dissonance = items_to_dissonance[item_i]
+
+            # stop the outer loop when the inner loop also has been stopped
+            if round_(new_dissonance_i) < round_(dissonance_i):
+                break
+    
+        items_to_response[item_j] = new_response_j
+        items_to_dissonance[item_i] = new_dissonance
+
+        response_belief_shift_df = response_belief_shift_df.append(
+            items_to_response, 
+            ignore_index=True)
+
+        dissonance_belief_shift_df = dissonance_belief_shift_df.append(
+            items_to_dissonance, 
+            ignore_index=True)
+
+        new_total_dissonance = dissonance_belief_shift_df.iloc[-1].sum()
+        total_dissonances = np.roll(total_dissonances, -1)
+        total_dissonances[-1] = new_total_dissonance
+
+        # i.e., if the patience has ran out
+        if total_dissonances[0] - total_dissonances[-1] < threshold:
+            break
+
+    response_belief_shift_df.sort_index(axis=1, inplace=True)
+    dissonance_belief_shift_df.sort_index(axis=1, inplace=True)
+    print(i)
+    response_belief_shift_df.to_csv(
+        response_out_filename, 
+        index=None)
+
+    dissonance_belief_shift_df.to_csv(
+        dissonance_out_filename, 
+        index=None)
+
+
+def bs_sim_multiprocessing(args):
+    """This is the same as belief_shift_simulation, but this 
+    is used for multiprocessing.
+    """
+
+    belief_shift_simulation(
+        items_to_all_responses=args[0], 
+        items_to_response=args[1],
+        items_to_dissonance=args[2], 
+        trees=args[3],
+        num_instances=args[4],
+        response_out_filename=args[5], 
+        dissonance_out_filename=args[6],
+        threshold=args[7],
+        patience=args[8])
+
+
+def belief_shift_simulations(
+    df, 
+    dissonance_df,
+    tree_dir, 
+    num_instances,
+    belief_shift_dir,
+    threshold=0.05,
+    patience=10,
+    numCPUs=None):
+    """Simulate the belief shift for all the data.
+
+    Args:
+        df (pd.DF): dataframe containing the all the data
+        dissonance_df (pd.DF): dissonance vectors where rows
+            are the dissonance vector for each instance
+        tree_dir (str): directory where the trees were saved
+        num_instances (int): number of times to repeat the simulation
+            for each sample instance
+        belief_shift_dir (str): directory to save belief shift results
+        threshold (float): if the difference between two time steps is lower than 
+            the threshold, then the simulation stops
+        patience (int): time inteval to decide wether to stop simulations
+        numCPUs (int): number of CPUs to use for the simulation
+
+    Returns:
+        (pd.DF) dataframe for belief shifted responses
+        (pd.DF) dataframe for belief shifted dissonances
+    """
+
+    if df.shape[0] != dissonance_df.shape[0]:
+        raise ValueError('df and dissonance_df must have the same number of instances.')
+    
+    if numCPUs is None:
+        numCPUs = multiprocessing.cpu_count()
+
+    items_to_all_responses = itemsToAllResponses(df)
+    trees = load_trees(tree_dir)
+
+    num_samples = df.shape[0]
+
+    new_col_names = ['P' + col_name for col_name in df.columns]
+    df.columns = new_col_names
+
+    arguments_set = []
+    for i in range(num_samples):
+        arguments_set.append([
+            items_to_all_responses,
+            df[i:i+1].to_dict('records')[0],
+            dissonance_df[i:i+1].to_dict('records')[0],
+            trees,
+            num_instances,
+            belief_shift_dir + '/response{}.csv'.format(i),
+            belief_shift_dir + '/dissonance{}.csv'.format(i),
+            threshold,
+            patience])
+
+    pool = multiprocessing.Pool(numCPUs)
+    pool.map(bs_sim_multiprocessing, arguments_set)
+
+
