@@ -112,7 +112,6 @@ def singleTree(args):
     datatrain = datatrain.reset_index(drop=True)
     datatest = datatest.reset_index(drop=True)
 
-    # import pdb; pdb.set_trace()
     # if there's only 1 possible label for the responses
     if len(datatrain[R].unique()) == 1:
         TR = None
