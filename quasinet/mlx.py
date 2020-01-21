@@ -905,7 +905,7 @@ def Xctree(
         index=None)
     datatrain__2 = readcsv(tmpfile)
     os.remove(tmpfile)
-
+    
     fmla__ = Formula(RESPONSE__+' ~ .')
     CT__ = ctree(
         fmla__,
@@ -1356,7 +1356,6 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     S=0.0
     nCount=0
 
-    # @TIMMY parallelize the following loop
     for key0 in P0.keys():
         if key0 in P1.keys():
             S=S+jsdiv(P0[key0],P1[key0])
@@ -1364,6 +1363,141 @@ def qDistance(seq0,seq1,PATH_TO_TREES):
     if nCount == 0:
         nCount=1
     return S/(nCount+0.0)
+
+
+def create_diag_tuples(size):
+    """Create a lower diagonal list of list consisting of (i, j) tuples 
+    
+    Args:
+        size (int): size of array
+        
+    Returns:
+        (list) of lists of tuples of indexes
+    """
+    
+    all_tuples = []
+    for i in range(size):
+        row_tuples = []
+        for j in range(0, i + 1):
+            row_tuples.append((i, j))
+        all_tuples.append(row_tuples)
+        
+    return all_tuples
+
+
+def even_out_lists(diag_matrix):
+    """Even out a diagonal matrix by combining together exactly two rows
+    such that we are left with as few rows as possible.
+
+    Args:
+        diag_matrix (list): of lists
+
+    Returns:
+        (list)
+    """
+    
+    result = []
+    for i in range(0, len(diag_matrix) // 2):
+        
+        first = diag_matrix[i]
+        second = diag_matrix[-i - 1]
+        result.append([first, second])
+            
+    if len(diag_matrix) % 2 == 1:
+        result.append([diag_matrix[len(diag_matrix) // 2]])
+        
+    return result
+
+
+def flatten_list(list_of_list):
+    """Flatten a list of list """
+    flattened_list = []
+    for list_ in list_of_list:
+        flattened_list += list_
+        
+    return flattened_list
+
+
+def sort_lists_by_len(list_):
+    """Sort a list of list by the list's length"""
+    list_.sort(key=len)
+    return list_
+
+
+def q_distanceMatrix(X, tuple_list, tree_dir):
+    """Compute the qnet distance using a list of list of tuples.
+    
+    Args:
+        X (pd.df): dataframe of data
+        tuple_list (list): of lists of tuples
+        tree_dir (str): directory to the generated trees
+
+    Returns:
+        (list) of lists of q-distances
+    """
+
+    result = []
+    for list_ in tuple_list:
+        sub_result = []
+        for tuple_ in list_:
+            i, j = tuple_
+            # distance is 0 if we are considering the same sequence
+            if i == j:
+                dist = 0
+            else:
+                dist = qDistance(
+                    X.loc[i], 
+                    X.loc[j], 
+                    tree_dir + '*.pkl')
+            
+            sub_result.append(dist)
+            
+        result.append(sub_result)
+        
+    return result
+
+
+def q_distanceMatrix_(args):
+    return q_distanceMatrix(args[0], args[1], args[2])
+
+
+def q_distanceMatrix_mp(X, tree_dir, numCPUs=None):
+    """Compute qnet distance but with optimized multiprocessing.
+
+    Args:
+        X (pd.df): dataframe of data
+        tree_dir (str): directory to the generated trees
+        numCPUs (int): number of CPUs to use
+    """
+    
+    tuple_matrix = create_diag_tuples(X.shape[0])
+    even_out_tuples = even_out_lists(tuple_matrix)
+    
+    arguement_set = []
+    
+    for tuple_list in even_out_tuples:
+        arguement_set.append([
+            X,
+            tuple_list,
+            tree_dir])
+        
+    if numCPUs == 1:
+        result = []
+        for arg in arguement_set:
+            result.append(q_distanceMatrix_(arg))
+    else:
+        
+        if numCPUs is None:
+            numCPUs = multiprocessing.cpu_count()
+
+        pool = multiprocessing.Pool(numCPUs)
+
+        result = pool.map(q_distanceMatrix_, arguement_set)
+
+        pool.close()
+        
+    result = sort_lists_by_len(flatten_list(result))
+    return result
 
 
 def load_trees(tree_dir, return_items=False):

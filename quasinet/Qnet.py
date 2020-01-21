@@ -128,6 +128,7 @@ def singleTree(args):
                 datatest__=datatest,
                 VERBOSE=False,
                 TREE_EXPORT=False)
+            # import pdb; pdb.set_trace()
 
         # this is intended to catch: Error in La.svd(x, nu, nv)
         # i.e. computing svd failed to converge
@@ -141,7 +142,7 @@ def singleTree(args):
 
     pickle_file = tree_dir + R + '.pkl'
     dot_file = tree_dir + R + '.dot'
-
+    
     if TR is not None:
         with open(pickle_file,'w') as fh:
             pickle.dump(TR,fh)
