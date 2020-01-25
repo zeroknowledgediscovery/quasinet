@@ -1316,14 +1316,26 @@ def getFmap(PATH_TO_TREES):
     return F,TREE
 
 def getPerturbation(seq,PATH_TO_TREES):
-    F,TREES=getFmap(PATH_TO_TREES)
-    P={}
+    """
+
+    Args:
+        seq: input sequence
+        PATH_TO_TREES (str): path to the generated qnet trees
+
+    Returns:
+        (dict): mapping items to another dictionary that maps possible 
+        responses to probability distributions
+    """
+
+    F, TREES = getFmap(PATH_TO_TREES)
+    P = {}
     for KEY in F.keys():
-        I=[int(x.replace('P','')) for x in F[KEY]]
-        DICT_={'P'+str(i):seq[i] for i in I}
-        D=sampleTree(TREES[KEY],DICT_,sample='random',DIST=True)[1]
-        
-        P[KEY]=[D[x] for x in sorted(D.keys()) ]
+        I = [int(x.replace('P','')) for x in F[KEY]]
+        DICT_ = {'P'+str(i):seq[i] for i in I}
+        D=sampleTree(TREES[KEY], DICT_, sample='random', DIST=True)[1]
+    
+        P[KEY] = D
+
     return P
 
 def klscore(p1,p2):
@@ -1347,22 +1359,56 @@ def jsdiv(p1,p2,smooth=True):
     return 0.5*(klscore(p1,p)+klscore(p2,p))
 
 
-def qDistance(seq0,seq1,PATH_TO_TREES):
+def qDistance(seq0,seq1,PATH_TO_TREES, PATH_TO_TREES1=None):
+    '''Compute the genomic distance using qnets.
+
+    If PATH_TO_TREES2 is None, then seq0 and seq1 are assumed 
+    to be from the same PATH_TO_TREES.
     '''
-     computing genomic distance using qnets
-    '''
-    P0=getPerturbation(seq0,PATH_TO_TREES)
-    P1=getPerturbation(seq1,PATH_TO_TREES)
+
+    P0 = getPerturbation(seq0, PATH_TO_TREES)
+
+    if PATH_TO_TREES1 is None:
+        P1 = getPerturbation(seq1, PATH_TO_TREES)
+    else:
+        P1 = getPerturbation(seq1, PATH_TO_TREES1)
+
     S=0.0
     nCount=0
 
-    for key0 in P0.keys():
-        if key0 in P1.keys():
-            S=S+jsdiv(P0[key0],P1[key0])
-            nCount=nCount+1
+    for key in P0.keys():
+        if key in P1.keys():
+            
+            P0_item = P0[key]
+            P1_item = P1[key]
+
+            # Note that the responses for P0[key] and P1[key] can be different. 
+            # To compare their distributions, we have to set the probability
+            # of responses in P1[key] but not in P0[key] to 0, and visa versa.
+            P0_responses = set(P0_item.keys())
+            P1_responses = set(P1_item.keys())
+            all_responses = P0_responses.union(P1_responses)
+            
+            for res in list(all_responses.difference(P0_responses)):
+                P0_item[res] = 0.0
+
+            for res in list(all_responses.difference(P1_responses)):
+                P1_item[res] = 0.0
+
+            assert sorted(P1_item.keys()) == sorted(P0_item.keys())
+
+            distrib0 = []
+            distrib1 = []
+            for x in sorted(P0_item.keys()):
+                distrib0.append(P0_item[x])
+                distrib1.append(P1_item[x])
+
+            S += jsdiv(distrib0, distrib1)
+            nCount += 1
+
     if nCount == 0:
-        nCount=1
-    return S/(nCount+0.0)
+        nCount = 1
+    return S / (nCount + 0.0)
 
 
 def create_diag_tuples(size):
