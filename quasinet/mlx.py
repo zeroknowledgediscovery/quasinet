@@ -1470,17 +1470,22 @@ def sort_lists_by_len(list_):
     return list_
 
 
-def q_distanceMatrix(X, tuple_list, tree_dir):
+def q_distanceMatrix(X, tuple_list):
     """Compute the qnet distance using a list of list of tuples.
-    
+
     Args:
         X (pd.df): dataframe of data
         tuple_list (list): of lists of tuples
-        tree_dir (str): directory to the generated trees
 
     Returns:
         (list) of lists of q-distances
     """
+
+    directory_col = '__DIRECTORY__'
+
+    if directory_col not in X.columns:
+        raise ValueError('Your dataframe must contain a column with the \
+            name `__DIRECTORY__`.')
 
     result = []
     for list_ in tuple_list:
@@ -1492,9 +1497,10 @@ def q_distanceMatrix(X, tuple_list, tree_dir):
                 dist = 0
             else:
                 dist = qDistance(
-                    X.loc[i], 
-                    X.loc[j], 
-                    tree_dir + '*.pkl')
+                    X.loc[i].drop(directory_col), 
+                    X.loc[j].drop(directory_col), 
+                    X.loc[i][directory_col] + '*.pkl',
+                    X.loc[j][directory_col] + '*.pkl')
             
             sub_result.append(dist)
             
@@ -1504,15 +1510,17 @@ def q_distanceMatrix(X, tuple_list, tree_dir):
 
 
 def q_distanceMatrix_(args):
-    return q_distanceMatrix(args[0], args[1], args[2])
+    return q_distanceMatrix(args[0], args[1])
 
 
-def q_distanceMatrix_mp(X, tree_dir, numCPUs=None):
+def q_distanceMatrix_mp(X, numCPUs=None):
     """Compute qnet distance but with optimized multiprocessing.
+
+    NOTE: X must contain a column with the name `__DIRECTORY__`, which specifies
+    the directory of the generated trees for that sequence.
 
     Args:
         X (pd.df): dataframe of data
-        tree_dir (str): directory to the generated trees
         numCPUs (int): number of CPUs to use
     """
     
@@ -1522,10 +1530,7 @@ def q_distanceMatrix_mp(X, tree_dir, numCPUs=None):
     arguement_set = []
     
     for tuple_list in even_out_tuples:
-        arguement_set.append([
-            X,
-            tuple_list,
-            tree_dir])
+        arguement_set.append([X, tuple_list])
         
     if numCPUs == 1:
         result = []
