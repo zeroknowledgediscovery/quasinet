@@ -1286,6 +1286,7 @@ def sampleTree(tree, cond={}, sample='mle', DIST=False, NUMSAMPLE=10):
             cond_[k] = v
 
     dist_ = getMergedDistribution(tree,cond=cond_)
+
     if sample is 'mle':
         sample = max(dist_.iteritems(), key=operator.itemgetter(1))[0]
     elif sample is 'random':
@@ -1307,7 +1308,7 @@ def getFmap(PATH_TO_TREES):
             TR = pickle.load(f)
         f.close()
         index=os.path.splitext(os.path.basename(filename))[0].split('_')[-1]
-        #print index
+
         F[index]=[]
         TREE[index]=TR
         for key,value in TR.feature.iteritems():
@@ -1315,23 +1316,29 @@ def getFmap(PATH_TO_TREES):
                 F[index]=np.append(F[index],value)
     return F,TREE
 
-def getPerturbation(seq,PATH_TO_TREES):
+def getPerturbation(seq,PATH_TO_TREES, F_TREES=None):
     """
+
+    If F_TREES is None, then we load the trees from `PATH_TO_TREES`. 
 
     Args:
         seq: input sequence
         PATH_TO_TREES (str): path to the generated qnet trees
+        F_TREES (tuple): tuple result from the function `getFmap`
 
     Returns:
         (dict): mapping items to another dictionary that maps possible 
         responses to probability distributions
     """
 
-    F, TREES = getFmap(PATH_TO_TREES)
+    if F_TREES is None:
+        F, TREES = getFmap(PATH_TO_TREES)
+    else:
+        F, TREES = F_TREES
+
     P = {}
     for KEY in F.keys():
-        I = [int(x.replace('P','')) for x in F[KEY]]
-        DICT_ = {'P'+str(i):seq[i] for i in I}
+        DICT_ = {i: seq[int(i.replace('P', ''))] for i in F[KEY]}
         D=sampleTree(TREES[KEY], DICT_, sample='random', DIST=True)[1]
     
         P[KEY] = D
@@ -1360,19 +1367,17 @@ def jsdiv(p1,p2,smooth=True):
     return 0.5*(klscore(p1,p)+klscore(p2,p))
 
 
-def qDistance(seq0,seq1,PATH_TO_TREES, PATH_TO_TREES1=None):
+def qDistance(
+    seq0, seq1,
+    PATH_TO_TREES, PATH_TO_TREES1,
+    TREES=None, TREES1=None):
     '''Compute the genomic distance using qnets.
 
-    If PATH_TO_TREES2 is None, then seq0 and seq1 are assumed 
-    to be from the same PATH_TO_TREES.
+    If TREES and TREES are None, then we load them.
     '''
 
-    P0 = getPerturbation(seq0, PATH_TO_TREES)
-
-    if PATH_TO_TREES1 is None:
-        P1 = getPerturbation(seq1, PATH_TO_TREES)
-    else:
-        P1 = getPerturbation(seq1, PATH_TO_TREES1)
+    P0 = getPerturbation(seq0, PATH_TO_TREES, F_TREES=TREES)
+    P1 = getPerturbation(seq1, PATH_TO_TREES1, F_TREES=TREES1)
 
     S=0.0
     nCount=0
@@ -1488,6 +1493,9 @@ def q_distanceMatrix(X, tuple_list):
         raise ValueError('Your dataframe must contain a column with the \
             name `__DIRECTORY__`.')
 
+    unique_directories = np.unique(X[directory_col].values)
+    dir_to_trees = {dir_: getFmap(dir_ + '*.pkl') for dir_ in unique_directories}
+    
     result = []
     for list_ in tuple_list:
         sub_result = []
@@ -1500,11 +1508,14 @@ def q_distanceMatrix(X, tuple_list):
             elif np.all(X.loc[i] == X.loc[j]):
                 dist = 0.0
             else:
+                
                 dist = qDistance(
                     X.loc[i].drop(directory_col), 
                     X.loc[j].drop(directory_col), 
-                    X.loc[i][directory_col] + '*.pkl',
-                    X.loc[j][directory_col] + '*.pkl')
+                    PATH_TO_TREES=None,
+                    PATH_TO_TREES1=None,
+                    TREES=dir_to_trees[X.loc[i][directory_col]],
+                    TREES1=dir_to_trees[X.loc[j][directory_col]])
             
             sub_result.append(dist)
             
