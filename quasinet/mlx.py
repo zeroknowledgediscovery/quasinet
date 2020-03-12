@@ -1343,7 +1343,8 @@ def klscore(p1,p2):
     if any(np.array(p2)<=0):
         return np.nan
     
-    return np.array([p1[i]*np.log2(p1[i]/p2[i]) for i in range(len(p1))]).sum()
+    # return np.array([p1[i]*np.log2(p1[i]/p2[i]) for i in range(len(p1))]).sum()
+    return (p1 * np.log2(p1 / p2)).sum()
 
 def jsdiv(p1,p2,smooth=True):
     
@@ -1492,9 +1493,12 @@ def q_distanceMatrix(X, tuple_list):
         sub_result = []
         for tuple_ in list_:
             i, j = tuple_
+
             # distance is 0 if we are considering the same sequence
             if i == j:
-                dist = 0
+                dist = 0.0
+            elif np.all(X.loc[i] == X.loc[j]):
+                dist = 0.0
             else:
                 dist = qDistance(
                     X.loc[i].drop(directory_col), 
