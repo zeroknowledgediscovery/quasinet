@@ -1,20 +1,20 @@
 Metadata-Version: 2.1
 Name: quasinet
-Version: 0.0.27
+Version: 0.0.29
 Summary: Utitilies for constructing and manipulating models for non-local structural dependencies in genomic sequences
 Home-page: https://github.com/zeroknowledgediscovery/
 Author: zed.uchicago.edu
 Author-email: ishanu@uchicago.edu
 License: LICENSE.txt
-Download-URL: https://github.com/zeroknowledgediscovery/quasinet/archive/0.0.27.tar.gz
+Download-URL: https://github.com/zeroknowledgediscovery/quasinet/archive/0.0.29.tar.gz
 Description: ===============
         quasinet
         ===============
         
+        .. figure:: https://img.shields.io/pypi/dm/quasinet.svg
+           :alt: quasinet PyPI Downloads
         
         .. figure:: https://badge.fury.io/py/quasinet.svg
-           :alt: ehrzero PyPI Downloads
-        .. figure:: https://img.shields.io/pypi/dm/quasinet.svg
            :alt: ehrzero PyPI Downloads
         
         .. image:: http://zed.uchicago.edu/logo/logozed1.png
