@@ -1370,14 +1370,16 @@ def jsdiv(p1,p2,smooth=True):
 def qDistance(
     seq0, seq1,
     PATH_TO_TREES, PATH_TO_TREES1,
-    TREES=None, TREES1=None):
+    F_TREES=None, F_TREES1=None):
     '''Compute the genomic distance using qnets.
 
-    If TREES and TREES are None, then we load them.
+    If F_TREES and F_TREES1 are None, then we load them. 
+    If that would be the case, then `PATH_TO_TREES` and `PATH_TO_TREES1`
+    is needed.
     '''
 
-    P0 = getPerturbation(seq0, PATH_TO_TREES, F_TREES=TREES)
-    P1 = getPerturbation(seq1, PATH_TO_TREES1, F_TREES=TREES1)
+    P0 = getPerturbation(seq0, PATH_TO_TREES, F_TREES=F_TREES)
+    P1 = getPerturbation(seq1, PATH_TO_TREES1, F_TREES=F_TREES1)
 
     S=0.0
     nCount=0
@@ -1391,17 +1393,14 @@ def qDistance(
             # Note that the responses for P0[key] and P1[key] can be different. 
             # To compare their distributions, we have to set the probability
             # of responses in P1[key] but not in P0[key] to 0, and visa versa.
-            P0_responses = set(P0_item.keys())
-            P1_responses = set(P1_item.keys())
-            all_responses = P0_responses.union(P1_responses)
-            
-            for res in list(all_responses.difference(P0_responses)):
-                P0_item[res] = 0.0
 
-            for res in list(all_responses.difference(P1_responses)):
-                P1_item[res] = 0.0
+            for P1_response in P1_item.keys():
+                if P1_response not in P0_item:
+                    P0_item[P1_response] = 0.0
 
-            assert sorted(P1_item.keys()) == sorted(P0_item.keys())
+            for P0_response in P0_item.keys():
+                if P0_response not in P1_item:
+                    P1_item[P0_response] = 0.0
 
             distrib0 = []
             distrib1 = []
@@ -1438,78 +1437,38 @@ def create_diag_tuples(size1, size2):
     return all_tuples
 
 
-def even_out_lists(diag_matrix):
-    """Even out a diagonal matrix by combining together exactly two rows
-    such that we are left with as few rows as possible.
-
-    Args:
-        diag_matrix (list): of lists
-
-    Returns:
-        (list)
-    """
-    
-    result = []
-    for i in range(0, len(diag_matrix) // 2):
-        
-        first = diag_matrix[i]
-        second = diag_matrix[-i - 1]
-        result.append([first, second])
-            
-    if len(diag_matrix) % 2 == 1:
-        result.append([diag_matrix[len(diag_matrix) // 2]])
-        
-    return result
-
-
-def flatten_list(list_of_list):
-    """Flatten a list of list """
-    flattened_list = []
-    for list_ in list_of_list:
-        flattened_list += list_
-        
-    return flattened_list
-
-
-def sort_lists_by_len(list_):
-    """Sort a list of list by the list's length"""
-    list_.sort(key=len)
-    return list_
-
-
-def q_distanceMatrix(X, Y, tuple_list):
+def q_distanceMatrix(X, Y, tuple_list, dir_to_trees):
     """Compute the qnet distance using a list of list of tuples.
+
+    NOTE: if X and Y are the same dataframe, then we will instead calculate
+    an upper diagonal matrix.
 
     Args:
         X (pd.df): dataframe of data
         Y (pd.df): dataframe of data
         tuple_list (list): of lists of tuples
+        dir_to_trees (dict): dictionary mapping directory to the (F, TREES)
 
     Returns:
         (list) of lists of q-distances
     """
 
     directory_col = '__DIRECTORY__'
-
-    if (directory_col not in X.columns) or (directory_col not in Y.columns):
-        raise ValueError('Your dataframe must contain a column with the \
-            name `__DIRECTORY__`.')
-
-    if X.shape[1] != Y.shape[1]:
-        raise ValueError('X, Y must have the same number of columns')
-
-    unique_directories = np.unique(
-        list(X[directory_col].values) + list(Y[directory_col].values))
-
-    dir_to_trees = {dir_: getFmap(dir_ + '*.pkl') for dir_ in unique_directories}
     
+    if X.equals(Y):
+        calc_upper_diag = True
+    else:
+        calc_upper_diag = False
+
     distances = []
     for tuple_ in tuple_list:
         i, j = tuple_
-        # TODO: optimize the case where seq[i], seq[j] == seq[j], seq[i]
         
+        # set the lower diagonal to zero when applicable
+        if calc_upper_diag and (i >= j):
+            dist = 0.0
         # distance is 0 if we are considering the same sequence
-        if np.all(X.iloc[i] == Y.iloc[j]):
+        elif np.all(X.iloc[i] == Y.iloc[j]):
             dist = 0.0
         else:
             
@@ -1518,8 +1477,8 @@ def q_distanceMatrix(X, Y, tuple_list):
                 Y.iloc[j].drop(directory_col), 
                 PATH_TO_TREES=None,
                 PATH_TO_TREES1=None,
-                TREES=dir_to_trees[X.iloc[i][directory_col]],
-                TREES1=dir_to_trees[Y.iloc[j][directory_col]])
+                F_TREES=dir_to_trees[X.iloc[i][directory_col]],
+                F_TREES1=dir_to_trees[Y.iloc[j][directory_col]])
 
         distances.append(dist)
         
@@ -1527,7 +1486,7 @@ def q_distanceMatrix(X, Y, tuple_list):
 
 
 def q_distanceMatrix_(args):
-    return q_distanceMatrix(args[0], args[1], args[2])
+    return q_distanceMatrix(args[0], args[1], args[2], args[3])
 
 
 def q_distanceMatrix_mp(X, Y, numCPUs=None):
@@ -1543,10 +1502,24 @@ def q_distanceMatrix_mp(X, Y, numCPUs=None):
     
     tuple_matrix = create_diag_tuples(X.shape[0], Y.shape[0])
     
+    directory_col = '__DIRECTORY__'
+
+    if (directory_col not in X.columns) or (directory_col not in Y.columns):
+        raise ValueError('Your dataframe must contain a column with the \
+            name `__DIRECTORY__`.')
+
+    if X.shape[1] != Y.shape[1]:
+        raise ValueError('X, Y must have the same number of columns')
+
+    unique_directories = np.unique(
+        list(X[directory_col].values) + list(Y[directory_col].values))
+
+    dir_to_trees = {dir_: getFmap(dir_ + '*.pkl') for dir_ in unique_directories}
+
     arguement_set = []
     
     for tuple_list in tuple_matrix:
-        arguement_set.append([X, Y, tuple_list])
+        arguement_set.append([X, Y, tuple_list, dir_to_trees])
         
     if numCPUs == 1:
         distance_matrix = []
