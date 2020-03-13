@@ -1417,20 +1417,21 @@ def qDistance(
     return S / (nCount + 0.0)
 
 
-def create_diag_tuples(size):
-    """Create a lower diagonal list of list consisting of (i, j) tuples 
+def create_diag_tuples(size1, size2):
+    """Create a list of list consisting of (i, j) tuples 
     
     Args:
-        size (int): size of array
+        size1 (int): size of array1
+        size2 (int): size of array2
         
     Returns:
         (list) of lists of tuples of indexes
     """
     
     all_tuples = []
-    for i in range(size):
+    for i in range(size1):
         row_tuples = []
-        for j in range(0, i + 1):
+        for j in range(0, size2):
             row_tuples.append((i, j))
         all_tuples.append(row_tuples)
         
@@ -1476,11 +1477,12 @@ def sort_lists_by_len(list_):
     return list_
 
 
-def q_distanceMatrix(X, tuple_list):
+def q_distanceMatrix(X, Y, tuple_list):
     """Compute the qnet distance using a list of list of tuples.
 
     Args:
         X (pd.df): dataframe of data
+        Y (pd.df): dataframe of data
         tuple_list (list): of lists of tuples
 
     Returns:
@@ -1489,46 +1491,46 @@ def q_distanceMatrix(X, tuple_list):
 
     directory_col = '__DIRECTORY__'
 
-    if directory_col not in X.columns:
+    if (directory_col not in X.columns) or (directory_col not in Y.columns):
         raise ValueError('Your dataframe must contain a column with the \
             name `__DIRECTORY__`.')
 
-    unique_directories = np.unique(X[directory_col].values)
+    if X.shape[1] != Y.shape[1]:
+        raise ValueError('X, Y must have the same number of columns')
+
+    unique_directories = np.unique(
+        list(X[directory_col].values) + list(Y[directory_col].values))
+
     dir_to_trees = {dir_: getFmap(dir_ + '*.pkl') for dir_ in unique_directories}
     
-    result = []
-    for list_ in tuple_list:
-        sub_result = []
-        for tuple_ in list_:
-            i, j = tuple_
-
-            # distance is 0 if we are considering the same sequence
-            if i == j:
-                dist = 0.0
-            elif np.all(X.loc[i] == X.loc[j]):
-                dist = 0.0
-            else:
-                
-                dist = qDistance(
-                    X.loc[i].drop(directory_col), 
-                    X.loc[j].drop(directory_col), 
-                    PATH_TO_TREES=None,
-                    PATH_TO_TREES1=None,
-                    TREES=dir_to_trees[X.loc[i][directory_col]],
-                    TREES1=dir_to_trees[X.loc[j][directory_col]])
-            
-            sub_result.append(dist)
-            
-        result.append(sub_result)
+    distances = []
+    for tuple_ in tuple_list:
+        i, j = tuple_
+        # TODO: optimize the case where seq[i], seq[j] == seq[j], seq[i]
         
-    return result
+        # distance is 0 if we are considering the same sequence
+        if np.all(X.iloc[i] == Y.iloc[j]):
+            dist = 0.0
+        else:
+            
+            dist = qDistance(
+                X.iloc[i].drop(directory_col), 
+                Y.iloc[j].drop(directory_col), 
+                PATH_TO_TREES=None,
+                PATH_TO_TREES1=None,
+                TREES=dir_to_trees[X.iloc[i][directory_col]],
+                TREES1=dir_to_trees[Y.iloc[j][directory_col]])
+
+        distances.append(dist)
+        
+    return distances
 
 
 def q_distanceMatrix_(args):
-    return q_distanceMatrix(args[0], args[1])
+    return q_distanceMatrix(args[0], args[1], args[2])
 
 
-def q_distanceMatrix_mp(X, numCPUs=None):
+def q_distanceMatrix_mp(X, Y, numCPUs=None):
     """Compute qnet distance but with optimized multiprocessing.
 
     NOTE: X must contain a column with the name `__DIRECTORY__`, which specifies
@@ -1539,18 +1541,17 @@ def q_distanceMatrix_mp(X, numCPUs=None):
         numCPUs (int): number of CPUs to use
     """
     
-    tuple_matrix = create_diag_tuples(X.shape[0])
-    even_out_tuples = even_out_lists(tuple_matrix)
+    tuple_matrix = create_diag_tuples(X.shape[0], Y.shape[0])
     
     arguement_set = []
     
-    for tuple_list in even_out_tuples:
-        arguement_set.append([X, tuple_list])
+    for tuple_list in tuple_matrix:
+        arguement_set.append([X, Y, tuple_list])
         
     if numCPUs == 1:
-        result = []
+        distance_matrix = []
         for arg in arguement_set:
-            result.append(q_distanceMatrix_(arg))
+            distance_matrix.append(q_distanceMatrix_(arg))
     else:
         
         if numCPUs is None:
@@ -1558,12 +1559,11 @@ def q_distanceMatrix_mp(X, numCPUs=None):
 
         pool = multiprocessing.Pool(numCPUs)
 
-        result = pool.map(q_distanceMatrix_, arguement_set)
+        distance_matrix = pool.map(q_distanceMatrix_, arguement_set)
 
         pool.close()
         
-    result = sort_lists_by_len(flatten_list(result))
-    return result
+    return distance_matrix
 
 
 def load_trees(tree_dir, return_items=False):
