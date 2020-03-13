@@ -1316,7 +1316,7 @@ def getFmap(PATH_TO_TREES):
                 F[index]=np.append(F[index],value)
     return F,TREE
 
-def getPerturbation(seq,PATH_TO_TREES, F_TREES=None):
+def getPerturbation(seq, PATH_TO_TREES, F_TREES=None):
     """
 
     If F_TREES is None, then we load the trees from `PATH_TO_TREES`. 
@@ -1370,16 +1370,24 @@ def jsdiv(p1,p2,smooth=True):
 def qDistance(
     seq0, seq1,
     PATH_TO_TREES, PATH_TO_TREES1,
-    F_TREES=None, F_TREES1=None):
+    seq_to_perturbations=None):
     '''Compute the genomic distance using qnets.
 
     If F_TREES and F_TREES1 are None, then we load them. 
     If that would be the case, then `PATH_TO_TREES` and `PATH_TO_TREES1`
     is needed.
+
+    Args:
+        seq_to_perturbations (dict): dictionary mapping sequences to its 
+            perturbation. If set to None, then we generate it.
     '''
 
-    P0 = getPerturbation(seq0, PATH_TO_TREES, F_TREES=F_TREES)
-    P1 = getPerturbation(seq1, PATH_TO_TREES1, F_TREES=F_TREES1)
+    if seq_to_perturbations is None:
+        P0 = getPerturbation(seq0, PATH_TO_TREES)
+        P1 = getPerturbation(seq1, PATH_TO_TREES1)
+    else:
+        P0 = seq_to_perturbations[seq0]
+        P1 = seq_to_perturbations[seq1]
 
     S=0.0
     nCount=0
@@ -1437,7 +1445,7 @@ def create_diag_tuples(size1, size2):
     return all_tuples
 
 
-def q_distanceMatrix(X, Y, tuple_list, dir_to_trees):
+def q_distanceMatrix(X, Y, tuple_list, seq_to_perturbations):
     """Compute the qnet distance using a list of list of tuples.
 
     NOTE: if X and Y are the same dataframe, then we will instead calculate
@@ -1473,12 +1481,11 @@ def q_distanceMatrix(X, Y, tuple_list, dir_to_trees):
         else:
             
             dist = qDistance(
-                X.iloc[i].drop(directory_col), 
-                Y.iloc[j].drop(directory_col), 
+                ''.join(X.iloc[i].drop(directory_col).values), 
+                ''.join(Y.iloc[j].drop(directory_col).values), 
                 PATH_TO_TREES=None,
                 PATH_TO_TREES1=None,
-                F_TREES=dir_to_trees[X.iloc[i][directory_col]],
-                F_TREES1=dir_to_trees[Y.iloc[j][directory_col]])
+                seq_to_perturbations=seq_to_perturbations)
 
         distances.append(dist)
         
@@ -1516,10 +1523,19 @@ def q_distanceMatrix_mp(X, Y, numCPUs=None):
 
     dir_to_trees = {dir_: getFmap(dir_ + '*.pkl') for dir_ in unique_directories}
 
+    XY = pd.concat([X, Y], axis=0)
+    XY.drop_duplicates(inplace=True)
+
+    seq_to_perturbations = {}
+    for i in range(XY.shape[0]):
+        seq = "".join(XY.iloc[i].drop(directory_col).values)
+        F_trees = dir_to_trees[XY.iloc[i][directory_col]]
+        seq_to_perturbations[seq] = getPerturbation(seq, None, F_trees)
+
     arguement_set = []
     
     for tuple_list in tuple_matrix:
-        arguement_set.append([X, Y, tuple_list, dir_to_trees])
+        arguement_set.append([X, Y, tuple_list, seq_to_perturbations])
         
     if numCPUs == 1:
         distance_matrix = []
