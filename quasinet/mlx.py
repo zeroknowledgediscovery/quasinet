@@ -1,3 +1,8 @@
+"""
+NOTE: Some of the functions set global variables. 
+    Do not use the same variable name as those global variable names.
+"""
+
 import string
 import random
 import subprocess
@@ -10,6 +15,7 @@ import pickle
 import copy
 import math
 import multiprocessing
+import time
 
 import numpy as np
 import pandas as pd
@@ -1445,25 +1451,26 @@ def create_diag_tuples(size1, size2):
     return all_tuples
 
 
-def q_distanceMatrix(X, Y, tuple_list, seq_to_perturbations):
+def q_distanceMatrix(tuple_list):
     """Compute the qnet distance using a list of list of tuples.
 
     NOTE: if X and Y are the same dataframe, then we will instead calculate
     an upper diagonal matrix.
 
     Args:
-        X (pd.df): dataframe of data
-        Y (pd.df): dataframe of data
+        (global) X__ (pd.df): dataframe of data
+        (global) Y__ (pd.df): dataframe of data
         tuple_list (list): of lists of tuples
-        dir_to_trees (dict): dictionary mapping directory to the (F, TREES)
 
     Returns:
         (list) of lists of q-distances
     """
 
+    start = time.time()
+
     directory_col = '__DIRECTORY__'
     
-    if X.equals(Y):
+    if X__.equals(Y__):
         calc_upper_diag = True
     else:
         calc_upper_diag = False
@@ -1476,27 +1483,37 @@ def q_distanceMatrix(X, Y, tuple_list, seq_to_perturbations):
         if calc_upper_diag and (i >= j):
             dist = 0.0
         # distance is 0 if we are considering the same sequence
-        elif np.all(X.iloc[i] == Y.iloc[j]):
+        elif np.all(X__.iloc[i] == Y__.iloc[j]):
             dist = 0.0
         else:
             
             dist = qDistance(
-                ''.join(X.iloc[i].drop(directory_col).values), 
-                ''.join(Y.iloc[j].drop(directory_col).values), 
+                ''.join(X__.iloc[i].drop(directory_col).values), 
+                ''.join(Y__.iloc[j].drop(directory_col).values), 
                 PATH_TO_TREES=None,
                 PATH_TO_TREES1=None,
-                seq_to_perturbations=seq_to_perturbations)
+                seq_to_perturbations=SEQ_TO_PERTURBATIONS)
 
         distances.append(dist)
         
+    end = time.time()
+    print 'running q_distanceMatrix in ', end - start
     return distances
 
 
 def q_distanceMatrix_(args):
-    return q_distanceMatrix(args[0], args[1], args[2], args[3])
+    return q_distanceMatrix(args[0])
 
 
-def q_distanceMatrix_mp(X, Y, numCPUs=None):
+def load_pickled(file_name):
+    with open(file_name, 'rb') as f:
+        return pickle.load(f)
+
+def save_pickled(item, file_name):
+    with open(file_name, 'wb') as f:
+        pickle.dump(item, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+def q_distanceMatrix_mp(X, Y, seq_to_perturbation_file, numCPUs=1):
     """Compute qnet distance but with optimized multiprocessing.
 
     NOTE: X must contain a column with the name `__DIRECTORY__`, which specifies
@@ -1504,6 +1521,8 @@ def q_distanceMatrix_mp(X, Y, numCPUs=None):
 
     Args:
         X (pd.df): dataframe of data
+        seq_to_perturbation_file (str): pickle file that holds a dictionary
+            mapping the sequence to a perturbation file.
         numCPUs (int): number of CPUs to use
     """
     
@@ -1526,17 +1545,38 @@ def q_distanceMatrix_mp(X, Y, numCPUs=None):
     XY = pd.concat([X, Y], axis=0)
     XY.drop_duplicates(inplace=True)
 
-    seq_to_perturbations = {}
-    for i in range(XY.shape[0]):
-        seq = "".join(XY.iloc[i].drop(directory_col).values)
-        F_trees = dir_to_trees[XY.iloc[i][directory_col]]
-        seq_to_perturbations[seq] = getPerturbation(seq, None, F_trees)
+    start = time.time()
+
+    # We set this to global so we can access it across the spawned processes.
+    # We do this because this object may be very large, and we want to avoid
+    # copying this object across the spawned processes.
+    global SEQ_TO_PERTURBATIONS
+    global X__, Y__
+
+    X__ = X
+    Y__ = Y
+
+    if os.path.exists(seq_to_perturbation_file):
+        SEQ_TO_PERTURBATIONS = load_pickled(seq_to_perturbation_file)
+    else:
+        SEQ_TO_PERTURBATIONS = {}
+        for i in range(XY.shape[0]):
+            seq = "".join(XY.iloc[i].drop(directory_col).values)
+            F_trees = dir_to_trees[XY.iloc[i][directory_col]]
+            SEQ_TO_PERTURBATIONS[seq] = getPerturbation(seq, None, F_trees)
+
+        save_pickled(SEQ_TO_PERTURBATIONS, seq_to_perturbation_file)
+
+    end = time.time()
+    print 'time of all perturbation calculation: {} for {} sequences'.format(end - start, len(SEQ_TO_PERTURBATIONS))
 
     arguement_set = []
     
     for tuple_list in tuple_matrix:
-        arguement_set.append([X, Y, tuple_list, seq_to_perturbations])
+        arguement_set.append([tuple_list])
         
+    print 'num CPUS: ', numCPUs
+    
     if numCPUs == 1:
         distance_matrix = []
         for arg in arguement_set:

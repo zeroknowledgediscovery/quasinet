@@ -128,7 +128,7 @@ def singleTree(args):
                 datatest__=datatest,
                 VERBOSE=False,
                 TREE_EXPORT=False)
-            # import pdb; pdb.set_trace()
+
 
         # this is intended to catch: Error in La.svd(x, nu, nv)
         # i.e. computing svd failed to converge
@@ -217,7 +217,7 @@ def makeQNetwork(
     tree_dir='tree/',
     VERBOSE=False, 
     numCPUs=None,
-    timeout=100):
+    timeout=None):
     '''Given a set of responses, will generate a QNet with a tree 
     representing each response variable. 
     
