@@ -4,14 +4,14 @@ from joblib import delayed, Parallel
 from numba import njit
 import numpy as np
 
-from scorers import c_dcor, mc_fast, mi, pcor, py_dcor, rdc, rdc_fast
+from scorers import c_dcor, mc_fast, mi, pcor, py_dcor, rdc, rdc_fast, chi2
 
 
 ##########################
 """CONTINUOUS SELECTORS"""
 ##########################
 
-@njit(cache=True, nogil=True)
+# @njit(cache=True, nogil=True)
 def permutation_test_pcor(x, y, B=100, random_state=None):
     """Permutation test for Pearson correlation
 
@@ -50,7 +50,7 @@ def permutation_test_pcor(x, y, B=100, random_state=None):
     return np.mean(np.fabs(theta_p) >= theta)
 
 
-@njit(cache=True, nogil=True)
+# @njit(cache=True, nogil=True)
 def permutation_test_dcor(x, y, B=100, random_state=None):
     """Permutation test for distance correlation
 
@@ -89,7 +89,7 @@ def permutation_test_dcor(x, y, B=100, random_state=None):
     return np.mean(np.fabs(theta_p) >= theta)
 
 
-@njit(cache=True, nogil=True)
+# @njit(cache=True, nogil=True)
 def permutation_test_rdc(x, y, B=100, random_state=None):
     """Permutation test for randomized dependence coefficient
 
@@ -259,7 +259,7 @@ def permutation_test_rdc_parallel(x, y, B=100, n_jobs=-1, k=10, random_state=Non
 """DISCRETE SELECTORS"""
 ########################
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def permutation_test_mc(x, y, B=100, n_classes=None, random_state=None):
     """Permutation test for multiple correlation
 
@@ -327,7 +327,7 @@ def permutation_test_mi(x, y, B=100, random_state=None, **kwargs):
         Achieved significance level
     """
     np.random.seed(random_state)
-
+    
     # Estimate correlation from original data
     theta = mi(x, y)
 
@@ -340,3 +340,47 @@ def permutation_test_mi(x, y, B=100, random_state=None, **kwargs):
 
     # Achieved significance level
     return np.mean(theta_p >= theta)
+
+
+def permutation_test_chi2(x, y, B=100, random_state=None, **kwargs):
+    """Permutation test using chi-squared. 
+    
+    This is used when x and y are nominal variables.
+
+    Parameters
+    ----------
+    x : 1d array-like
+        Array of n elements
+
+    y : 1d array-like
+        Array of n elements
+
+    n_classes : int
+        Number of classes
+
+    B : int
+        Number of permutations
+
+    random_state : int
+        Sets seed for random number generator
+
+    Returns
+    -------
+    p : float
+        Achieved significance level
+    """
+    np.random.seed(random_state)
+    
+    # chi2 p-value
+    theta = chi2(x, y)
+
+    return theta
+    # # Permutations
+    # y_      = y.copy()
+    # theta_p = np.zeros(B)
+    # for i in range(B):
+    #     np.random.shuffle(y_)
+    #     theta_p[i] = chi2(x, y_)
+
+    # # Achieved significance level
+    # return np.mean(theta_p <= theta)

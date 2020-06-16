@@ -6,6 +6,27 @@ import numpy as np
 # from externals.six.moves import range
 
 
+def powerset(s):
+    """Get the power set of a list or set.
+    """
+    
+    x = len(s)
+    masks = [1 << i for i in range(x)]
+    for i in range(1 << x):
+        yield [ss for mask, ss in zip(masks, s) if i & mask]
+
+
+def remove_zeros(r, axis):
+    """Remove rows along a certain axis where the value is all zero.
+    """
+
+    if axis == 0:
+        return r[~np.all(r == 0, axis=1)]
+    elif axis == 1:
+        return r[:, ~np.all(r == 0, axis=0)]
+    else:
+        raise ValueError('not a correct axis that we can use.')
+
 def bayes_boot_probs(n):
     """Bayesian bootstrap sampling for case weights
     

@@ -1,21 +1,25 @@
 from __future__ import absolute_import, division, print_function
 
-from joblib import delayed, Parallel
-import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
-from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 import multiprocessing
 import threading
 import warnings
+
+from joblib import delayed, Parallel
+import numpy as np
+import pandas as pd
+from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.preprocessing import OrdinalEncoder
+
 warnings.simplefilter('ignore')
 
 # Package imports
 from feature_selectors import (permutation_test_mc, permutation_test_mi,
                                permutation_test_dcor, permutation_test_pcor,
-                               permutation_test_rdc)
+                               permutation_test_rdc, permutation_test_chi2)
 from feature_selectors import mc_fast, mi, pcor, py_dcor
 from scorers import gini_index, mse
-from utils import bayes_boot_probs, logger
+from utils import bayes_boot_probs, logger, powerset
 
 
 ###################
@@ -222,8 +226,9 @@ class CITreeBase(object):
                 col_idx = np.random.choice(self.available_features_,
                                            size=len(self.available_features_),
                                            replace=False)
-            col, col_pval = self._selector(X, y, col_idx)
 
+            col, col_pval = self._selector(X, y, col_idx)
+            
             # Add selected feature to protected features
             if col not in self.protected_features_:
                 self.protected_features_.append(col)
@@ -274,11 +279,20 @@ class CITreeBase(object):
         y : 1d array-like
             Array of labels
 
+        TODO: check datatypes of every column in the dataframe
+
         Returns
         -------
         self : CITreeBase
             Instance of CITreeBase class
         """
+
+        if not isinstance(X, pd.core.frame.DataFrame):
+            raise ValueError('X must be a pandas Dataframe!')
+
+        if not isinstance(y, np.ndarray) or len(y.shape) != 1:
+            raise ValueError('y must be a 1d numpy array!')
+
         if self.verbose:
             logger("tree", "Building root node with %d samples" % X.shape[0])
 
@@ -325,9 +339,20 @@ class CITreeBase(object):
         if tree.value is not None: return tree.value
 
         # Determine if we will follow left or right branch
-        feature_value = X[tree.col]
-        branch        = tree.left_child if feature_value <= tree.threshold \
-                                        else tree.right_child
+        feature_value = X.iloc[tree.col]
+
+        threshold = tree.threshold
+
+        if isinstance(threshold, list):
+            if feature_value in tree.threshold:
+                branch = tree.left_child
+            else:
+                branch = tree.right_child
+        else:
+            if feature_value <= tree.threshold:
+                branch = tree.left_child
+            else:
+                branch = tree.right_child
 
         # Test subtree
         return self.predict_label(X, branch)
@@ -375,6 +400,8 @@ class CITreeBase(object):
 class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
     """Conditional inference tree classifier
 
+    TODO: as of now, the features can only be categorical or continuous
+
     Parameters
     ----------
     selector : str
@@ -396,25 +423,29 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
                  verbose=0,
                  n_jobs=-1,
                  random_state=None):
-
         # Define node estimate
         self.node_estimate = self._estimate_proba
 
         # Define selector
-        if selector not in ['mc', 'mi', 'hybrid']:
-            raise ValueError("%s not a valid selector, valid selectors are " \
-                             "mc, mi, and hybrid")
+        # if selector not in ['mc', 'mi', 'hybrid']:
+        #     raise ValueError("%s not a valid selector, valid selectors are " \
+        #                      "mc, mi, and hybrid")
+
         self.selector = selector
 
-        if self.selector != 'hybrid':
+        if selector != 'hybrid':
             # Wrapper correlation selector
             self._selector = self._cor_selector
 
             # Permutation test based on correlation measure
-            if self.selector == 'mc':
+            if selector == 'mc':
                 self._perm_test = permutation_test_mc
-            else:
+            elif selector == 'mi':
                 self._perm_test = permutation_test_mi
+            elif selector == 'chi2':
+                self._perm_test = permutation_test_chi2
+            else:
+                raise ValueError('Not a correct selector: {}'.format(selector))
 
         else:
             self._perm_test = None
@@ -492,6 +523,72 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         return best_col, best_pval
 
 
+    def gini_index(self, Y, classes):
+        """Compute gini index for an array of labels.
+        """
+        gini = 0
+        for class_ in classes:
+            p_k = (Y[Y == class_]).shape[0] / Y.shape[0]
+            gini += p_k * (1 - p_k)
+
+        return gini
+
+
+    def _split_by_gini(self, X, y, datatype):
+        """Given a single covariate, split the data to minimize the 
+        gini coefficient.
+
+        TODO: do randomly sampling if the number of categories is large
+
+        Parameters
+        ----------
+        X: 2d array-like of shape (n, 1)
+
+        y: 1d array-like
+
+        datatype: str
+            type of data of X
+        """
+
+        index_to_gini_values = {}
+        index_to_subset = {}
+
+        unique_X = np.sort(np.unique(X))
+
+        # the number of sets is exponential in the number of unique X values
+        # TODO: when the size is large, we are going to randomly sample 2 ** 8
+        # many different subsets 
+        if len(unique_X) <= 8:
+            subsets = powerset(unique_X)
+        else:
+            raise NotImplementedError
+
+        if datatype == 'categorical':
+            for i, subset in enumerate(subsets):
+                # TODO: sort subset
+
+                # ignore the case where the list is empty or the subset
+                # is the set itself
+                if len(subset)  == 0:
+                    continue 
+                elif len(subset) == len(unique_X):
+                    continue
+
+                subset_complement = unique_X[~np.isin(unique_X, subset)]
+                y1 = y[np.isin(y, subset)]
+                y2 = y[np.isin(y, subset_complement)]
+
+                gini_value = gini_index(y1, subset) + gini_index(y2, subset_complement)
+
+                index_to_gini_values[i] = gini_value
+                index_to_subset[i] = subset
+        else:
+            raise ValueError('Datatype must be categorical!')
+
+        min_key = min(index_to_gini_values, key=index_to_gini_values.get)
+        return index_to_subset[min_key]
+
+
     def _splitter(self, X, y, n, col):
         """Splits data set into two child nodes based on optimized weighted
         gini index
@@ -531,15 +628,27 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         impurity, threshold = 0.0, None
         left, right         = None, None
 
-        # Call sklearn's optimized implementation of decision tree classifiers
-        # to make split using Gini index
-        base = DecisionTreeClassifier(
-                max_depth=1, min_samples_split=self.min_samples_split
-            ).fit(X[:, col].reshape(-1, 1), y).tree_
+        X_col = X.iloc[:, col].values
+        datatype = 'categorical'
+        if datatype == 'categorical':
+            threshold = self._split_by_gini(X_col, y, datatype)
 
-        # Make split based on best threshold
-        threshold        = base.threshold[0]
-        idx              = np.where(X[:, col] <= threshold, 1, 0)
+            idx = np.where(X.iloc[:, col].isin(threshold), 1, 0)
+
+        elif datatype == 'continuous':
+            # Call sklearn's optimized implementation of decision tree classifiers
+            # to make split using Gini index
+            base = DecisionTreeClassifier(
+                    max_depth=1, min_samples_split=self.min_samples_split
+                ).fit(X_col.reshape(-1, 1), y).tree_
+
+            # Make split based on best threshold
+            threshold        = base.threshold[0]
+            idx              = np.where(X[:, col] <= threshold, 1, 0)
+
+        else:
+            raise ValueError('Not a correct datatype')
+        
         X_left, y_left   = X[idx==1], y[idx==1]
         X_right, y_right = X[idx==0], y[idx==0]
         n_left, n_right  = X_left.shape[0], X_right.shape[0]
@@ -549,14 +658,19 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
             return impurity, threshold, left, right
 
         # Calculate parent and weighted children impurities
-        if len(base.impurity) == 3:
-            node_impurity  = base.impurity[0]
-            left_impurity  = base.impurity[1]*(n_left/float(n))
-            right_impurity = base.impurity[2]*(n_right/float(n))
-        else:
-            node_impurity  = gini_index(y, self.labels_)
-            left_impurity  = gini_index(y_left, self.labels_)*(n_left/float(n))
-            right_impurity = gini_index(y_right, self.labels_)*(n_right/float(n))
+        # if len(base.impurity) == 3:
+        #     node_impurity  = base.impurity[0]
+        #     left_impurity  = base.impurity[1]*(n_left/float(n))
+        #     right_impurity = base.impurity[2]*(n_right/float(n))
+        # else:
+        #     node_impurity  = gini_index(y, self.labels_)
+        #     left_impurity  = gini_index(y_left, self.labels_)*(n_left/float(n))
+        #     right_impurity = gini_index(y_right, self.labels_)*(n_right/float(n))
+
+
+        node_impurity  = gini_index(y, self.labels_)
+        left_impurity  = gini_index(y_left, self.labels_)*(n_left/float(n))
+        right_impurity = gini_index(y_right, self.labels_)*(n_right/float(n))
 
         # Define groups and calculate impurity decrease
         left, right = (X_left, y_left), (X_right, y_right)
@@ -595,17 +709,21 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         # Select random column from start and update
         best_col, best_pval = np.random.choice(col_idx), np.inf
 
+        y = self.y_enc.transform(y.reshape(-1, 1))
+
         # Iterate over columns
         for col in col_idx:
-
+            X_col = X.iloc[:, col].values
             # Mute feature and continue since constant
-            if np.all(X[:, col] == X[0, col]) and len(self.available_features_) > 1:
+            if np.all( X_col == X.iloc[0, col]) and len(self.available_features_) > 1:
                 self._mute_feature(col)
                 if self.verbose: logger("tree", "Constant values, muting feature %d" \
                                         % col)
                 continue
 
-            pval = self._perm_test(x=X[:, col],
+            X_col = self.X_encs[col].transform(X_col.reshape(-1, 1))
+
+            pval = self._perm_test(x=X_col,
                                    y=y,
                                    n_classes=self.n_classes_,
                                    B=self.n_permutations,
@@ -664,7 +782,20 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         self : CITreeClassifier
             Instance of CITreeClassifier class
         """
-        self.labels_    = labels if labels is not None else np.unique(y)
+
+        if labels is None:
+            labels = 'auto'
+        self.y_enc = OrdinalEncoder(categories=labels, dtype=np.int32)
+
+        self.y_enc.fit(y.reshape(-1, 1))
+
+        self.X_encs = {}
+        for col_index in np.arange(X.shape[1]):
+            enc = OrdinalEncoder(dtype=np.int32)
+            enc.fit(X.iloc[:, col_index].values.reshape(-1, 1))
+            self.X_encs[col_index] = enc
+
+        self.labels_ = self.y_enc.categories_[0]
         self.n_classes_ = len(self.labels_)
         super(CITreeClassifier, self).fit(X, y)
         return self
@@ -686,7 +817,13 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         if self.verbose:
             logger("test", "Predicting labels for %d samples" % X.shape[0])
 
-        return np.array([self.predict_label(sample) for sample in X])
+        num_samples = X.shape[0]
+        predictions = np.zeros((num_samples, self.n_classes_))
+        for i in np.arange(0, num_samples):
+            predictions[i] = self.predict_label(X.iloc[i])
+
+        return predictions
+        # return np.array([self.predict_label(sample) for sample in X])
 
 
     def predict(self, X):
@@ -702,8 +839,13 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         y : 1d array-like
             Array of predicted classes
         """
+        
         y_proba = self.predict_proba(X)
-        return np.argmax(y_proba, axis=1)
+        ordinal_prediction = np.argmax(y_proba, axis=1).reshape((-1, 1))
+        categorical_prediction = self.y_enc.inverse_transform(ordinal_prediction)
+
+        return categorical_prediction.reshape(-1)
+        
 
 
 class CITreeRegressor(CITreeBase, BaseEstimator, RegressorMixin):

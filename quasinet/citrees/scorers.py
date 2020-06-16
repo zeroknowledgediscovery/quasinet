@@ -5,9 +5,10 @@ from numba import njit
 import numpy as np
 from os.path import dirname, join
 import pandas as pd
-from scipy.stats import rankdata as rank
+from scipy.stats import rankdata as rank, chi2_contingency
 from sklearn.feature_selection import mutual_info_classif
 
+from utils import remove_zeros
 
 #######################
 """CREATE C WRAPPERS"""
@@ -40,7 +41,7 @@ CFUNC_DCORS_DLL.dcor.restype  = ctypes.c_double
 """FEATURE SELECTORS: CONTINUOUS"""
 ###################################
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def pcor(x, y):
     """Pearson correlation
 
@@ -185,7 +186,7 @@ def rdc(X, Y, k=10, s=1.0/6.0, f=np.sin):
     return cca(X_, Y_)
 
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def cca_fast(X, Y):
     """Largest canonical correlation
 
@@ -237,7 +238,7 @@ def cca_fast(X, Y):
 
 
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def rdc_fast(x, y, k=10, s=1.0/6.0, f=np.sin):
     """Randomized dependence coefficient
 
@@ -292,7 +293,7 @@ def rdc_fast(x, y, k=10, s=1.0/6.0, f=np.sin):
         return cor
 
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def py_wdcor(x, y, weights):
     """Python port of C function for distance correlation
 
@@ -373,7 +374,7 @@ def py_wdcor(x, y, weights):
         return np.sqrt( (S1+S2-2*S3) / np.sqrt( (S1X+S2X-2*S3X)*(S1Y+S2Y-2*S3Y) ))
 
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def py_dcor(x, y):
     """Python port of C function for distance correlation
 
@@ -558,7 +559,7 @@ def c_dcor(x, y):
 """FEATURE SELECTORS: DISCRETE"""
 #################################
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def mc_fast(x, y, n_classes):
     """Multiple correlation
 
@@ -578,6 +579,9 @@ def mc_fast(x, y, n_classes):
     cor : float
         Multiple correlation coefficient between x and y
     """
+
+    import pdb; pdb.set_trace()
+    
     ssb, mu = 0.0, x.mean()
 
     # Sum of squares total
@@ -614,15 +618,35 @@ def mi(x, y):
     info : float
         Mutual information between x and y
     """
+
     if x.ndim == 1: x = x.reshape(-1, 1)
-    return mutual_info_classif(x, y)[0]
+    return mutual_info_classif(x, y, discrete_features=True)
 
 
+def chi2(x, y):
+    """
+
+    x and y are ordinal representations of categorical variables.
+    """
+
+    chi2_table = np.zeros( ( np.max(y) + 1, np.max(x) + 1) )
+
+    for i in np.arange(x.shape[0]):
+        chi2_table[y[i], x[i]] += 1
+
+    chi2_table = remove_zeros(chi2_table, axis=1)
+    chi2_table = remove_zeros(chi2_table, axis=0)
+
+    p_value = chi2_contingency(chi2_table)[1]
+
+    return p_value
+    
+    
 ###############################
 """SPLIT SELECTORS: DISCRETE"""
 ###############################
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def gini_index(y, labels):
     """Gini index for node in tree
 
@@ -662,7 +686,7 @@ def gini_index(y, labels):
 """SPLIT SELECTORS: CONTINUOUS"""
 #################################
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def mse(y):
     """Mean squared error for node in tree
 
