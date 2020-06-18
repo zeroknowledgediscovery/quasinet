@@ -14,10 +14,22 @@ class Qnet(object):
     def __init__(self):
         pass
 
+    def __repr__(self):
+        return "qnet.Qnet"
+
+    def __str__(self):
+        return self.__repr__()
+
     def fit(self, X):
 
+        if not np.issubdtype(X.columns.dtype, np.integer):
+            raise ValueError('The columns must be of integer datatype.')
+
         if not isinstance(X, pd.core.frame.DataFrame):
-            raise ValueError('X must be a pandas Dataframe!')
+            raise ValueError('X must be a pandas Dataframe.')
+
+        if not (np.all(X.columns == np.arange(0, X.shape[1]))):
+            raise ValueError('The columns must of increasing order starting from 0.')
 
         # Instantiate base tree models
         self.estimators_ = {}
@@ -27,7 +39,7 @@ class Qnet(object):
         # TODO: we may not have any trees created. When that's the
         # case, we want to predict an equal probability distribution
         for col in X.columns:
-            clf = CITreeClassifier(selector='chi2')
+            clf = CITreeClassifier(selector='chi2', random_state=42)
             y = X[col].values
             clf.fit(X.drop([col], axis=1), y)
             self.estimators_[col] = clf
@@ -40,8 +52,6 @@ class Qnet(object):
 
     def predict_distribution(self, column_to_item, column):
         """Predict the probability distribution for a given column.
-
-        TODO: check the case where `column_to_item` is empty
 
         Parameters
         ----------
@@ -64,38 +74,41 @@ class Qnet(object):
 
         root = self.estimators_[column].root
         nodes = get_nodes(root)
-
         distributions = {}
         for node in nodes:
             if node.col in column_to_item:
-                if column_to_item[column] in node.threshold:
+                if column_to_item[node.col] in node.threshold:
                     next_node = node.left
                 else:
                     next_node = node.right
 
-                distributions[column] = next_node.label_frequency
+                distributions[node.col] = next_node.label_frequency
 
-        distributions = pd.DataFrame(distributions)
+        if len(distributions) == 0:
+            distributions[root.col] = root.label_frequency
+
+        distributions = pd.DataFrame(list(distributions.values()))
         distributions.fillna(0, inplace=True)
-
-        total_frequency = distributions.sum()
-        distributions *= distributions.sum(axis=1)
+        distributions.reset_index(inplace=True, drop=True)
+  
+        total_frequency = np.sum(distributions.values)        
+        distributions = distributions.mul(distributions.sum(axis=1), axis=0)
         distributions /= total_frequency
 
         distributions = distributions.mean(axis=0)
-        distributions /= distributions.sum()
+        distributions /= np.sum(distributions.values)
 
-        return distributions[0].to_dict()
+        return distributions.to_dict()
 
 
 
-    def predict_distributions(self, column_to_item):
+    def predict_distributions(self, seq):
         """Predict the probability distributions for all the columns.
 
         Parameters
         ----------
-        column_to_item : dict
-            dictionary mapping the column to the values the columns take
+        seq : list
+            list of values
 
         Returns
         -------
@@ -108,6 +121,7 @@ class Qnet(object):
 
         col_to_prob_distrib = {}
         for col in self.estimators_.keys():
+            column_to_item = {i: item for i, item in enumerate(seq)}
             col_to_prob_distrib[col] = self.predict_distribution(column_to_item, col)
 
         return col_to_prob_distrib
@@ -147,6 +161,7 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     if len(seq1) != len(seq2):
         raise ValueError('The two sequences must be of equal lengths.')
 
+    # TODO: allow for 1d numpy array as well
     if (not isinstance(seq1, list)) or (not isinstance(seq2, list)):
         raise ValueError('You must pass in lists as sequences.')
 
@@ -174,7 +189,7 @@ def qdistance(seq1, seq2, qnet1, qnet2):
             distrib1[i] = seq1_distrib[x]
             distrib2[i] = seq2_distrib[x]
 
-        total_divergence += np.sqrt(js_divergence(distrib1, distrib2))
+        total_divergence += np.sqrt(js_divergence(distrib1, distrib2, smooth=True))
 
     total_divergence /= len(seq1_distribs)
     
@@ -188,7 +203,10 @@ def qdistance_matrix():
     raise NotImplementedError
 
 def load_qnet(f):
-    return load(f)
+    qnet = load(f)
+    assert isinstance(qnet, Qnet)
+
+    return qnet
 
 def save_qnet(qnet, f):
     assert isinstance(qnet, Qnet)
