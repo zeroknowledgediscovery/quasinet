@@ -21,68 +21,8 @@ from feature_selectors import (permutation_test_mc, permutation_test_mi,
 from feature_selectors import mc_fast, mi, pcor, py_dcor
 from scorers import gini_index, mse
 from utils import bayes_boot_probs, logger, powerset
+from tree import Node
 
-
-###################
-"""SINGLE MODELS"""
-###################
-
-
-class Node(object):
-    """Decision node in tree
-
-    Parameters
-    ----------
-    col : int
-        Integer indexing the location of feature or column
-
-    col_pval : float
-        Probability value from permutation test for feature selection
-
-    threshold : float
-        Best split found in feature
-
-    impurity : float
-        Impurity measuring quality of split
-
-    value : 1d array-like or float
-        For classification trees, estimate of each class probability
-        For regression trees, central tendency estimate
-
-    left_child : Node
-        Another Node
-
-    right_child : Node
-        Another Node
-
-    label_frequency: dict
-        Dictionary mapping label to its frequency
-    """
-
-    def __init__(self, 
-                 col=None, 
-                 col_pval=None, 
-                 threshold=None, 
-                 impurity=None,
-                 value=None, 
-                 left_child=None, 
-                 right_child=None, 
-                 label_frequency=None):
-
-        assert isinstance(left_child, Node) or left_child is None
-        assert isinstance(right_child, Node) or right_child is None
-
-        self.col         = col
-        self.col_pval    = col_pval
-        self.threshold   = threshold
-        self.impurity    = impurity
-        self.value       = value
-        self.left_child  = left_child
-        self.right_child = right_child
-        self.label_frequency = label_frequency
-
-
-# def traverse_tree(col, attribute, col_to_attribute):
 
 class CITreeBase(object):
     """Base class for conditional inference tree
