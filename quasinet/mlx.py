@@ -1231,7 +1231,7 @@ def getMergedDistribution(tree,cond={}):
         current_active_nodes=np.array([1],int)
     for i in current_active_nodes:
         S=S+tree.num_pass_[i]
-        
+    
     indexed_dist={i:dictprod(tree.class_pred_[i],tree.num_pass_[i]/S)
                   for i in current_active_nodes}
     dist_=normalizedict(mergedistributions(indexed_dist))
