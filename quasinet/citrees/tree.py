@@ -19,10 +19,10 @@ class Node(object):
         For classification trees, estimate of each class probability
         For regression trees, central tendency estimate
 
-    left_child : Node
+    left : Node
         Another Node
 
-    right_child : Node
+    right : Node
         Another Node
 
     label_frequency: dict
@@ -35,20 +35,20 @@ class Node(object):
                  threshold=None, 
                  impurity=None,
                  value=None, 
-                 left_child=None, 
-                 right_child=None, 
+                 left=None, 
+                 right=None, 
                  label_frequency=None):
 
-        assert isinstance(left_child, Node) or left_child is None
-        assert isinstance(right_child, Node) or right_child is None
+        assert isinstance(left, Node) or left is None
+        assert isinstance(right, Node) or right is None
 
         self.col         = col
         self.col_pval    = col_pval
         self.threshold   = threshold
         self.impurity    = impurity
         self.value       = value
-        self.left_child  = left_child
-        self.right_child = right_child
+        self.left  = left
+        self.right = right
         self.label_frequency = label_frequency
 
 

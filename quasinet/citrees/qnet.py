@@ -69,9 +69,9 @@ class Qnet(object):
         for node in nodes:
             if node.col in column_to_item:
                 if column_to_item[column] in node.threshold:
-                    next_node = node.left_child
+                    next_node = node.left
                 else:
-                    next_node = node.right_child
+                    next_node = node.right
 
                 distributions[column] = next_node.label_frequency
 

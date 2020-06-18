@@ -204,17 +204,17 @@ class CITreeBase(object):
                         logger("tree", "Building left subtree with "
                                        "%d samples at depth %d" % \
                                        (len(left[0]), depth+1))
-                    left_child = self._build_tree(*left, depth=depth+1)
+                    left = self._build_tree(*left, depth=depth+1)
 
                     if self.verbose:
                         logger("tree", "Building right subtree with "
                                        "%d samples at depth %d" % \
                                         (len(right[0]), depth+1))
-                    right_child = self._build_tree(*right, depth=depth+1)
+                    right = self._build_tree(*right, depth=depth+1)
 
                     # Return all arguments to constructor except value
                     return Node(col=col, col_pval=col_pval, threshold=threshold,
-                                left_child=left_child, right_child=right_child,
+                                left=left, right=right,
                                 impurity=impurity, label_frequency=Counter(y))
 
         # Calculate terminal node value
@@ -302,14 +302,14 @@ class CITreeBase(object):
 
         if isinstance(threshold, list):
             if feature_value in tree.threshold:
-                branch = tree.left_child
+                branch = tree.left
             else:
-                branch = tree.right_child
+                branch = tree.right
         else:
             if feature_value <= tree.threshold:
-                branch = tree.left_child
+                branch = tree.left
             else:
-                branch = tree.right_child
+                branch = tree.right
 
         # Test subtree
         return self.predict_label(X, branch)
@@ -347,11 +347,11 @@ class CITreeBase(object):
 
             # Print the left child
             print("%sL: " % (indent), end="")
-            self.print_tree(tree.left_child, indent + indent, 'left')
+            self.print_tree(tree.left, indent + indent, 'left')
 
             # Print the right
             print("%sR: " % (indent), end="")
-            self.print_tree(tree.right_child, indent + indent, 'right')
+            self.print_tree(tree.right, indent + indent, 'right')
 
 
 class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):

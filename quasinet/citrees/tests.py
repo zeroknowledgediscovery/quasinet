@@ -2,7 +2,7 @@ import unittest
 
 from tree import Node, get_nodes
 
-@unittest.skip('Correct')
+# @unittest.skip('Correct')
 class TestTree(unittest.TestCase):
 
     @staticmethod
