@@ -25,11 +25,11 @@ import sklearn
 import pandas as pd
 import numpy as np
 from sklearn.datasets import load_iris, load_wine
+# from scipy import special.kl_div
 
 sys.path.insert(1, '/home/jinli11/quasinet/quasinet/citrees/')
 
 import citrees
-
 reload(citrees)
 
 
@@ -39,11 +39,15 @@ reload(citrees)
 X = pd.read_csv(DATA_DIR + 'cchfl_test.csv')
 y = X['0'].values
 X.drop(['0'], axis=1, inplace=True)
+X = X.iloc[:, :5]
+# import pdb; pdb.set_trace()
 # X['dsfds'] = np.arange(0, X.shape[0])
 # # y = pd.read_csv(DATA_DIR + 'abalone.names', header=None)
 # y = X[['0']]
 # X.drop(['0'], axis=1, inplace=True)
 
+# x = pd.DataFrame(0, columns=['a', 'b'])
+# import pdb; pdb.set_trace()
 
 # In[16]:
 
@@ -67,20 +71,20 @@ X.drop(['0'], axis=1, inplace=True)
 
 
 # y.shape
-clf = citrees.CITreeClassifier(selector='chi2')
+# clf = citrees.CITreeClassifier(selector='chi2')
 
 
 # In[7]:
 
 
-clf.fit(X, y)
+# clf.fit(X, y)
 
 
 # In[8]:
 
 
-pred = clf.predict(X)
-y == pred
+# pred = clf.predict(X)
+# y == pred
 
 import pdb; pdb.set_trace()
 
