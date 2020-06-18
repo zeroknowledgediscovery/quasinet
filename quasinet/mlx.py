@@ -17,6 +17,7 @@ import math
 import multiprocessing
 import time
 
+import tqdm
 import numpy as np
 import pandas as pd
 import rpy2.rinterface as rinterface
@@ -30,6 +31,11 @@ import scipy.stats as stat
 
 from rpy2.robjects import r, pandas2ri
 pandas2ri.activate()
+
+from Bio import SeqIO
+from Bio.SeqRecord import SeqRecord
+from Bio.Seq import Seq
+from Bio.Alphabet import generic_dna
 
 #------------------------------------------
 from ascii_graph import Pyasciigraph
@@ -1199,11 +1205,12 @@ def getMergedDistribution(tree,cond={}):
               on the decision tree
         
     '''
+
     node_id_map={feature_name:np.array([], dtype=int)
                  for (i,feature_name) in tree.feature.iteritems()}
     for (i,feature_name) in tree.feature.iteritems():
         node_id_map[feature_name]=np.append(node_id_map[feature_name],int(i))
-    
+
     if DEBUG:
         print(node_id_map)
     #propagate to find current nodes
@@ -1422,7 +1429,7 @@ def qDistance(
                 distrib0.append(P0_item[x])
                 distrib1.append(P1_item[x])
 
-            S += jsdiv(distrib0, distrib1)
+            S += np.sqrt(jsdiv(distrib0, distrib1))
             nCount += 1
 
     if nCount == 0:
@@ -1466,6 +1473,7 @@ def q_distanceMatrix(tuple_list):
         (list) of lists of q-distances
     """
 
+    # save_dir = '/project2/ishanu/hiv-dip/coronovirus/tmp/'
     start = time.time()
 
     directory_col = '__DIRECTORY__'
@@ -1475,8 +1483,15 @@ def q_distanceMatrix(tuple_list):
     else:
         calc_upper_diag = False
 
+    # saved_file = save_dir + str(tuple_list[0][0]) + '.pkl'
+    # if os.path.exists(saved_file):
+    #     # return []
+    #     distances = load_pickled(saved_file)
+    #     return distances
+
     distances = []
     for tuple_ in tuple_list:
+        # the value of i should all be the same
         i, j = tuple_
         
         # set the lower diagonal to zero when applicable
@@ -1496,8 +1511,10 @@ def q_distanceMatrix(tuple_list):
 
         distances.append(dist)
         
+    # save_pickled(distances, save_dir + str(i) + '.pkl')
+    
     end = time.time()
-    print 'running q_distanceMatrix in ', end - start
+    # print 'running q_distanceMatrix in ', end - start
     return distances
 
 
@@ -1568,14 +1585,15 @@ def q_distanceMatrix_mp(X, Y, seq_to_perturbation_file, numCPUs=1):
         save_pickled(SEQ_TO_PERTURBATIONS, seq_to_perturbation_file)
 
     end = time.time()
-    print 'time of all perturbation calculation: {} for {} sequences'.format(end - start, len(SEQ_TO_PERTURBATIONS))
+    # print 'time of all perturbation calculation: {} for {} sequences'.format(end - start, len(SEQ_TO_PERTURBATIONS))
 
     arguement_set = []
     
     for tuple_list in tuple_matrix:
         arguement_set.append([tuple_list])
-        
-    print 'num CPUS: ', numCPUs
+
+    
+    # print 'num CPUS: ', numCPUs
     
     if numCPUs == 1:
         distance_matrix = []
@@ -1594,6 +1612,189 @@ def q_distanceMatrix_mp(X, Y, seq_to_perturbation_file, numCPUs=1):
         
     return distance_matrix
 
+
+def generate_constraints(seq):
+    constraints = {}
+    for i in range(0, len(seq)):
+        if seq[i] != 'X':
+            constraints['P' + str(i)] = seq[i]
+    return constraints
+
+
+
+def sequences_to_fasta(sequences, save_file=None):
+    """Convert a list of sequences to fasta format."""
+    fasta_sequences = []
+    for i, seq in enumerate(sequences):
+        seq = SeqRecord(Seq(seq, generic_dna), id=str(i))
+        fasta_sequences.append(seq)
+        
+    if save_file is not None:
+        SeqIO.write(
+            fasta_sequences, 
+            save_file, "fasta")
+
+    return fasta_sequences
+
+
+def flattenDist(ar,alpha=0.95):
+    '''
+    ar: numpy array of floats
+    alpha: flattening coefficient < 1.0
+    '''
+
+    ar = np.array(ar) ** alpha
+    ar = ar / np.sum(ar)
+
+    return ar
+
+def compute_gamma(
+    seq, 
+    max_time_step, 
+    num_simulations, path_to_qnet_trees, 
+    numCPUs,
+    save_dir=None,
+    save_time_steps=None,
+    alpha=None):
+    """Compute the gamma value over time.
+    
+    If there are nans (denoted by "-"), then we will replace those nans
+    with what the qnet produces at that index.
+
+    Args:
+        seq (str): initial input sequence
+        max_time_step (int): maximum number of time step to simulate for
+        num_simulations (int): number of simulations for each time step
+        path_to_qnet_trees (str): directory that holds the saved qnet trees
+        numCPUs (int): number of CPUs to use
+        save_dir (str): directory to save simulation sequences
+        save_time_steps (list): list of time steps where we save the sequences
+
+    Returns:
+        (list): of gamma values over time.
+        (list): of lists of simulation sequences over time.
+    """
+
+    F, TREES = getFmap(path_to_qnet_trees + '*.pkl')
+    
+    perturbation = getPerturbation(
+        seq, 
+        PATH_TO_TREES=None,
+        F_TREES=(F, TREES))
+
+    seq_len = len(seq)
+
+    # calculate mu, the baseline probability
+    baseline_prob = np.array([0.0] * seq_len)
+    for item, prob_distrib in perturbation.items():
+        prob = 1.0 - np.sum(np.square(np.array(prob_distrib.values())))
+        baseline_prob[int(item.replace('P', ''))] = prob
+    baseline_prob = baseline_prob / np.sum(baseline_prob)
+    indices = np.arange(0, seq_len)
+
+    constraints = generate_constraints(seq)
+
+    new_seq = ''
+    for i, char in enumerate(seq):
+        name = 'P' + str(i)
+        if (char == '-') and (name in TREES):
+            distrib = sampleTree(
+                TREES[name], 
+                constraints, 
+                sample='random', 
+                DIST=True)[1]
+        
+            values = []
+            probs = []
+            for value, prob in distrib.items():
+                values.append(value)
+                probs.append(prob)
+            
+            random_char = np.random.choice(values, p=probs)
+            new_seq += random_char
+        else:
+            new_seq += char
+
+    seq = new_seq
+
+    # this is a list of string sequences
+    seqs_over_time = [seq]
+    
+    # this is a list of scalars
+    dists_over_time = []
+
+    for i in tqdm.tqdm(range(max_time_step)):
+    # for i in range(max_time_step):
+        all_simulations = []
+        for simulation in range(num_simulations):
+            prev_seq = seqs_over_time[i]
+            constraints = generate_constraints(prev_seq)
+        
+            current_char = '-1'
+            new_char = '-1'
+            
+            # we keep sampling until the characters are different
+            while current_char == new_char:
+                random_index = np.random.choice(indices, p=baseline_prob)
+                distrib = sampleTree(
+                    TREES['P' + str(random_index)], 
+                    constraints, 
+                    sample='random', 
+                    DIST=True)[1]
+            
+                values = []
+                probs = []
+                for value, prob in distrib.items():
+                    values.append(value)
+                    probs.append(prob)
+
+                if alpha is not None:
+                    probs = flattenDist(probs, alpha=alpha)
+                
+                random_value = np.random.choice(values, p=probs)
+                current_char = prev_seq[random_index]
+                new_char = random_value
+                
+            new_seq = prev_seq[:random_index] + new_char + prev_seq[random_index+1:]
+            all_simulations.append(new_seq)
+            
+        simulation_seqs = pd.DataFrame(
+            np.array([list(sim) for sim in all_simulations]))
+        simulation_seqs['__DIRECTORY__'] = path_to_qnet_trees
+        
+        tmp_file = id_generator(10)
+        dist_matrix = q_distanceMatrix_mp(
+            simulation_seqs, 
+            simulation_seqs,
+            seq_to_perturbation_file=tmp_file,
+            numCPUs=numCPUs)
+        os.remove(tmp_file)
+        
+        df_dm = np.array(dist_matrix)
+        df_dm = df_dm + df_dm.T
+        
+        min_index = np.argmin(np.sum(df_dm, axis=0))
+        min_seq = all_simulations[min_index]
+        
+        #num_non_equals = np.sum(np.array(list(min_seq))!= np.array(list(seq)))
+        #print('time step: {}, number of non equals: {}'.format(i, num_non_equals))
+        
+        dist = qDistance(
+            seq, min_seq,
+            path_to_qnet_trees + '*.pkl', 
+            path_to_qnet_trees + '*.pkl')
+        dists_over_time.append(dist)
+        
+        # save the sampled sequences
+        if i in save_time_steps and (save_dir is not None):
+            sequences_to_fasta(
+                all_simulations, 
+                save_file=os.path.join(save_dir, 'step_{}.fasta'.format(i)))
+        seqs_over_time.append(random.choice(all_simulations))
+
+
+
+    return dists_over_time, seqs_over_time
 
 def load_trees(tree_dir, return_items=False):
     """Load the trees into a dictionary from a directory.
