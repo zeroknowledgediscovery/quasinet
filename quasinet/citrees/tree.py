@@ -51,6 +51,12 @@ class Node(object):
         self.right = right
         self.label_frequency = label_frequency
 
+    def __repr__(self):
+        return "Node(col={})".format(self.col)
+
+    def __str__(self):
+        return self.__repr__()
+
 
 def get_nodes(root):
     """Traverse a tree and get all the nodes.
