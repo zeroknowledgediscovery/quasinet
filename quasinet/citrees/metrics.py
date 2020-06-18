@@ -1,6 +1,6 @@
 import numpy as np
 
-def kl_divergence(p1, p2, smooth=True):
+def kl_divergence(p1, p2, smooth=0.0001):
     """Compute the Kullback–Leibler divergence of discrete probability distributions.
 
     NOTE: we will not perform error checking in this function because
@@ -15,8 +15,8 @@ def kl_divergence(p1, p2, smooth=True):
     p2 : 1d array-like
         probability distribution
 
-    smooth : bool
-        whether to smooth out the probability distribution of `p2`. This
+    smooth : float
+        amount by which to smooth out the probability distribution of `p2`. This
         is intended to deal with categories with zero probability.
 
     Returns
@@ -25,14 +25,20 @@ def kl_divergence(p1, p2, smooth=True):
         kl divergence
     """
 
-    if smooth:
-        p2 = (p2 + 0.0001)
-        p2 /= np.sum(p2)
+    p1 += smooth
+    p1 /= np.sum(p1)
 
-    return (p1 * np.log2(p1 / p2)).sum()
+    p2 += smooth
+    p2 /= np.sum(p2)
+
+    kl_div = (p1 * np.log2(p1 / p2)).sum()
+
+    if np.isnan(kl_div):
+        breakpoint()
+    return kl_div
 
 
-def js_divergence(p1, p2, smooth=True):
+def js_divergence(p1, p2, smooth=0.0001):
     """Compute the Jensen-Shannon of discrete probability distributions.
 
     Parameters
@@ -43,14 +49,17 @@ def js_divergence(p1, p2, smooth=True):
     p2 : 1d array-like
         probability distribution
 
-    smooth : bool
-        whether to smooth out the probability distributions. 
+    smooth : float
+        amount by which to smooth out the probability distribution of `p2`. This
+        is intended to deal with categories with zero probability.
 
     Returns
     -------
-    output : numeric
+    js_div : numeric
         js divergence
     """
     
     p = 0.5 * (p1 + p2)
-    return 0.5 * (kl_divergence(p1, p, smooth) + kl_divergence(p2, p, smooth))
+    js_div = 0.5 * (kl_divergence(p1, p, smooth) + kl_divergence(p2, p, smooth))
+
+    return js_div
