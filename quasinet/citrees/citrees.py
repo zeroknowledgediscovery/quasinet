@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 import multiprocessing
 import threading
 import warnings
+from collections import Counter
 
 from joblib import delayed, Parallel
 import numpy as np
@@ -48,16 +49,29 @@ class Node(object):
         For classification trees, estimate of each class probability
         For regression trees, central tendency estimate
 
-    left_child : tuple
-        For left child node, two element tuple with first element a 2d array of
-        features and second element a 1d array of labels
+    left_child : Node
+        Another Node
 
-    right_child : tuple
-        For right child node, two element tuple with first element a 2d array of
-        features and second element a 1d array of labels
+    right_child : Node
+        Another Node
+
+    label_frequency: dict
+        Dictionary mapping label to its frequency
     """
-    def __init__(self, col=None, col_pval=None, threshold=None, impurity=None,
-                 value=None, left_child=None, right_child=None):
+
+    def __init__(self, 
+                 col=None, 
+                 col_pval=None, 
+                 threshold=None, 
+                 impurity=None,
+                 value=None, 
+                 left_child=None, 
+                 right_child=None, 
+                 label_frequency=None):
+
+        assert isinstance(left_child, Node) or left_child is None
+        assert isinstance(right_child, Node) or right_child is None
+
         self.col         = col
         self.col_pval    = col_pval
         self.threshold   = threshold
@@ -65,6 +79,7 @@ class Node(object):
         self.value       = value
         self.left_child  = left_child
         self.right_child = right_child
+        self.label_frequency = label_frequency
 
 
 class CITreeBase(object):
@@ -258,14 +273,14 @@ class CITreeBase(object):
                     # Return all arguments to constructor except value
                     return Node(col=col, col_pval=col_pval, threshold=threshold,
                                 left_child=left_child, right_child=right_child,
-                                impurity=impurity)
+                                impurity=impurity, label_frequency=Counter(y))
 
         # Calculate terminal node value
         if self.verbose: logger("tree", "Root node reached at depth %d" % depth)
         value = self.node_estimate(y)
 
         # Terminal node, no other values to pass to constructor
-        return Node(value=value)
+        return Node(value=value, label_frequency=Counter(y))
 
 
     def fit(self, X, y=None):
