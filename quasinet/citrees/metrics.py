@@ -1,5 +1,7 @@
 import numpy as np
+from numba import njit
 
+@njit(cache=True, nogil=True, fastmath=True)
 def kl_divergence(p1, p2, smooth=0.0001):
     """Compute the Kullback–Leibler divergence of discrete probability distributions.
 
@@ -33,11 +35,10 @@ def kl_divergence(p1, p2, smooth=0.0001):
 
     kl_div = (p1 * np.log2(p1 / p2)).sum()
 
-    if np.isnan(kl_div):
-        breakpoint()
     return kl_div
 
 
+@njit(cache=True, nogil=True, fastmath=True)
 def js_divergence(p1, p2, smooth=0.0001):
     """Compute the Jensen-Shannon of discrete probability distributions.
 
@@ -59,7 +60,11 @@ def js_divergence(p1, p2, smooth=0.0001):
         js divergence
     """
     
-    p = 0.5 * (p1 + p2)
-    js_div = 0.5 * (kl_divergence(p1, p, smooth) + kl_divergence(p2, p, smooth))
+    # TODO: this checking may cost us a lot of unneccesary computation time
+    if np.all(p1 == p2):
+        return 0.0
+    else:
+        p = 0.5 * (p1 + p2)
+        js_div = 0.5 * (kl_divergence(p1, p, smooth) + kl_divergence(p2, p, smooth))
 
-    return js_div
+        return js_div

@@ -6,6 +6,9 @@ from joblib import dump, load, delayed, Parallel
 from citrees import CITreeClassifier
 from metrics import js_divergence
 from tree import Node, get_nodes
+import numba
+from numba import njit, prange
+from numba.core import types
 
 class Qnet(object):
     """
@@ -130,20 +133,34 @@ class Qnet(object):
 
         Returns
         -------
-        output : dictionary
-            dictionary mapping column names to another dictionary. That dictionary
-            maps possible column values to probability values.
+        prob_distributions : list
+            list of probability distributions, one for each index 
         """
 
         self._check_is_fitted()
 
-        col_to_prob_distrib = {}
+        prob_distributions = [None] * len(self.estimators_)
         for col in self.estimators_.keys():
             column_to_item = {i: item for i, item in enumerate(seq)}
-            col_to_prob_distrib[col] = self.predict_distribution(column_to_item, col)
+            distrib = self.predict_distribution(column_to_item, col)
+            prob_distributions[col] = distrib
 
-        return col_to_prob_distrib
+        return prob_distributions
 
+    def predict_distributions_numba(self, seq):
+        prob_distributions = self.predict_distributions(seq)
+
+        numba_prob_distributions = []
+        for prob_distribution in prob_distributions:
+            d = numba.typed.Dict.empty(
+                key_type=types.unicode_type,
+                value_type=types.float32)
+
+            for k, v in prob_distribution.items():
+                d[k] = v
+            numba_prob_distributions.append(d)
+
+        return numba_prob_distributions
 
     def predict_proba(self, X):
 
@@ -152,7 +169,7 @@ class Qnet(object):
         raise NotImplementedError
 
 
-
+@njit(cache=True, nogil=True, fastmath=True)
 def _combine_two_distribs(seq1_distrib, seq2_distrib):
     """Combine two distributions together.
 
@@ -193,18 +210,20 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
     return distrib
 
 
+@njit(cache=True, nogil=True, fastmath=True)
 def _qdistance_with_prob_distribs(distrib1, distrib2):
-    """
+    """using njit worsens speed performance
     """
 
     total_divergence = 0
-    for col, seq1_distrib in distrib1.items():
 
-        seq2_distrib = distrib2[col]
+    for i, seq1_distrib in enumerate(distrib1):
+
+        seq2_distrib = distrib2[i]
 
         distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
 
-        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1], smooth=True))
+        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1]))
 
     avg_divergence = total_divergence / len(distrib1)
 
@@ -250,8 +269,38 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     return divergence
 
 
+@njit(parallel=True, fastmath=True)
+# @njit
+def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs):
+    num_seqs1 = len(seqs1_distribs)
+    num_seqs2 = len(seqs2_distribs)
+
+    distance_matrix = np.empty((num_seqs1, num_seqs2))
+    # for i in np.arange(num_seqs1):
+    for i in prange(num_seqs1):
+        for j in np.arange(num_seqs2):
+            distance_matrix[i, j] = _qdistance_with_prob_distribs(seqs1_distribs[i], 
+                                                                  seqs2_distribs[j])
+
+    return distance_matrix
+
 def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
-    raise NotImplementedError
+
+    seqs1_distribs = numba.typed.List()
+    for seq in seqs1:
+        seqs1_distribs.append(qnet1.predict_distributions_numba(seq))
+
+    seqs2_distribs = numba.typed.List()
+    for seq in seqs2:
+        seqs2_distribs.append(qnet2.predict_distributions_numba(seq))
+
+    # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
+    # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
+
+    distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs)
+
+    return distance_matrix
+    
 
 def load_qnet(f):
     qnet = load(f)
