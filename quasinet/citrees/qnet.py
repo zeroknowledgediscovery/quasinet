@@ -192,6 +192,25 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
 
     return distrib
 
+
+def _qdistance_with_prob_distribs(distrib1, distrib2):
+    """
+    """
+
+    total_divergence = 0
+    for col, seq1_distrib in distrib1.items():
+
+        seq2_distrib = distrib2[col]
+
+        distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
+
+        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1], smooth=True))
+
+    avg_divergence = total_divergence / len(distrib1)
+
+    return avg_divergence
+
+
 def qdistance(seq1, seq2, qnet1, qnet2):
     """Compute the Jensen-Shannon of discrete probability distributions.
 
@@ -224,26 +243,12 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     if seq1.shape[0] != seq2.shape[0]:
         raise ValueError('The two sequences must be of equal lengths.')
 
-
     seq1_distribs = qnet1.predict_distributions(seq1)
     seq2_distribs = qnet2.predict_distributions(seq2)
-
-    total_divergence = 0
-    for col, seq1_distrib in seq1_distribs.items():
-
-        seq2_distrib = seq2_distribs[col]
-
-        distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
-
-        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1], smooth=True))
-
-    total_divergence /= len(seq1_distribs)
     
-    return total_divergence
+    divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
+    return divergence
 
-
-def qdistance_with_prob_distributions(distrib1, distrib2):
-    raise NotImplementedError
 
 def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     raise NotImplementedError
