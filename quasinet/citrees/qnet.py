@@ -22,14 +22,12 @@ class Qnet(object):
 
     def fit(self, X):
 
-        if not np.issubdtype(X.columns.dtype, np.integer):
-            raise ValueError('The columns must be of integer datatype.')
+        if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+            raise ValueError('X must be a 2d numpy array!')
 
-        if not isinstance(X, pd.core.frame.DataFrame):
-            raise ValueError('X must be a pandas Dataframe.')
-
-        if not (np.all(X.columns == np.arange(0, X.shape[1]))):
-            raise ValueError('The columns must of increasing order starting from 0.')
+        if not np.issubdtype(X.dtype, np.str_):
+            raise ValueError('X must contain only strings!')
+            
 
         # Instantiate base tree models
         self.estimators_ = {}
@@ -38,11 +36,13 @@ class Qnet(object):
         # TODO: allow for more arguments to be passed to CITrees
         # TODO: we may not have any trees created. When that's the
         # case, we want to predict an equal probability distribution
-        for col in X.columns:
+        for col in np.arange(0, X.shape[1]):
             clf = CITreeClassifier(selector='chi2', random_state=42)
-            y = X[col].values
-            clf.fit(X.drop([col], axis=1), y)
+            y = X[:, col]
+            clf.fit(np.delete(X, col, 1), y)
             self.estimators_[col] = clf
+
+        return self
 
 
     def check_is_fitted(self):
@@ -87,6 +87,8 @@ class Qnet(object):
         if len(distributions) == 0:
             distributions[root.col] = root.label_frequency
 
+        # TODO: eventually, it may be the case that we have to remove
+        # all usages of pandas because numba does not allow for pandas
         distributions = pd.DataFrame(list(distributions.values()))
         distributions.fillna(0, inplace=True)
         distributions.reset_index(inplace=True, drop=True)
@@ -158,12 +160,15 @@ def qdistance(seq1, seq2, qnet1, qnet2):
         qdistance
     """
 
-    if len(seq1) != len(seq2):
+    if not isinstance(seq1, np.ndarray) or not isinstance(seq2, np.ndarray):
+        raise ValueError('You must pass in arrays as sequences.')
+
+    if len(seq1.shape) != 1 or len(seq2.shape) != 1:
+        raise ValueError('The two sequences must be 1d arrays.')
+
+    if seq1.shape[0] != seq2.shape[0]:
         raise ValueError('The two sequences must be of equal lengths.')
 
-    # TODO: allow for 1d numpy array as well
-    if (not isinstance(seq1, list)) or (not isinstance(seq2, list)):
-        raise ValueError('You must pass in lists as sequences.')
 
     seq1_distribs = qnet1.predict_distributions(seq1)
     seq2_distribs = qnet2.predict_distributions(seq2)
