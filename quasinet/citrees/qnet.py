@@ -1,7 +1,7 @@
 
 import pandas as pd
 import numpy as np
-from joblib import dump, load
+from joblib import dump, load, delayed, Parallel
 
 from citrees import CITreeClassifier
 from metrics import js_divergence
@@ -11,14 +11,19 @@ class Qnet(object):
     """
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, n_jobs=1):
+        self.n_jobs = n_jobs
 
     def __repr__(self):
         return "qnet.Qnet"
 
     def __str__(self):
         return self.__repr__()
+
+    def _parallel_fit_tree(self, tree, X, col):
+        tree.fit(np.delete(X, col, 1), X[:, col])
+
+        return tree
 
     def fit(self, X):
 
@@ -36,16 +41,28 @@ class Qnet(object):
         # TODO: allow for more arguments to be passed to CITrees
         # TODO: we may not have any trees created. When that's the
         # case, we want to predict an equal probability distribution
+
+        trees = []
         for col in np.arange(0, X.shape[1]):
-            clf = CITreeClassifier(selector='chi2', random_state=42)
-            y = X[:, col]
-            clf.fit(np.delete(X, col, 1), y)
-            self.estimators_[col] = clf
+            tree = CITreeClassifier(selector='chi2', random_state=42)
+            trees.append(tree)
+
+        trees = Parallel(n_jobs=self.n_jobs, backend='loky')(
+            delayed(self._parallel_fit_tree)(
+                trees[col], X, col)
+            for col in range(0, X.shape[1])
+            )
+
+        for col, tree in enumerate(trees):
+            self.estimators_[col] = tree
+
+            # clf.fit(np.delete(X, col, 1), X[:, col])
+            # self.estimators_[col] = clf
 
         return self
 
 
-    def check_is_fitted(self):
+    def _check_is_fitted(self):
         if not hasattr(self, 'estimators_'):
             raise ValueError('You need to call `fit` first! ')
 
@@ -67,7 +84,7 @@ class Qnet(object):
             dictionary mapping possible column values to probability values
         """
 
-        self.check_is_fitted()
+        self._check_is_fitted()
 
         if len(column_to_item) == 0:
             raise NotImplementedError
@@ -119,7 +136,7 @@ class Qnet(object):
             maps possible column values to probability values.
         """
 
-        self.check_is_fitted()
+        self._check_is_fitted()
 
         col_to_prob_distrib = {}
         for col in self.estimators_.keys():
@@ -131,7 +148,7 @@ class Qnet(object):
 
     def predict_proba(self, X):
 
-        self.check_is_fitted()
+        self._check_is_fitted()
 
         raise NotImplementedError
 
