@@ -553,7 +553,7 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         # Select random column from start and update
         best_col, best_pval = np.random.choice(col_idx), np.inf
 
-        y = self.y_enc.transform(y.reshape(-1, 1))
+        y = self.y_enc.transform(y.reshape(-1, 1)).reshape(-1)
 
         # Iterate over columns
         for col in col_idx:
@@ -565,7 +565,7 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
                                         % col)
                 continue
 
-            X_col = self.X_encs[col].transform(X_col.reshape(-1, 1))
+            X_col = self.X_encs[col].transform(X_col.reshape(-1, 1)).reshape(-1)
 
             pval = self._perm_test(x=X_col,
                                    y=y,

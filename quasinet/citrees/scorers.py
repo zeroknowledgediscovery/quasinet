@@ -623,20 +623,29 @@ def mi(x, y):
     return mutual_info_classif(x, y, discrete_features=True)
 
 
+@njit(cache=True, nogil=True, fastmath=True)
+def create_chi2_table(x, y):
+    """Create a chi-squared contingency table using x and y
+    """
+
+    chi2_table = np.zeros( ( np.max(y) + 1, np.max(x) + 1), dtype=np.int32)
+
+    for i in np.arange(x.shape[0]):
+        chi2_table[y[i], x[i]] += 1
+
+    return chi2_table
+
 def chi2(x, y):
     """
 
     x and y are ordinal representations of categorical variables.
     """
-
-    chi2_table = np.zeros( ( np.max(y) + 1, np.max(x) + 1) )
-
-    for i in np.arange(x.shape[0]):
-        chi2_table[y[i], x[i]] += 1
+    # breakpoint()
+    chi2_table = create_chi2_table(x, y)
 
     chi2_table = remove_zeros(chi2_table, axis=1)
     chi2_table = remove_zeros(chi2_table, axis=0)
-
+    
     p_value = chi2_contingency(chi2_table)[1]
 
     return p_value
