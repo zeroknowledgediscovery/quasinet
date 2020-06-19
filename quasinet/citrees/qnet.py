@@ -37,7 +37,6 @@ class Qnet(object):
         # Instantiate base tree models
         self.estimators_ = {}
 
-        # TODO: allow for multiple threads for speedup
         # TODO: allow for more arguments to be passed to CITrees
         # TODO: we may not have any trees created. When that's the
         # case, we want to predict an equal probability distribution
@@ -154,16 +153,55 @@ class Qnet(object):
 
 
 
+def _combine_two_distribs(seq1_distrib, seq2_distrib):
+    """Combine two distributions together.
+
+    The two distributions may contain different random variables.
+    If one random variable doesn't exist in one of the distributions,
+    then we set the probability to 0.
+
+    Parameters
+    ----------
+    seq1_distrib : dict
+        Dictionary mapping random variables to probabilities.
+
+    seq2_distrib : dict
+        Dictionary mapping random variables to probabilities.
+
+    Returns
+    -------
+    output : 2d array-like
+        array of shape (2, total unique random variables)
+    """
+
+    # make sure both distribution contains the same responses
+    for seq1_response in seq1_distrib.keys():
+        if seq1_response not in seq2_distrib:
+            seq2_distrib[seq1_response] = 0.0
+
+    for seq2_response in seq2_distrib.keys():
+        if seq2_response not in seq1_distrib:
+            seq1_distrib[seq2_response] = 0.0
+
+    num_responses = len(seq2_distrib)
+
+    distrib = np.empty((2, num_responses))
+    for i, x in enumerate(seq1_distrib.keys()):
+        distrib[0, i] = seq1_distrib[x]
+        distrib[1, i] = seq2_distrib[x]
+
+    return distrib
+
 def qdistance(seq1, seq2, qnet1, qnet2):
     """Compute the Jensen-Shannon of discrete probability distributions.
 
     Parameters
     ----------
-    seq1 : list
-        list of items in sequence 1
+    seq1 : 1d array-like
+        Array of values
 
-    seq2 : list
-        list of items in sequence 2
+    seq2 : 1d array-like
+        Array of values
 
     qnet1 : Qnet
         the Qnet that `seq1` belongs to 
@@ -195,23 +233,9 @@ def qdistance(seq1, seq2, qnet1, qnet2):
 
         seq2_distrib = seq2_distribs[col]
 
-        # make sure both distribution contains the same responses
-        for seq1_response in seq1_distrib.keys():
-            if seq1_response not in seq2_distrib:
-                seq2_distrib[seq1_response] = 0.0
+        distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
 
-        for seq2_response in seq2_distrib.keys():
-            if seq2_response not in seq1_distrib:
-                seq1_distrib[seq2_response] = 0.0
-
-        num_responses = len(seq2_distrib)
-        distrib1 = np.empty(num_responses)
-        distrib2 = np.empty(num_responses)
-        for i, x in enumerate(seq1_distrib.keys()):
-            distrib1[i] = seq1_distrib[x]
-            distrib2[i] = seq2_distrib[x]
-
-        total_divergence += np.sqrt(js_divergence(distrib1, distrib2, smooth=True))
+        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1], smooth=True))
 
     total_divergence /= len(seq1_distribs)
     
@@ -221,7 +245,7 @@ def qdistance(seq1, seq2, qnet1, qnet2):
 def qdistance_with_prob_distributions(distrib1, distrib2):
     raise NotImplementedError
 
-def qdistance_matrix():
+def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     raise NotImplementedError
 
 def load_qnet(f):
