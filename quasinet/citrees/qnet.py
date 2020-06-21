@@ -317,16 +317,14 @@ def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
     # for i in prange(num_seqs1):
         for j in np.arange(num_seqs2):
 
-            # breakpoint()
             if symmetric and (i >= j):
                 dist = 0.0
             else:
                 dist = _qdistance_with_prob_distribs(seqs1_distribs[i], 
                                                      seqs2_distribs[j])
 
-            
             distance_matrix[i, j] = dist
-    # breakpoint()
+
     if symmetric: 
         distance_matrix = distance_matrix + distance_matrix.T
     return distance_matrix
@@ -358,11 +356,10 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     assert_2d_array(seqs1)
     assert_2d_array(seqs2)
 
-    if seqs1.shape[1] != seqs2.shape[2]:
+    if seqs1.shape[1] != seqs2.shape[1]:
         raise ValueError('The columns of the two matrices must be equal.')
 
     symmetric = np.all(seqs1 == seqs2) and (qnet1 == qnet2)
-    # symmetric = False
 
     # WARNING: do not try to access seqs1_distribs with non-numba code, 
     # as it will create a segmentation fault
@@ -377,11 +374,9 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     for seq2 in seqs2:
         seqs2_distribs.append(qnet2.predict_distributions(seq2))
 
-    # breakpoint()
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
 
-    # breakpoint()
     distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
                                                       seqs2_distribs,
                                                       symmetric=symmetric)
