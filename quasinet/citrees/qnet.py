@@ -212,7 +212,24 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
 
 @njit(cache=True, nogil=True, fastmath=True)
 def _qdistance_with_prob_distribs(distrib1, distrib2):
-    """using njit worsens speed performance
+    """
+    
+    NOTE: using njit may worsen speed performance
+
+    Parameters
+    ----------
+    distrib1 : list
+        List of dictionaries. Each dictionary maps random variables 
+        to probabilities.
+
+    distrib2 : list
+        List of dictionaries. Each dictionary maps random variables 
+        to probabilities.
+
+    Returns
+    -------
+    avg_divergence : scalar
+        qdistance
     """
 
     total_divergence = 0
@@ -271,44 +288,132 @@ def qdistance(seq1, seq2, qnet1, qnet2):
 
 @njit(parallel=True, fastmath=True)
 # @njit
-def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs):
+def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
+    """Compute the qdistance matrix using the distributions.
+
+    Parameters
+    ----------
+    seqs1_distribs : list
+        List of lists. Each sublist is a list of dictionaries mapping 
+        random variables to probabilities.
+
+    seqs2_distribs : list
+        Same as `seqs1_distribs`
+
+    symmetric : bool
+        whether the distance matrix is symmetric or not
+
+    Returns
+    -------
+    distance_matrix : 2d array-like
+        distance matrix
+    """
+
     num_seqs1 = len(seqs1_distribs)
-    num_seqs2 = len(seqs2_distribs)
+    num_seqs2 = len(seqs2_distribs) 
 
     distance_matrix = np.empty((num_seqs1, num_seqs2))
-    # for i in np.arange(num_seqs1):
-    for i in prange(num_seqs1):
+    for i in np.arange(num_seqs1):
+    # for i in prange(num_seqs1):
         for j in np.arange(num_seqs2):
-            distance_matrix[i, j] = _qdistance_with_prob_distribs(seqs1_distribs[i], 
-                                                                  seqs2_distribs[j])
 
+            # breakpoint()
+            if symmetric and (i >= j):
+                dist = 0.0
+            else:
+                dist = _qdistance_with_prob_distribs(seqs1_distribs[i], 
+                                                     seqs2_distribs[j])
+
+            
+            distance_matrix[i, j] = dist
+    # breakpoint()
+    if symmetric: 
+        distance_matrix = distance_matrix + distance_matrix.T
     return distance_matrix
 
 def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
+    """Compute a distance matrix with the qdistance metric.
 
+    Parameters
+    ----------
+    seqs1: 2d array-like
+        Array of values
+
+    seqs2: 2d array-like
+        Array of values
+
+    qnet1 : Qnet
+        the Qnet that `seqs1` belongs to 
+
+    qnet2 : Qnet
+        the Qnet that `seqs2` belongs to 
+
+    Returns
+    -------
+    distance_matrix : 2d array-like
+        distance matrix
+    """
+    symmetric = np.all(seqs1 == seqs2) and (qnet1 == qnet2)
+    # symmetric = False
+
+    # WARNING: do not try to access seqs1_distribs with non-numba code, 
+    # as it will create a segmentation fault
+    # this is likely a bug due to Numba
     seqs1_distribs = numba.typed.List()
-    for seq in seqs1:
-        seqs1_distribs.append(qnet1.predict_distributions_numba(seq))
+    for seq1 in seqs1:
+        seqs1_distribs.append(qnet1.predict_distributions_numba(seq1))
 
     seqs2_distribs = numba.typed.List()
-    for seq in seqs2:
-        seqs2_distribs.append(qnet2.predict_distributions_numba(seq))
+    for seq2 in seqs2:
+        seqs2_distribs.append(qnet2.predict_distributions_numba(seq2))
 
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
 
-    distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs)
+    # breakpoint()
+    distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
+                                                      seqs2_distribs,
+                                                      symmetric=symmetric)
 
     return distance_matrix
     
 
 def load_qnet(f):
+    """Load the qnet from a file.
+
+    Parameters
+    ----------
+    f : str
+        File name.
+ 
+    Returns
+    -------
+    qnet : Qnet
+    """
+
     qnet = load(f)
     assert isinstance(qnet, Qnet)
 
     return qnet
 
 def save_qnet(qnet, f):
+    """Save the qnet to a file.
+
+    NOTE: The file name must end in `.joblib`
+
+    Parameters
+    ----------
+    qnet1 : Qnet
+        A Qnet instance
+
+    f : str
+        File name.
+ 
+    Returns
+    -------
+    None
+    """
+
     assert isinstance(qnet, Qnet)
     if not f.endswith('.joblib'):
         raise ValueError('The outfile must end with `.joblib`')
