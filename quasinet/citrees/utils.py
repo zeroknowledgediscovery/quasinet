@@ -115,3 +115,8 @@ def estimate_margin(y_probs, y_true):
     
     # Margin is P(y == j) - max(P(y != j))
     return true_probs - other_probs
+
+
+def assert_2d_array(X):
+    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+        raise ValueError('You must pass in a 2D array!')

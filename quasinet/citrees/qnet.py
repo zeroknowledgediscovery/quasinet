@@ -9,6 +9,7 @@ from tree import Node, get_nodes
 import numba
 from numba import njit, prange
 from numba.core import types
+from utils import assert_2d_array
 
 class Qnet(object):
     """
@@ -30,8 +31,7 @@ class Qnet(object):
 
     def fit(self, X):
 
-        if not isinstance(X, np.ndarray) or len(X.shape) != 2:
-            raise ValueError('X must be a 2d numpy array!')
+        assert_2d_array(X)
 
         if not np.issubdtype(X.dtype, np.str_):
             raise ValueError('X must contain only strings!')
@@ -169,7 +169,7 @@ class Qnet(object):
         raise NotImplementedError
 
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def _combine_two_distribs(seq1_distrib, seq2_distrib):
     """Combine two distributions together.
 
@@ -210,7 +210,7 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
     return distrib
 
 
-@njit(cache=True, nogil=True, fastmath=True)
+# @njit(cache=True, nogil=True, fastmath=True)
 def _qdistance_with_prob_distribs(distrib1, distrib2):
     """
     
@@ -286,7 +286,7 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     return divergence
 
 
-@njit(parallel=True, fastmath=True)
+# @njit(parallel=True, fastmath=True)
 # @njit
 def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
     """Compute the qdistance matrix using the distributions.
@@ -331,6 +331,7 @@ def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
         distance_matrix = distance_matrix + distance_matrix.T
     return distance_matrix
 
+
 def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     """Compute a distance matrix with the qdistance metric.
 
@@ -353,20 +354,30 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     distance_matrix : 2d array-like
         distance matrix
     """
+
+    assert_2d_array(seqs1)
+    assert_2d_array(seqs2)
+
+    if seqs1.shape[1] != seqs2.shape[2]:
+        raise ValueError('The columns of the two matrices must be equal.')
+
     symmetric = np.all(seqs1 == seqs2) and (qnet1 == qnet2)
     # symmetric = False
 
     # WARNING: do not try to access seqs1_distribs with non-numba code, 
     # as it will create a segmentation fault
     # this is likely a bug due to Numba
-    seqs1_distribs = numba.typed.List()
+    # seqs1_distribs = numba.typed.List()
+    seqs1_distribs = []
     for seq1 in seqs1:
-        seqs1_distribs.append(qnet1.predict_distributions_numba(seq1))
+        seqs1_distribs.append(qnet1.predict_distributions(seq1))
 
-    seqs2_distribs = numba.typed.List()
+    # seqs2_distribs = numba.typed.List()
+    seqs2_distribs = []
     for seq2 in seqs2:
-        seqs2_distribs.append(qnet2.predict_distributions_numba(seq2))
+        seqs2_distribs.append(qnet2.predict_distributions(seq2))
 
+    # breakpoint()
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
 
@@ -400,6 +411,13 @@ def save_qnet(qnet, f):
     """Save the qnet to a file.
 
     NOTE: The file name must end in `.joblib`
+
+    TODO: using joblib is actually less memory efficient than using pickle.
+    However, I don't know if this is a general problem or this only happens
+    under certain circumstances.
+
+    TODO: we may have to delete and garbage collection some attributes in the qnet
+    to save memory. For example, `.feature_importances_`, `.available_features_`
 
     Parameters
     ----------
