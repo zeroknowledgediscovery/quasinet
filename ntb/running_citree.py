@@ -39,7 +39,8 @@ reload(citrees)
 X = pd.read_csv(DATA_DIR + 'cchfl_test.csv')
 y = X['0'].values
 X.drop(['0'], axis=1, inplace=True)
-X = X.iloc[:, :5]
+# X = X.iloc[:, :5]
+X = X.values.astype(str)
 # import pdb; pdb.set_trace()
 # X['dsfds'] = np.arange(0, X.shape[0])
 # # y = pd.read_csv(DATA_DIR + 'abalone.names', header=None)
@@ -49,16 +50,6 @@ X = X.iloc[:, :5]
 # x = pd.DataFrame(0, columns=['a', 'b'])
 # import pdb; pdb.set_trace()
 
-# In[16]:
-
-
-# X
-
-
-# In[18]:
-
-
-# y
 
 
 # In[11]:
@@ -71,22 +62,22 @@ X = X.iloc[:, :5]
 
 
 # y.shape
-# clf = citrees.CITreeClassifier(selector='chi2')
+clf = citrees.CITreeClassifier()
 
 
 # In[7]:
 
 
-# clf.fit(X, y)
+clf.fit(X, y)
 
 
 # In[8]:
 
 
-# pred = clf.predict(X)
-# y == pred
+pred = clf.predict(X)
+print (np.mean(y == pred))
 
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 
 
 # In[ ]:
