@@ -426,20 +426,27 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         index_to_subset = {}
 
         unique_X = np.sort(np.unique(X))
-
-        # the number of sets is exponential in the number of unique X values
-        # TODO: when the size is large, we are going to randomly sample 2 ** 8
-        # many different subsets 
-        if len(unique_X) <= 8:
+        num_unique = len(unique_X)
+        
+        # if the number of unique possibilities is too large, we need to randomly
+        # sample because the powerset grows exponentially
+        if num_unique <= 6:
             subsets = powerset(unique_X)
         else:
-            raise NotImplementedError
+            # TODO: need to replace this with a generator
+            subsets = []
+            # NOTE: there may be some inefficiency because when randomly sampling,
+            # we may introduce redundant splits
+            for i in range(2 ** 6):
+                randint = np.random.randint(low=1, high=num_unique)
+                subset = unique_X[np.random.choice(num_unique, size=randint)]
+                subsets.append(subset)
 
         for i, subset in enumerate(subsets):
             # TODO: sort subset
 
             # ignore the case where the list is empty or the subset
-            # is the set itself
+            # is the set itself because no split is actually made
             if len(subset)  == 0:
                 continue 
             elif len(subset) == len(unique_X):
