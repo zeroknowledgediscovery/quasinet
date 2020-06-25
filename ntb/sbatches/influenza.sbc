@@ -13,8 +13,9 @@
 
 # remember to change the parameters
 # time python influenza.py
-/software/Anaconda2-4.3.0-el7-x86_64/bin/activate quasinet_new
+source /software/Anaconda2-4.3.0-el7-x86_64/bin/activate quasinet_new
 # note that the maximum number of cpus is 28 and maximum time is 36 hours
 
+which python
 # python sbatches/test_python.py
 time python influenza.py

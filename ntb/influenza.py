@@ -16,6 +16,8 @@ MAX_ROWS = None
 
 TRAIN_QNETS = True
 
+COMPUTE_QDISTS = True
+
 
 # ## Paths
 
@@ -57,7 +59,8 @@ sys.path.insert(1, '/project2/ishanu/hiv-dip/quasinet/quasinet/citrees/')
 import qnet
 import tree
 
-reload(qnet)
+# reload(qnet)
+# reload(citrees)
 
 
 # # Notes
@@ -159,6 +162,17 @@ def train_qnets(f_to_seqs, numCPUs, output_dir, max_cols=None):
 # In[9]:
 
 
+# result = train_qnet(
+#     'h1n1human2009_2010.csv',
+#     f_to_seqs['h1n1human2009_2010.csv'], 
+#     output_dir=None, 
+#     max_cols=MAX_COLS, 
+#     numCPUs=1)
+
+
+# In[10]:
+
+
 if TRAIN_QNETS:
     f_to_qnets = train_qnets(
         f_to_seqs, 
@@ -171,7 +185,7 @@ if TRAIN_QNETS:
 
 # ## Functions
 
-# In[10]:
+# In[11]:
 
 
 def load_qnets(dir_):
@@ -180,10 +194,6 @@ def load_qnets(dir_):
         f_to_qnets[os.path.basename(f)] = qnet.load_qnet(f)
         
     return f_to_qnets
-
-
-# In[16]:
-
 
 def compute_qdist(f, seqs, myqnet, max_seqs, max_cols):
     seqs = seqs.drop_duplicates()
@@ -223,13 +233,13 @@ def compute_qdists(f_to_qnets, f_to_seqs, max_seqs, max_cols, numCPUs, outdir):
 
 # ## Computation
 
-# In[11]:
+# In[12]:
 
 
 # f_to_qnets = load_qnets(INFLUENZA_QNET_DIR)
 
 
-# In[12]:
+# In[13]:
 
 
 # sys.getsizeof(f_to_qnets['h1n1human2000_2001.joblib'].estimators_) #.estimators_[1].root
@@ -240,24 +250,19 @@ def compute_qdists(f_to_qnets, f_to_seqs, max_seqs, max_cols, numCPUs, outdir):
 # f_to_qnets['h1n1human2000_2001.joblib'].estimators_[0].feature_importances_.nbytes
 
 
-# In[13]:
-
-
-
-
-
 # In[14]:
 
 
-qdist = compute_qdists(
-    f_to_qnets, f_to_seqs, max_seqs=MAX_ROWS, 
-    max_cols=MAX_COLS, numCPUs=NUMCPUS * NUMCPUS, outdir=INFLUENZA_QDIST_DIR)
+if COMPUTE_QDISTS:
+    qdist = compute_qdists(
+        f_to_qnets, f_to_seqs, max_seqs=MAX_ROWS, 
+        max_cols=MAX_COLS, numCPUs=NUMCPUS ** 2, outdir=INFLUENZA_QDIST_DIR)
 
 
 # In[15]:
 
 
-# qdist['h1n1human2000_2001.csv']
+# qdist
 
 
 # In[ ]:
