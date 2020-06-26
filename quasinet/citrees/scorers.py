@@ -640,7 +640,7 @@ def chi2(x, y):
 
     x and y are ordinal representations of categorical variables.
     """
-    # breakpoint()
+
     chi2_table = create_chi2_table(x, y)
 
     chi2_table = remove_zeros(chi2_table, axis=1)

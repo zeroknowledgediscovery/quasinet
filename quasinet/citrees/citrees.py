@@ -1,25 +1,20 @@
 from __future__ import absolute_import, division, print_function
 
-import multiprocessing
-import threading
+
 import warnings
 from collections import Counter
 
 from joblib import delayed, Parallel
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
-from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import OrdinalEncoder
 
 warnings.simplefilter('ignore')
 
 # Package imports
-from feature_selectors import (permutation_test_mc, permutation_test_mi,
-                               permutation_test_dcor, permutation_test_pcor,
-                               permutation_test_rdc, permutation_test_chi2)
-from feature_selectors import mc_fast, mi, pcor, py_dcor
-from scorers import gini_index, mse
-from utils import bayes_boot_probs, logger, powerset
+from feature_selectors import permutation_test_chi2
+from scorers import gini_index
+from utils import logger, powerset
 from tree import Node
 
 
@@ -56,9 +51,6 @@ class CITreeBase(object):
     verbose : bool or int
         Controls verbosity of training and testing
 
-    n_jobs : int
-        Number of jobs for permutation testing
-
     random_state : int
         Sets seed for random number generator
     """
@@ -72,14 +64,14 @@ class CITreeBase(object):
                  early_stopping=False,
                  muting=True, 
                  verbose=0, 
-                 n_jobs=-1, 
                  random_state=None):
 
         if alpha <= 0 or alpha > 1:
             raise ValueError("Alpha (%.2f) should be in (0, 1]" % alpha)
-        if n_permutations < 0:
-            raise ValueError("n_permutations (%d) should be > 0" % \
-                             n_permutations)
+
+        if (not isinstance(n_permutations, int)) or (n_permutations < 0):
+            raise ValueError('The number of permutations must be a postive integer.')
+
         if not isinstance(max_feats, int) and max_feats not in ['sqrt', 'log', 'all', -1]:
             raise ValueError("%s not a valid argument for max_feats" % \
                              str(max_feats))
@@ -92,14 +84,19 @@ class CITreeBase(object):
         self.early_stopping = early_stopping
         self.muting = muting
         self.verbose = verbose
-        self.n_jobs = n_jobs
         self.root = None
         self.splitter_counter_ = 0
 
         if max_depth == -1:
             self.max_depth = np.inf
+        elif max_depth == 0:
+            raise ValueError('The depth of the tree can not be zero.')
+        elif not isinstance(max_depth, int):
+            raise ValueError('You must provide an integer as the depth.')
+        elif max_depth < -1:
+            raise ValueError('The maximum depth cannot be less than -1.')
         else:
-            self.max_depth = int(max(1, max_depth))
+            self.max_depth = max_depth
 
         if random_state is None:
             self.random_state = np.random.randint(1, 9999)
@@ -186,7 +183,8 @@ class CITreeBase(object):
             # Find column with strongest association with outcome
             try:
                 col_idx = np.random.choice(self.available_features_,
-                                           size=self.max_feats, replace=False)
+                                           size=self.max_feats, 
+                                           replace=False)
             except:
                 col_idx = np.random.choice(self.available_features_,
                                            size=len(self.available_features_),
@@ -236,7 +234,7 @@ class CITreeBase(object):
 
 
     def fit(self, X, y=None):
-        """Trains model
+        """Train model.
 
         Parameters
         ----------
@@ -383,7 +381,6 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
                  early_stopping=False,
                  muting=True,
                  verbose=0,
-                 n_jobs=-1,
                  random_state=None):
 
         # Define node estimate
@@ -405,7 +402,6 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
                                                early_stopping=early_stopping,
                                                muting=muting,
                                                verbose=verbose,
-                                               n_jobs=n_jobs,
                                                random_state=random_state)
 
 
@@ -566,10 +562,10 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         for col in col_idx:
             X_col = X[:, col]
             # Mute feature and continue since constant
-            if np.all( X_col == X[0, col]) and len(self.available_features_) > 1:
+            if np.all(X_col == X[0, col]) and len(self.available_features_) > 1:
                 self._mute_feature(col)
-                if self.verbose: logger("tree", "Constant values, muting feature %d" \
-                                        % col)
+                if self.verbose: 
+                    logger("tree", "Constant values, muting feature %d" % col)
                 continue
 
             X_col = self.X_encs[col].transform(X_col.reshape(-1, 1)).reshape(-1)
@@ -679,6 +675,9 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
     def predict(self, X):
         """Predicts class labels for feature vectors X
 
+        TODO: treat a feature as missing data if there is that feature is
+        not an instance of the corresponding training feature
+
         Parameters
         ----------
         X : 2d array-like
@@ -693,8 +692,8 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         y_proba = self.predict_proba(X)
         ordinal_prediction = np.argmax(y_proba, axis=1).reshape((-1, 1))
         categorical_prediction = self.y_enc.inverse_transform(ordinal_prediction)
-
-        return categorical_prediction.reshape(-1)
+        y = categorical_prediction.reshape(-1)
+        return y
         
 
 
