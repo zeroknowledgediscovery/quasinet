@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # coding: utf-8
 
 # # Parameters to Set
@@ -18,6 +18,10 @@ TRAIN_QNETS = True
 
 COMPUTE_QDISTS = True
 
+COMPUTE_COMMON_STRAIN = False
+
+TYPE = 'h1n1'
+
 
 # ## Paths
 
@@ -35,6 +39,8 @@ INFLUENZA_QNET_DIR = INFLUENZA_OUT_DIR + 'qnets/'
 
 INFLUENZA_QDIST_DIR = INFLUENZA_OUT_DIR + 'qdistances/'
 
+HUMAN_HA_YEARLY_DIST_MATRIX_LDISTANCE_DIR = '/project2/ishanu/hiv-dip/influenza/output/yearly_distance_matrices_ldistance/h1n1humanHA/'
+
 
 # # Imports
 
@@ -45,6 +51,7 @@ from importlib import reload
 import sys
 import glob
 import os
+import re
 import pickle
 from joblib import Parallel, delayed
 
@@ -59,13 +66,16 @@ sys.path.insert(1, '/project2/ishanu/hiv-dip/quasinet/quasinet/citrees/')
 import qnet
 import tree
 
-# reload(qnet)
+import compute_common_strain
+from compute_common_strain import *
+reload(compute_common_strain)
 # reload(citrees)
 
 
 # # Notes
 
 # * `jupyter nbconvert --to script influenza.ipynb`
+# * TODO: I need to clean the sequences to reduce redudant sequences
 
 # # Helper Functions
 # 
@@ -73,10 +83,13 @@ import tree
 # In[4]:
 
 
-def load_csv_files(dir_):
+def load_csv_files(dir_, index_col=None):
     f_to_data = {}
-    for f in glob.glob(dir_ + '*.csv'):
-        f_to_data[os.path.basename(f)] = pd.read_csv(f)
+    for file_ in glob.glob(dir_ + '*.csv'):
+        f = os.path.basename(file_)
+        f = re.findall(r'\d+_\d+', f)[0]
+        
+        f_to_data[f] = pd.read_csv(file_, index_col=index_col)
         
     return f_to_data
 
@@ -98,6 +111,18 @@ def load_pickled(file_name):
 def save_pickled(item, file_name):
     with open(file_name, 'wb') as f:
         pickle.dump(item, f, protocol=pickle.HIGHEST_PROTOCOL)
+        
+def remove_index_and_cols(f_to_df):
+    
+    new_f_to_df = {}
+    for f, df in f_to_df.items():
+        df = df.copy(deep=True)
+        df.index = np.arange(0, df.shape[0])
+        df.columns = np.arange(0, df.shape[1])
+        
+        new_f_to_df[f] = df
+        
+    return new_f_to_df
 
 
 # # Making Directories
@@ -112,16 +137,39 @@ make_dir(INFLUENZA_QDIST_DIR)
 
 # # Loading
 
+# ## Functions
+
 # In[6]:
 
 
-f_to_seqs = load_csv_files(DATA_DIR)
+def year_to_cleaned_sequence_data(sequence_data):
+    """Basically clean the data so we can use it for computation.
+    """
+    
+    data = {}
+    
+    for year, seq_data_ in sequence_data.items():
+        
+        seq_data = seq_data_.copy()
+        num_seqs, num_cols = seq_data.shape
+        
+        seq_data.drop_duplicates(inplace=True, subset=np.arange(0, num_cols).astype(str))
+        seq_data.reset_index(drop=True, inplace=True)
+        
+        data[year] = seq_data
+        
+    return data
 
+
+# ## Loading
 
 # In[7]:
 
 
-# list(f_to_seqs.values())[3].shape
+human_ha_seqs = load_csv_files(DATA_DIR)
+human_ha_max_len = list(human_ha_seqs.values())[0].shape[1]
+print ("ha max length: ", human_ha_max_len)
+human_ha_cleaned_seqs = year_to_cleaned_sequence_data(human_ha_seqs)
 
 
 # # Qnet Training
@@ -136,9 +184,11 @@ def train_qnet(f, seqs, output_dir, max_cols, numCPUs):
     myqnet = qnet.Qnet(n_jobs=numCPUs)
     myqnet.fit(seqs)
 
-    basename = f.replace('.csv', '.joblib')
+#     basename = f.replace('.csv', '.joblib')
+    basename = f + '.joblib'
     if output_dir is not None:
         outfile = os.path.join(output_dir, basename)
+#         print (outfile)
         qnet.save_qnet(myqnet, outfile)
         
     return basename, myqnet
@@ -175,7 +225,7 @@ def train_qnets(f_to_seqs, numCPUs, output_dir, max_cols=None):
 
 if TRAIN_QNETS:
     f_to_qnets = train_qnets(
-        f_to_seqs, 
+        human_ha_cleaned_seqs, 
         numCPUs=NUMCPUS, 
         output_dir=INFLUENZA_QNET_DIR, 
         max_cols=MAX_COLS)
@@ -255,18 +305,277 @@ def compute_qdists(f_to_qnets, f_to_seqs, max_seqs, max_cols, numCPUs, outdir):
 
 if COMPUTE_QDISTS:
     qdist = compute_qdists(
-        f_to_qnets, f_to_seqs, max_seqs=MAX_ROWS, 
+        f_to_qnets, human_ha_seqs, max_seqs=MAX_ROWS, 
         max_cols=MAX_COLS, numCPUs=NUMCPUS ** 2, outdir=INFLUENZA_QDIST_DIR)
 
 
 # In[15]:
 
 
-# qdist
+# human_ha_qdistance_dm = load_csv_files(INFLUENZA_QDIST_DIR, index_col=0)
+# human_ha_ldistance_dm = load_csv_files(HUMAN_HA_YEARLY_DIST_MATRIX_LDISTANCE_DIR, index_col=0)
 
 
-# In[ ]:
+# # Compute Common Strain
+
+# ## Functions
+
+# ### Compute Dominant Strain
+
+# In[16]:
 
 
+def compute_dominant_strain(
+    name_to_dm, n_clusters, 
+    upper_diag,
+    file_to_seqs=None, 
+    remove_outliers=False,
+    clustering_method='agg',
+    min_type='average'):
+    """Seperate the sequences into clusters, find the largest cluster, and find the 
+    centroid of that largest cluster.
+    
+    Args:
+        name_to_dm (dict): mapping file name to distance matrix
+        use_accession (bool): whether we are using the accession or not
+        min_type (str): which type to use to compute the minimum
+        remove_outliers (bool): whether to remove outliers. N
+    """
+    
+    dominant_strains = []
+    names = []
+    seqs = []
+    accession_names = []
+    for name_, dm in name_to_dm.items():
+        name = name_
+        dm.fillna(0, inplace=True)
+        names.append(name)
+        columns = dm.columns.astype(str)
+        index = dm.index.astype(str)
+        
+        #if dm.shape[0] == dm.shape[1]:
+        if upper_diag:
+            dm = dm.values + dm.T.values
+            
+        dm = pd.DataFrame(dm, columns=columns, index=index)
+        
+        if remove_outliers:
+            dm = remove_outliers_func(dm)
+            
+        if min_type in ['average', 'median']:
+            if n_clusters == 1:
+                sub_dm = dm
+            else:
+                clusters = find_clusters(
+                    dm, n_clusters=n_clusters, 
+                    cluster_type=clustering_method)
+                
+                sub_dm = find_largest_cluster_dm(dm, clusters)
+
+            if dm.shape == (1, 1):
+                dominant_strain = dm.index[0]
+            else:
+                if min_type == 'average':
+                    aggregated = sub_dm.sum(axis=1)
+                elif min_type == 'median':
+                    aggregated = sub_dm.median(axis=1)
+                else:
+                    raise ValueError
+                    
+                dominant_strain = aggregated.idxmin()
+                #dominant_strain = np.argsort(aggregated)[len(aggregated)//2]
+                
+        elif min_type == 'normal':
+            
+            embedding = MDS(
+                n_components=1, 
+                dissimilarity="precomputed", 
+                random_state=42)
+            
+            embed = embedding.fit_transform(dm)[:,0]
+            
+            dominant_strain = dm.index[np.argsort(embed)[len(embed)//2]]
+            
+        else:
+            raise ValueError('Not a correct type: {}'.format(min_type))
+
+        dominant_strains.append(dominant_strain)
+        
+        
+        assert file_to_seqs is not None
+
+        try:
+            dominant_strain = int(dominant_strain)
+        except:
+            pass
+        
+        seq = ''.join(file_to_seqs[name].iloc[dominant_strain])
+        accession_name = '____'
+           
+        accession_names.append(accession_name)
+        seqs.append(seq)
+        
+        
+    data = pd.DataFrame({
+        'name': names,
+        'dominant_strains': dominant_strains,
+        'sequence': seqs,
+        'accession_name': accession_names
+    })
+    
+    data.sort_values(by='name', inplace=True)
+    data.reset_index(inplace=True, drop=True)
+    
+    return data
 
 
+# ### Merge Predictions
+
+# In[17]:
+
+
+def compute_ldistances(seqs1, seqs2, max_size=None):
+    """
+    
+    NOTE: if seq1 or seq2 is blank, we return -1.
+    """
+    
+    assert len(seqs1) == len(seqs2)
+    
+    ldist = []
+    for i, seq1 in enumerate(seqs1):
+        seq2 = seqs2[i]
+        
+        if seq1 == '-1' or seq2 == '-1':
+            dist = -1
+        else:
+            dist = Levenshtein.distance(seq1[:max_size], seq2[:max_size])
+            
+        ldist.append(dist)
+        
+    return ldist
+
+
+def merge_prediction_data(
+    WHO_rec, 
+    qnet_rec, dominant_strains, subtype, 
+    f_to_seqs,
+    outfile=None,
+    max_size=None):
+    
+    WHO_rec = WHO_rec.reset_index(drop=True)
+    qnet_rec = qnet_rec.reset_index(drop=True)
+    dominant_strains = dominant_strains.reset_index(drop=True)
+    
+    data = pd.DataFrame({'year': WHO_rec['year'].values})
+    data['WHO_recommendation_name'] = WHO_rec['name']
+    data['WHO_recommendation_sequence'] = WHO_rec[subtype]
+    
+    data['dominant_strain_accession'] = list(dominant_strains['dominant_strains'].values[1:]) + ['-1']
+    data['dominant_strain_sequence'] = list(dominant_strains['sequence'].values[1:]) + ['-1']
+    
+    dom_strain_acc_name = list(dominant_strains['accession_name'].values[1:])
+#     dom_strain_acc_name = list(map(parse_influenza_name, dom_strain_acc_name))
+    dom_strain_acc_name = dom_strain_acc_name + ['-1']
+    data['dominant_strain_accession_name'] = dom_strain_acc_name
+    
+    data['qdistance_recommendation_accession'] = qnet_rec['dominant_strains']
+    data['qdistance_recommendation_sequence'] = qnet_rec['sequence']
+    
+#     qdist_acc_name = list(map(parse_influenza_name, qnet_rec['accession_name']))
+    qdist_acc_name = qnet_rec['accession_name']
+    data['qdistance_recommendation_accession_name'] = qdist_acc_name
+    
+#     import pdb; pdb.set_trace()
+    ldistance_WHO = compute_ldistances(
+        data['WHO_recommendation_sequence'][:-1],
+        data['dominant_strain_sequence'][:-1],
+        max_size=max_size)
+    
+    ldistance_qnet_rec = compute_ldistances(
+        data['qdistance_recommendation_sequence'][:-1],
+        data['dominant_strain_sequence'][:-1],
+        max_size=max_size)
+    
+    data['ldistance_WHO'] = ldistance_WHO + [-1]
+    data['ldistance_Qnet_recommendation'] = ldistance_qnet_rec + [-1]
+    
+    num_rows = data.shape[0]
+    num_samples = []
+    for i in range(num_rows):
+        year_range = data['year'].iloc[i]
+        year = year_range.split('_')[0]
+        if year_range in f_to_seqs:
+            num_samples.append(f_to_seqs[year_range].shape[0])
+        else:
+            num_samples.append(-1)
+            
+    data['qnet_sample_size'] = num_samples
+            
+    if outfile is not None:
+        data.to_csv(outfile, index=None)
+    return data
+
+
+# ## Computation
+
+# In[18]:
+
+
+NUM_CLUSTERS = 1
+NUM_CLUSTERS_QDIST = 3
+
+
+# In[19]:
+
+
+if COMPUTE_COMMON_STRAIN:
+
+#     ha_dominant_strains_ldist = compute_dominant_strain(
+#         remove_index_and_cols(human_ha_ldistance_dm),
+#         NUM_CLUSTERS,
+#         None,
+#         HUMAN_HA_YEARLY_DIST_MATRIX_LDISTANCE_DIR,
+#         use_accession=False, 
+#         file_to_seqs=human_ha_seqs, 
+#         file_to_seqs_base_dir='{}human'.format(TYPE, TYPE))
+    
+    ha_dominant_strains_ldist = compute_dominant_strain(
+        name_to_dm=remove_index_and_cols(human_ha_ldistance_dm), 
+        upper_diag=True,
+        n_clusters=NUM_CLUSTERS, 
+        file_to_seqs=human_ha_seqs, 
+        remove_outliers=False)
+    
+    ha_dominant_strains_qdist = compute_dominant_strain(
+        name_to_dm=remove_index_and_cols(human_ha_qdistance_dm), 
+        upper_diag=False,
+        n_clusters=1, 
+        file_to_seqs=human_ha_seqs, 
+        remove_outliers=False)
+    
+
+
+# In[20]:
+
+
+WHO_recommendations = pd.read_csv(
+    '/project2/ishanu/hiv-dip/influenza/data/WHO_recommendations_Northern_Hemisphere.csv')
+
+
+# In[21]:
+
+
+if COMPUTE_COMMON_STRAIN:
+    human_ha_max_len = 550
+    humanHA_recommendations = merge_prediction_data(
+        WHO_recommendations, 
+        ha_dominant_strains_qdist, 
+        ha_dominant_strains_ldist, 
+        'HA_seq',
+        human_ha_seqs,
+        outfile=None,
+        max_size=human_ha_max_len)
+
+
+# # Other
