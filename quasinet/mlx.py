@@ -1788,7 +1788,9 @@ def compute_gamma(
         dists_over_time.append(dist)
         
         # save the sampled sequences
-        if i in save_time_steps and (save_dir is not None):
+        if (save_time_steps is None):
+            pass
+        elif (i in save_time_steps and (save_dir is not None)):
             sequences_to_fasta(
                 all_simulations, 
                 save_file=os.path.join(save_dir, 'step_{}.fasta'.format(i)))
