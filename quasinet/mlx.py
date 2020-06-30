@@ -1694,6 +1694,8 @@ def compute_gamma(
 
     constraints = generate_constraints(seq)
 
+    # replace nans (denoted by -) with some random sample based on the qnet
+    # distribution
     new_seq = ''
     for i, char in enumerate(seq):
         name = 'P' + str(i)
