@@ -58,15 +58,24 @@ class Node(object):
         return self.__repr__()
 
 
-def get_nodes(root):
+def get_nodes(root, get_leaves=True, get_non_leaves=True):
     """Traverse a tree and get all the nodes.
 
     TODO: may need to change this into an iterator for speed purposes
+
+    If `get_leaves` and `get_non_leaves` are both `True`, then
+    we will get all the nodes.
 
     Parameters
     ----------
     root : Node
         root node of the tree
+
+    get_leaves : bool
+        If true, we get leaf nodes
+
+    get_non_leaves : bool
+        If true, we get non leaf nodes.
 
 
     Returns
@@ -79,16 +88,34 @@ def get_nodes(root):
     stack = []
     all_nodes = []
     
+    if get_leaves and get_non_leaves:
+        get_type = 'all'
+    elif get_leaves and not get_non_leaves:
+        get_type = 'leaf'
+    elif not get_leaves and get_non_leaves:
+        get_type = 'nonleaf'
+    else:
+        raise ValueError('We must get either leaves or non-leaves or both.')
+
     while True: 
         if current is not None: 
-            
             stack.append(current) 
-        
             current = current.left  
 
         elif(stack): 
             current = stack.pop() 
-            all_nodes.append(current)
+
+            if get_type == 'all':
+                all_nodes.append(current)
+            elif get_type == 'leaf':
+                if current.left is None and current.right is None:
+                    all_nodes.append(current)
+            elif get_type == 'nonleaf':
+                if current.left is not None or current.right is not None:
+                    all_nodes.append(current)
+            else:
+                raise ValueError
+            
             current = current.right  
 
         else: 
