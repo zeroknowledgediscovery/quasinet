@@ -69,6 +69,42 @@ class Qnet(object):
             raise ValueError('You need to call `fit` first! ')
 
 
+    def _map_col_to_non_leaf_nodes(self):
+        """Get a mapping from column indexes to an array of all 
+        non-leaf node indexes from the corresponding tree.
+
+        We will cache the results because this function is called
+        multiple times and it doesn't depend on any input argument.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        prob_distributions : dictionary
+            dictionary mapping indexes to a list of non-leaf nodes.
+        """
+
+        if hasattr(self, 'col_to_non_leaf_nodes'):
+            pass
+        else:
+            self._check_is_fitted()
+            
+            col_to_nodes = {}
+            for col, clf_tree in self.estimators_.items():
+                nodes = get_nodes(
+                    clf_tree.root, 
+                    get_leaves=False, get_non_leaves=True)
+                
+                node_cols = np.array([node.col for node in nodes])
+
+                col_to_nodes[col] = np.unique(node_cols)
+            self.col_to_non_leaf_nodes = col_to_nodes
+
+        return self.col_to_non_leaf_nodes
+
+
     def predict_distribution(self, column_to_item, column):
         """Predict the probability distribution for a given column.
 
@@ -94,14 +130,16 @@ class Qnet(object):
         root = self.estimators_[column].root
         nodes = get_nodes(root)
         distributions = {}
-        for node in nodes:
+        for i, node in enumerate(nodes):
             if node.col in column_to_item:
-                if column_to_item[node.col] in node.threshold:
+                if column_to_item[node.col] in node.lthreshold:
                     next_node = node.left
-                else:
+                elif column_to_item[node.col] in node.rthreshold:
                     next_node = node.right
+                else:
+                    continue
 
-                distributions[node.col] = next_node.label_frequency
+                distributions[i] = next_node.label_frequency
 
         if len(distributions) == 0:
             distributions[root.col] = root.label_frequency
@@ -111,7 +149,7 @@ class Qnet(object):
         distributions = pd.DataFrame(list(distributions.values()))
         distributions.fillna(0, inplace=True)
         distributions.reset_index(inplace=True, drop=True)
-  
+        
         total_frequency = np.sum(distributions.values)        
         distributions = distributions.mul(distributions.sum(axis=1), axis=0)
         distributions /= total_frequency
@@ -120,7 +158,6 @@ class Qnet(object):
         distributions /= np.sum(distributions.values)
 
         return distributions.to_dict()
-
 
 
     def predict_distributions(self, seq):
@@ -139,15 +176,18 @@ class Qnet(object):
 
         self._check_is_fitted()
 
-        prob_distributions = [None] * len(self.estimators_)
+        index_to_non_leaf_nodes = self._map_col_to_non_leaf_nodes()
+
+        prob_distributions = [None] * (max(self.estimators_.keys()) + 1)
         for col in self.estimators_.keys():
-            column_to_item = {i: item for i, item in enumerate(seq)}
-            distrib = self.predict_distribution(column_to_item, col)
+            col_to_item = {i: seq[i] for i in index_to_non_leaf_nodes[col]}
+            distrib = self.predict_distribution(col_to_item, col)
             prob_distributions[col] = distrib
 
         return prob_distributions
 
     def predict_distributions_numba(self, seq):
+        raise NotImplementedError
         prob_distributions = self.predict_distributions(seq)
 
         numba_prob_distributions = []
@@ -233,16 +273,21 @@ def _qdistance_with_prob_distribs(distrib1, distrib2):
     """
 
     total_divergence = 0
-
+    total = 0
     for i, seq1_distrib in enumerate(distrib1):
-
+            
         seq2_distrib = distrib2[i]
 
+        if seq2_distrib is None or seq1_distrib is None:
+            continue
+        
         distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
 
         total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1]))
 
-    avg_divergence = total_divergence / len(distrib1)
+        total += 1
+        
+    avg_divergence = total_divergence / total
 
     return avg_divergence
 
