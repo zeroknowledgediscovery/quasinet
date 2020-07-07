@@ -9,8 +9,11 @@ class Node(object):
     col_pval : float
         Probability value from permutation test for feature selection
 
-    threshold : float
-        Best split found in feature
+    lthreshold : list
+        List of items for taking the left edge down the tree
+
+    rthreshold : list
+        List of items for taking the right edge down the tree
 
     impurity : float
         Impurity measuring quality of split
@@ -32,7 +35,8 @@ class Node(object):
     def __init__(self, 
                  col=None, 
                  col_pval=None, 
-                 threshold=None, 
+                 lthreshold=None,
+                 rthreshold=None, 
                  impurity=None,
                  value=None, 
                  left=None, 
@@ -42,12 +46,13 @@ class Node(object):
         assert isinstance(left, Node) or left is None
         assert isinstance(right, Node) or right is None
 
-        self.col         = col
-        self.col_pval    = col_pval
-        self.threshold   = threshold
-        self.impurity    = impurity
-        self.value       = value
-        self.left  = left
+        self.col = col
+        self.col_pval = col_pval
+        self.lthreshold = lthreshold
+        self.rthreshold = rthreshold
+        self.impurity = impurity
+        self.value = value
+        self.left = left
         self.right = right
         self.label_frequency = label_frequency
 
@@ -115,7 +120,7 @@ def get_nodes(root, get_leaves=True, get_non_leaves=True):
                     all_nodes.append(current)
             else:
                 raise ValueError
-            
+
             current = current.right  
 
         else: 
