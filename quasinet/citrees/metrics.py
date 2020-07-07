@@ -2,7 +2,7 @@ import numpy as np
 from numba import njit
 
 @njit(cache=True, nogil=True, fastmath=True)
-def kl_divergence(p1, p2, smooth=0.0001):
+def kl_divergence(p1, p2):
     """Compute the Kullback–Leibler divergence of discrete probability distributions.
 
     NOTE: we will not perform error checking in this function because
@@ -27,11 +27,11 @@ def kl_divergence(p1, p2, smooth=0.0001):
         kl divergence
     """
 
-    p1 += smooth
-    p1 /= np.sum(p1)
+    # p1 += smooth
+    # p1 /= np.sum(p1)
 
-    p2 += smooth
-    p2 /= np.sum(p2)
+    # p2 += smooth
+    # p2 /= np.sum(p2)
 
     kl_div = (p1 * np.log2(p1 / p2)).sum()
 
@@ -64,7 +64,9 @@ def js_divergence(p1, p2, smooth=0.0001):
     if np.all(p1 == p2):
         return 0.0
     else:
+        p1 = (p1 + smooth) / (1 + smooth)
+        p2 = (p2 + smooth) / (1 + smooth)
         p = 0.5 * (p1 + p2)
-        js_div = 0.5 * (kl_divergence(p1, p, smooth) + kl_divergence(p2, p, smooth))
+        js_div = 0.5 * (kl_divergence(p1, p) + kl_divergence(p2, p))
 
         return js_div
