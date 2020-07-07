@@ -202,7 +202,7 @@ class CITreeBase(object):
             if col_pval <= self.alpha:
 
                 # Find best split among selected variable
-                impurity, threshold, left, right = self._splitter(X, y, n, col)
+                impurity, lthreshold, rthreshold, left, right = self._splitter(X, y, n, col)
                 if left and right and len(left[0]) > 0 and len(right[0]) > 0:
 
                     # Build subtrees for the right and left branches
@@ -219,7 +219,9 @@ class CITreeBase(object):
                     right = self._build_tree(*right, depth=depth+1)
 
                     # Return all arguments to constructor except value
-                    return Node(col=col, col_pval=col_pval, threshold=threshold,
+                    return Node(col=col, col_pval=col_pval, 
+                                lthreshold=lthreshold,
+                                rthreshold=rthreshold,
                                 left=left, right=right,
                                 impurity=impurity, label_frequency=Counter(y))
 
@@ -290,7 +292,7 @@ class CITreeBase(object):
 
         Parameters
         ----------
-        X : 2d array-like
+        X : 1d array-like
             Array of features for single sample
 
         tree : CITreeBase
@@ -310,10 +312,14 @@ class CITreeBase(object):
         # Determine if we will follow left or right branch
         feature_value = X[tree.col]
 
-        if feature_value in tree.threshold:
+        if feature_value in tree.lthreshold:
             branch = tree.left
-        else:
+        elif feature_value in tree.rthreshold:
             branch = tree.right
+        else:
+            raise ValueError('{} is not in: {} or in: {}'.format(feature_value,
+                                                                 tree.lthreshold,
+                                                                 tree.rthreshold))
 
         return self.predict_label(X, branch)
 
@@ -346,7 +352,7 @@ class CITreeBase(object):
             # Print splitting rule
             print("X[:,%s] %s %s " % (tree.col,
                                       '<=' if child in [None, 'left'] else '>',
-                                      tree.threshold))
+                                      tree.lthreshold))
 
             # Print the left child
             print("%sL: " % (indent), end="")
@@ -458,7 +464,10 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
             index_to_subset[i] = subset
 
         min_key = min(index_to_gini_values, key=index_to_gini_values.get)
-        return index_to_subset[min_key]
+
+        lthreshold = index_to_subset[min_key]
+        rthreshold = unique_X[~np.isin(unique_X, lthreshold)]
+        return lthreshold, rthreshold 
 
 
     def _splitter(self, X, y, n, col):
@@ -498,14 +507,14 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
             logger("splitter", "Testing splits on feature %d" % col)
 
         # Initialize variables for splitting
-        impurity, threshold = 0.0, None
+        impurity = 0.0
         left, right = None, None
 
         X_col = X[:, col]
 
-        threshold = self._split_by_gini(X_col, y)
+        lthreshold, rthreshold = self._split_by_gini(X_col, y)
 
-        idx = np.where(np.isin(X[:, col], threshold), 1, 0)
+        idx = np.where(np.isin(X[:, col], lthreshold), 1, 0)
         
         X_left, y_left   = X[idx==1], y[idx==1]
         X_right, y_right = X[idx==0], y[idx==0]
@@ -513,7 +522,7 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
 
         # Skip small splits
         if n_left < self.min_samples_split or n_right < self.min_samples_split:
-            return impurity, threshold, left, right
+            return impurity, lthreshold, rthreshold, left, right
 
         node_impurity  = gini_index(y, self.labels_)
         left_impurity  = gini_index(y_left, self.labels_)*(n_left/float(n))
@@ -526,7 +535,7 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         # Update feature importance (mean decrease impurity)
         self.feature_importances_[col] += impurity
 
-        return impurity, threshold, left, right
+        return impurity, lthreshold, rthreshold, left, right
 
 
     def _cor_selector(self, X, y, col_idx):
