@@ -1352,7 +1352,6 @@ def getPerturbation(seq, PATH_TO_TREES, F_TREES=None):
     P = {}
     for KEY in F.keys():
         DICT_ = {i: seq[int(i.replace('P', ''))] for i in F[KEY]}
-        import pdb; pdb.set_trace()
         D=sampleTree(TREES[KEY], DICT_, sample='random', DIST=True)[1]
     
         P[KEY] = D

@@ -28,6 +28,7 @@ from sklearn.datasets import load_iris, load_wine
 # from scipy import special.kl_div
 
 sys.path.insert(1, '/home/jinli11/quasinet/quasinet/citrees/')
+# sys.path.insert(1, '/project2/ishanu/hiv-dip/quasinet/quasinet/citrees/')
 
 import citrees
 reload(citrees)
