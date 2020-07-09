@@ -9,10 +9,10 @@ from sklearn.preprocessing import OrdinalEncoder
 warnings.simplefilter('ignore')
 
 # Package imports
-from feature_selectors import permutation_test_chi2
-from scorers import gini_index
-from utils import logger, powerset
-from tree import Node
+from .feature_selectors import permutation_test_chi2
+from .scorers import gini_index
+from .utils import logger, powerset
+from .tree import Node
 
 
 class CITreeBase(object):

@@ -2,7 +2,7 @@ from joblib import delayed, Parallel
 from numba import njit
 import numpy as np
 
-from scorers import c_dcor, mc_fast, mi, pcor, py_dcor, rdc, rdc_fast, chi2
+from .scorers import c_dcor, mc_fast, mi, pcor, py_dcor, rdc, rdc_fast, chi2
 
 
 ##########################

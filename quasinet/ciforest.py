@@ -12,13 +12,13 @@ from sklearn.preprocessing import OrdinalEncoder
 warnings.simplefilter('ignore')
 
 # Package imports
-from feature_selectors import (permutation_test_mc, permutation_test_mi,
+from .feature_selectors import (permutation_test_mc, permutation_test_mi,
                                permutation_test_dcor, permutation_test_pcor,
                                permutation_test_rdc, permutation_test_chi2)
-from feature_selectors import mc_fast, mi, pcor, py_dcor
-from scorers import gini_index, mse
-from utils import bayes_boot_probs, logger, powerset
-from citrees import CITreeClassifier, CITreeRegressor
+from .feature_selectors import mc_fast, mi, pcor, py_dcor
+from .scorers import gini_index, mse
+from .utils import bayes_boot_probs, logger, powerset
+from .citrees import CITreeClassifier, CITreeRegressor
 
 
 

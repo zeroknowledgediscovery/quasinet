@@ -4,9 +4,10 @@ import glob
 from Bio import SeqIO
 import numpy as np
 
-import qnet
+from . import qnet as qnet
 
-TRAINED_QNET_DIR = 'qnet_trees/'
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+TRAINED_QNET_DIR = os.path.join(BASE_DIR, 'qnet_trees/')
 
 ALL_QNET_TYPES = ['coronavirus', 'influenza']
 CORONA_OPTIONS = ['bat', 'rat', 'game', 'covid19']
@@ -132,7 +133,13 @@ def load_trained_qnet(qnet_type, extra_descriptions):
 
         possible_years = _get_possible_years(base_dir)
 
-        year = extra_descriptions[1]
+        year = extra_descriptions[2]
+
+        if not year.isdigit():
+            raise ValueError('Year must be an positive integer.')
+        
+        year = int(year)
+
         if year not in possible_years:
             raise ValueError('{} is not in {}'.format(year, possible_years))
 

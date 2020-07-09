@@ -6,7 +6,7 @@ import pandas as pd
 from scipy.stats import rankdata as rank, chi2_contingency
 from sklearn.feature_selection import mutual_info_classif
 
-from utils import remove_zeros
+from .utils import remove_zeros
 
 #######################
 """CREATE C WRAPPERS"""

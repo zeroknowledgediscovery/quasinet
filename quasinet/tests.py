@@ -1,6 +1,6 @@
 import unittest
 
-from tree import Node, get_nodes
+from .tree import Node, get_nodes
 
 # @unittest.skip('Correct')
 class TestTree(unittest.TestCase):

@@ -2,14 +2,14 @@
 import pandas as pd
 import numpy as np
 from joblib import dump, load, delayed, Parallel
-
-from citrees import CITreeClassifier
-from metrics import js_divergence
-from tree import Node, get_nodes
 import numba
 from numba import njit, prange
 from numba.core import types
-from utils import assert_2d_array
+
+from .citrees import CITreeClassifier
+from .metrics import js_divergence
+from .tree import Node, get_nodes
+from .utils import assert_2d_array
 
 class Qnet(object):
     """
