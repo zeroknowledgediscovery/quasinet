@@ -73,4 +73,4 @@ qdist = qnet.qdistance(seq1, seq2, myqnet, myqnet)
  
 ## Authors
 
-[ZeD@UChicago](mailto:zed.uchicago.edu)
+You can read the ZED lab at: zed.uchicago.edu
