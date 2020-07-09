@@ -4,7 +4,10 @@
 
 ![PyPI version](https://badge.fury.io/py/quasinet.svg)
 
-![ZED Logo](http://zed.uchicago.edu/logo/logozed1.png)
+
+<p align="center">
+    <img src="http://zed.uchicago.edu/logo/logozed1.png">
+</p>
 
 
 ## Description
@@ -15,7 +18,8 @@ Infer non-local structural dependencies in genomic sequences. Genomic sequences 
 
 COVID-19                   |  INFLUENZA
 :-------------------------:|:-------------------------:
-<img src="images/covid19.png" width="75%" height="75%">  |  <img src="images/influenza.png" width="75%" height="75%">
+![](images/covid19.png)  | ![](images/influenza.png)
+
 
 
 2. Computing a structure-aware evolution-adaptive notion of distance between genomes, which demonstrably is much more biologically relevant compared to the standard edit distance 
