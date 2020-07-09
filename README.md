@@ -21,7 +21,7 @@ COVID-19                   |  INFLUENZA
 
 3. Ability to draw samples in-silico, that have a high probability of being biologically correct. For example, given a database of HIV sequences, we can generate a new genomic sequence, which has a high probability of being a valid encoding of a HIV virion. The constructed q-net for long term non-progressor clinical phenotype in HIV-1 infection is shown below.
 
-![Sampling](images/sampling.png)
+![Sampling](images/sampling.png){ width=25% }
 
 ## Installation
 
