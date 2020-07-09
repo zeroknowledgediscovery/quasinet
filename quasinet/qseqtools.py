@@ -6,6 +6,13 @@ import numpy as np
 
 import qnet
 
+TRAINED_QNET_DIR = 'qnet_trees/'
+
+ALL_QNET_TYPES = ['coronavirus', 'influenza']
+CORONA_OPTIONS = ['bat', 'rat', 'game', 'covid19']
+
+INFLUENZA_PROTEINS = ['na', 'ha']
+INFLUENZA_TYPES = ['h1n1', 'h3n2']
 
 def _get_possible_years(basedir):
     """Given a base directory for influenza, get the possible years.
@@ -22,20 +29,50 @@ def _get_possible_years(basedir):
     """
 
     possible_years = []
-    for f in glob.glob(basedir):
+    for f in glob.glob(basedir + "*.joblib"):
         f = os.path.basename(f)
         year = int(f.replace('.joblib', '').split('_')[0])
         possible_years.append(year)
 
+    possible_years.sort()
+
     return possible_years
+
 
 def list_trained_qnets():
     """List the possible qnets we can use.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
     """
 
-    raise NotImplementedError
+    print('Possible qnets: \n')
+    print('`coronavirus` options:')
+    print('\t' + '\n\t'.join(CORONA_OPTIONS))
+    
+    print('\n`influenza` options:')
+    influenza_options = []
 
-def load_qnet(qnet_type, extra_descriptions):
+    for protein in INFLUENZA_PROTEINS:
+        for type_ in INFLUENZA_TYPES:
+            base_dir = os.path.join(
+            TRAINED_QNET_DIR, 
+            'influenza', 
+            '{}human{}/'.format(type_, protein.upper()))
+
+            possible_years = _get_possible_years(base_dir)
+            for year in possible_years:
+                influenza_options.append('{};{};{}'.format(type_, protein, year))
+
+    print('\t' + '\n\t'.join(influenza_options))
+
+
+def load_trained_qnet(qnet_type, extra_descriptions):
     """Load the pre-trained qnet.
 
     Examples
@@ -58,21 +95,17 @@ def load_qnet(qnet_type, extra_descriptions):
         A trained qnet
     """
     
-    TRAINED_QNET_DIR = 'qnet_trees/'
     qnet_type = qnet_type.lower()
     extra_descriptions  = extra_descriptions.lower()
-
-    all_qnet_types = ['coronavirus', 'influenza']
     
-    if qnet_type not in all_qnet_types:
+    if qnet_type not in ALL_QNET_TYPES:
         raise ValueError('`qnet_type`: {} is not in {}'.format(
-            qnet_type, all_qnet_types))
+            qnet_type, ALL_QNET_TYPES))
                          
     if qnet_type == 'coronavirus':
-        corona_extra_descr = ['bat', 'rat', 'game', 'covid19']
-        if extra_descriptions not in corona_extra_descr:
+        if extra_descriptions not in CORONA_OPTIONS:
             raise ValueError('`extra_descriptions`: {} is not in {}'.format(
-                extra_descriptions, corona_extra_descr))
+                extra_descriptions, CORONA_OPTIONS))
 
         f = os.path.join(
             TRAINED_QNET_DIR, 
@@ -80,24 +113,22 @@ def load_qnet(qnet_type, extra_descriptions):
             extra_descriptions + '.joblib')
 
     elif qnet_type == 'influenza':
-        proteins = ['na', 'ha']
-        types = ['h1n1', 'h3n2']
         extra_descriptions = extra_descriptions.split(';')
         if len(extra_descriptions) != 3:
             raise ValueError('There must be 3 different descriptions for influenza')
 
         type_ = extra_descriptions[0]
-        if type_ not in types:
-            raise ValueError('{} is not in {}'.format(type_, types))
+        if type_ not in INFLUENZA_TYPES:
+            raise ValueError('{} is not in {}'.format(type_, INFLUENZA_TYPES))
 
         protein = extra_descriptions[1]
-        if protein not in proteins:
-            raise ValueError('{} is not in {}'.format(protein, proteins))
+        if protein not in INFLUENZA_PROTEINS:
+            raise ValueError('{} is not in {}'.format(protein, INFLUENZA_PROTEINS))
 
         base_dir = os.path.join(
             TRAINED_QNET_DIR, 
             qnet_type, 
-            '{}human{}/'.format(type_, protein))
+            '{}human{}/'.format(type_, protein.upper()))
 
         possible_years = _get_possible_years(base_dir)
 
