@@ -34,11 +34,41 @@ COVID-19                   |  INFLUENZA
 
 ## Installation
 
+To install with pip:
+
+```
+pip install quasinet
+```
+
+To install with conda:
+
+```
+conda install quasinet
+```
+
 ### Dependencies
+
+* scikit-learn 
+* scipy 
+* numpy 
+* numba 
+* pandas 
+* joblib 
+* biopython
 
 ## Usage
 
 ```
+from quasinet import qnet
+
+# initialize qnet
+myqnet = qnet.Qnet()
+
+# train the qnet
+myqnet.fit(X)
+
+# compute qdistance
+qdist = qnet.qdistance(seq1, seq2, myqnet, myqnet) 
 ```
  
 ## Authors
