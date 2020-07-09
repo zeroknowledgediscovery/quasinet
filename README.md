@@ -23,7 +23,9 @@ COVID-19                   |  INFLUENZA
 
 <!-- ![Sampling](images/sampling.png){ width=25% } -->
 
-<img src="images/sampling.png" width="50%" height="50%" class="center">
+<p align="center">
+    <img src="images/sampling.png" width="50%" height="50%">
+</p>
 
 ## Installation
 
