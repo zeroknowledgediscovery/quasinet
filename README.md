@@ -15,7 +15,8 @@ Infer non-local structural dependencies in genomic sequences. Genomic sequences 
 
 COVID-19                   |  INFLUENZA
 :-------------------------:|:-------------------------:
-![](images/covid19.png)  |  ![](images/influenza.png)
+<img src="images/covid19.png" width="75%" height="75%">  |  <img src="images/influenza.png" width="75%" height="75%">
+
 
 2. Computing a structure-aware evolution-adaptive notion of distance between genomes, which demonstrably is much more biologically relevant compared to the standard edit distance 
 
