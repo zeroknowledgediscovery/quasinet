@@ -48,5 +48,6 @@ qdist_matrix = qnet.qdistance_matrix(X[:max_seq], X[:max_seq], myqnet, myqnet)
 end = time.time()
 print(end - start)
 
+qnet_membership = qnet.membership_degree(seq1, myqnet)
 # myqnet = qnet.load_qnet(file_)
 # breakpoint()
