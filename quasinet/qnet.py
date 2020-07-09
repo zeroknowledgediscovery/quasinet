@@ -330,6 +330,43 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
     return divergence
 
+def membership_degree(seq, qnet):
+    """Compute the membership degree of a sequence in a qnet.
+
+    Parameters
+    ----------
+    seq : 1d array-like
+        Array of values
+
+    qnet : Qnet
+        the Qnet that `seq` belongs to 
+
+    Returns
+    -------
+    membership_degree : numeric
+        membership degree
+    """
+
+    if not isinstance(seq, np.ndarray):
+        raise ValueError('You must pass in arrays as sequences.')
+
+    if len(seq.shape) != 1:
+        raise ValueError('The sequence must be 1d arrays.')
+
+    seq_distribs = qnet.predict_distributions(seq)
+
+    index_probs = np.empty(len(seq))
+    for index, c in enumerate(seq):
+        distrib = seq_distribs[index]
+        if c in distrib:
+            index_prob = distrib[c]
+            
+            if index_prob != 0:
+                index_probs[index] = index_prob
+
+    membership_degree = np.sum(np.log(index_probs))
+
+    return membership_degree
 
 # @njit(parallel=True, fastmath=True)
 # @njit

@@ -679,7 +679,8 @@ def gini_index(y, labels):
         Gini index
     """
     # Gini index for each label
-    n, gini = len(y), 0.0
+    # n, gini = len(y), 0.0
+    gini = 0.0
     for label in labels:
 
         # Proportion of each label
