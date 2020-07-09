@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from joblib import delayed, Parallel
 from numba import njit
 import numpy as np
