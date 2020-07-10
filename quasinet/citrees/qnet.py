@@ -353,10 +353,16 @@ def membership_degree(seq, qnet):
     if len(seq.shape) != 1:
         raise ValueError('The sequence must be 1d arrays.')
 
+    if len(seq) == 0:
+        raise ValueError('The sequence cannot be empty.')
+    
     seq_distribs = qnet.predict_distributions(seq)
 
     index_probs = np.empty(len(seq))
     for index, c in enumerate(seq):
+        if index not in seq_distribs:
+            continue
+
         distrib = seq_distribs[index]
         if distrib is None:
             continue
