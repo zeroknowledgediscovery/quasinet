@@ -358,6 +358,9 @@ def membership_degree(seq, qnet):
     index_probs = np.empty(len(seq))
     for index, c in enumerate(seq):
         distrib = seq_distribs[index]
+        if distrib is None:
+            continue
+        
         if c in distrib:
             index_prob = distrib[c]
             

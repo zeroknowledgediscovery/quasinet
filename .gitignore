@@ -4,5 +4,5 @@ data/
 .vscode/
 output/
 build/
-quasinet.egg-info/
 dist/
+quasinet.egg-info/
