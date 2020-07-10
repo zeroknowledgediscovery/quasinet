@@ -14,7 +14,7 @@
 
 Infer non-local structural dependencies in genomic sequences. Genomic sequences are esentially compressed encodings of phenotypic information. This package provides a novel set of tools to extract long-range structural dependencies in genotypic data that define the phenotypic outcomes. The key capabilities implemented here are as follows: 
 
-1. computing the q-net given a database of nucleic acid sequences, which is a family of conditional inference trees capturing the predictability of each nucleotide position given the rest of the genome. 
+1. Compute the Quasinet (Q-net) given a database of nucleic acid sequences. The Q-net is a family of conditional inference trees that capture the predictability of each nucleotide position given the rest of the genome. The constructed Q-net for COVID-19 and Influenza A H1N1 HA 2008-9 is shown below.
 
 COVID-19                   |  INFLUENZA
 :-------------------------:|:-------------------------:
@@ -22,9 +22,9 @@ COVID-19                   |  INFLUENZA
 
 
 
-2. Computing a structure-aware evolution-adaptive notion of distance between genomes, which demonstrably is much more biologically relevant compared to the standard edit distance 
+2. Compute a structure-aware evolution-adaptive notion of distance between genomes, which is demonstrably more biologically relevant compared to the standard edit distance. 
 
-3. Ability to draw samples in-silico, that have a high probability of being biologically correct. For example, given a database of HIV sequences, we can generate a new genomic sequence, which has a high probability of being a valid encoding of a HIV virion. The constructed q-net for long term non-progressor clinical phenotype in HIV-1 infection is shown below.
+3. Draw samples in-silico that have a high probability of being biologically correct. For example, given a database of Influenza sequences, we can generate a new genomic sequence that has a high probability of being a valid influenza sequence.
 
 <!-- ![Sampling](images/sampling.png){ width=25% } -->
 
@@ -38,12 +38,6 @@ To install with pip:
 
 ```
 pip install quasinet
-```
-
-To install with conda:
-
-```
-conda install quasinet
 ```
 
 ### Dependencies
@@ -71,6 +65,10 @@ myqnet.fit(X)
 qdist = qnet.qdistance(seq1, seq2, myqnet, myqnet) 
 ```
  
+### Examples
+
+Examples are located [here](examples/).
+
 ## Authors
 
-You can read the ZED lab at: zed.uchicago.edu
+You can reach the ZED lab at: zed.uchicago.edu
