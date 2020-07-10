@@ -1,6 +1,8 @@
 __pycache__
 *.pyc
-build/
-dist/
 data/
 .vscode/
+output/
+build/
+dist/
+quasinet.egg-info/

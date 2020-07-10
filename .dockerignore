@@ -1,4 +1,0 @@
-.gitignore
-Dockerfile
-dist/
-quasinet.egg-info/

@@ -1,4 +1,1 @@
-include *.txt
-recursive-include docs *.txt
-include version.py
-include bin/*
+recursive-include quasinet *.joblib *.c *.so
