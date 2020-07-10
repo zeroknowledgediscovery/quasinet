@@ -171,7 +171,7 @@ def load_sequence(file):
     if len(fastas) != 1:
         raise ValueError('Your fasta sequence can only have 1 sequence in it.')
 
-    seq = np.array(str(fastas[0].seq))
+    seq = np.array(list(str(fastas[0].seq)))
     return seq
                          
                          
