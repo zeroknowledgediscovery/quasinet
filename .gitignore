@@ -7,4 +7,3 @@ build/
 dist/
 quasinet.egg-info/
 .ipynb_checkpoints/
-*.fasta
