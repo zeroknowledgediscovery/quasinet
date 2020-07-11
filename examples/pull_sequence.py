@@ -5,6 +5,11 @@ example usage:
         --organism "coronavirus" \
         --accession "LC528233" \
         --outfile "LC528233.fasta"
+
+    python pull_sequence.py \
+        --organism "influenza A HA" \
+        --accession "KP456738" \
+        --outfile "KP456738.fasta"
 """
 
 import pickle
@@ -60,8 +65,10 @@ def procSequence(
     records,
     begIndex,
     endIndex,
+    type_='nucleotide',
     N=10000,
     LMAX=35000):  
+
 
     S=[]
     ACC=[]
@@ -69,9 +76,22 @@ def procSequence(
     for i in records:
         beg=[ x for x in item_generator(i,'GBInterval_from')][0]
         end=[ x for x in item_generator(i,'GBInterval_to')][0]
-        seq=[ x for x in item_generator(i,'GBSeq_sequence')][0]
-        acc=[ x for x in item_generator(i,'GBSeq_primary-accession')][0]
 
+        if type_ == 'nucleotide':
+            seq=[ x for x in item_generator(i,'GBSeq_sequence')][0]
+        elif type_ == 'protein':
+            seq = []
+            for j in i['GBSeq_feature-table']:
+                if 'GBFeature_quals' in j:
+                    for k in j['GBFeature_quals']:
+                        if k['GBQualifier_name'] == 'translation':
+                            seq.append(k['GBQualifier_value'])
+            seq = seq[0]
+        else:
+            raise ValueError('Not an available type: {}'.format(type_))
+
+        acc=[ x for x in item_generator(i,'GBSeq_primary-accession')][0]
+        
         xbeg=''.join('x' for i in np.arange(int(beg)))
         xend=''.join('x' for i in np.arange(LMAX-int(end)))
         seq=xbeg+seq+xend
@@ -94,12 +114,19 @@ def pull_sequence(organism, accession):
     """Pull the sequence from NCBI given the organism and the accession name.
     """
 
-    all_organisms = ['coronavirus', 'influenza A NA', 'influenza A HA']
+    coronavirus_orgs = ['coronavirus']
+    influenza_orgs = ['influenza A NA', 'influenza A HA']
+    all_organisms = coronavirus_orgs + influenza_orgs
 
     if organism not in all_organisms:
         raise ValueError('Your organism must be one of {}'.format(all_organisms))
 
-    record = getRecord(accession)
+    if organism in coronavirus_orgs:
+        record = getRecord(accession)
+    elif organism in influenza_orgs:
+        record = getRecord(accession)
+    else:
+        raise ValueError
 
     if len(record) == 0:
         raise ValueError('We could not find a record in NCBI matching: {}'.format(accession))
@@ -113,12 +140,15 @@ def pull_sequence(organism, accession):
         df = procSequence(
             record,
             begIndex=0,
-            endIndex=550)
+            endIndex=550,
+            type_='protein')
+
     elif organism == 'influenza A NA':
         df = procSequence(
             record,
             begIndex=0,
-            endIndex=450)
+            endIndex=450,
+            type_='protein')
     else:
         raise ValueError
 
@@ -128,6 +158,7 @@ def pull_sequence(organism, accession):
         raise ValueError('There are multiple sequences corresponding to this accession: {}'.format(accession))
 
     seq = ''.join(df.drop(['accession'], axis=1).iloc[0].values)
+
 
     return seq
 
