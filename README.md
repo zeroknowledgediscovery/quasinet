@@ -18,7 +18,7 @@ Infer non-local structural dependencies in genomic sequences. Genomic sequences 
 
 COVID-19                   |  INFLUENZA
 :-------------------------:|:-------------------------:
-![](images/covid19.png)  | ![](images/influenza.png)
+![](https://raw.githubusercontent.com/zeroknowledgediscovery/quasinet/master/images/covid19.png?token=AJ43FMF3RHHD4MBKBQJLBGC7CR6X4)  | ![](https://raw.githubusercontent.com/zeroknowledgediscovery/quasinet/master/images/influenza.png?token=AJ43FMFFMOXH26AA4M3GK4S7CR6WM)
 
 
 
@@ -29,7 +29,7 @@ COVID-19                   |  INFLUENZA
 <!-- ![Sampling](images/sampling.png){ width=25% } -->
 
 <p align="center">
-    <img src="images/sampling.png" width="50%" height="50%">
+    <img src="https://raw.githubusercontent.com/zeroknowledgediscovery/quasinet/master/images/sampling.png?token=AJ43FMC55V3LTC4HARGJWDK7CR6ZY" width="50%" height="50%">
 </p>
 
 ## Installation
@@ -67,7 +67,7 @@ qdist = qnet.qdistance(seq1, seq2, myqnet, myqnet)
  
 ### Examples
 
-Examples are located [here](examples/).
+Examples are located [here](https://github.com/zeroknowledgediscovery/quasinet/tree/master/examples).
 
 ## Authors
 
