@@ -1,5 +1,4 @@
 
-import pandas as pd
 import numpy as np
 from joblib import dump, load, delayed, Parallel
 
@@ -105,6 +104,41 @@ class Qnet(object):
         return self.col_to_non_leaf_nodes
 
 
+    def _combine_distributions(self, distributions):
+        """Given a list of distributions, combine them together into
+        an array.
+
+        Parameters
+        ----------
+        distributions : list
+            list of dictionaries mapping responses to probabilities.
+
+        Returns
+        -------
+        array : 2d array-like
+            the resulting array from combining the distributions.
+
+        all_responses : list
+            list of the responses corresponding to the array
+        """
+
+        all_responses = []
+        for distrib in distributions:
+            all_responses.extend(distrib.keys())
+
+        all_responses = list(set(all_responses))
+
+        res_to_index = {res: i for i, res in enumerate(all_responses)}
+
+        array = np.zeros((len(distributions), len(all_responses)))
+
+        for i, distrib in enumerate(distributions):
+            for k, v in distrib.items():
+
+                array[i, res_to_index[k]] = v
+
+        return array, all_responses
+
     def predict_distribution(self, column_to_item, column):
         """Predict the probability distribution for a given column.
 
@@ -129,8 +163,8 @@ class Qnet(object):
 
         root = self.estimators_[column].root
         nodes = get_nodes(root)
-        distributions = {}
-        for i, node in enumerate(nodes):
+        distributions = []
+        for node in nodes:
             if node.col in column_to_item:
                 if column_to_item[node.col] in node.lthreshold:
                     next_node = node.left
@@ -139,25 +173,22 @@ class Qnet(object):
                 else:
                     continue
 
-                distributions[i] = next_node.label_frequency
+                distributions.append(next_node.label_frequency)
 
         if len(distributions) == 0:
-            distributions[root.col] = root.label_frequency
+            distributions = [root.label_frequency]
 
-        # TODO: eventually, it may be the case that we have to remove
-        # all usages of pandas because numba does not allow for pandas
-        distributions = pd.DataFrame(list(distributions.values()))
-        distributions.fillna(0, inplace=True)
-        distributions.reset_index(inplace=True, drop=True)
+        distributions, columns = self._combine_distributions(distributions)
         
-        total_frequency = np.sum(distributions.values)        
-        distributions = distributions.mul(distributions.sum(axis=1), axis=0)
+        total_frequency = np.sum(distributions)        
+        distributions = distributions * np.sum(distributions, axis=1)[:, None]
         distributions /= total_frequency
 
-        distributions = distributions.mean(axis=0)
-        distributions /= np.sum(distributions.values)
+        distributions = np.mean(distributions, axis=0)
+        distributions /= np.sum(distributions)
 
-        return distributions.to_dict()
+        output = {columns[i]: distributions[i] for i in range(len(columns))}
+        return output
 
 
     def predict_distributions(self, seq):
