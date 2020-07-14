@@ -27,12 +27,6 @@ def kl_divergence(p1, p2):
         kl divergence
     """
 
-    # p1 += smooth
-    # p1 /= np.sum(p1)
-
-    # p2 += smooth
-    # p2 /= np.sum(p2)
-
     kl_div = (p1 * np.log2(p1 / p2)).sum()
 
     return kl_div
@@ -60,13 +54,9 @@ def js_divergence(p1, p2, smooth=0.0001):
         js divergence
     """
     
-    # TODO: this checking may cost us a lot of unneccesary computation time
-    if np.all(p1 == p2):
-        return 0.0
-    else:
-        p1 = (p1 + smooth) / (1 + smooth)
-        p2 = (p2 + smooth) / (1 + smooth)
-        p = 0.5 * (p1 + p2)
-        js_div = 0.5 * (kl_divergence(p1, p) + kl_divergence(p2, p))
+    p1 = (p1 + smooth) / (1 + smooth)
+    p2 = (p2 + smooth) / (1 + smooth)
+    p = 0.5 * (p1 + p2)
+    js_div = 0.5 * (kl_divergence(p1, p) + kl_divergence(p2, p))
 
-        return js_div
+    return js_div
