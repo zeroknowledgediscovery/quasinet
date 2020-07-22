@@ -1,8 +1,26 @@
-import setuptools
+from setuptools import setup, Extension, find_packages
 from codecs import open
 from os import path
 import warnings
 
+# try:
+#     from Cython.Build import cythonize
+#     USE_CYTHON = True
+# except ImportError:
+#     USE_CYTHON = False
+
+package_name = 'quasinet'
+example_dir = 'examples/'
+example_data_dir = example_dir + 'example_data/'
+
+# ext = '.pyx' if USE_CYTHON else '.c'
+
+# extensions = [
+#     Extension("{}".format(package_name), 
+#     ["{}/*".format(package_name) + ext])]
+
+# if USE_CYTHON:
+#     extensions = cythonize(extensions)
 version = {}
 with open("version.py") as fp:
     exec(fp.read(), version)
@@ -13,16 +31,13 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-package_name = 'quasinet'
-example_dir = 'examples/'
-example_data_dir = example_dir + 'example_data/'
 
-setuptools.setup(
+setup(
     name=package_name,
     author='zed.uchicago.edu',
     author_email='ishanu@uchicago.edu',
     version = str(version['__version__']),
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     # package_data={'qnet_trees': ['*/*/*'] },
     scripts=[],
     url='https://github.com/zeroknowledgediscovery/',
@@ -60,4 +75,7 @@ setuptools.setup(
     #         example_data_dir + "cchfl_test.csv"
     #         ])
     #     ],
-    include_package_data=True)
+    include_package_data=True,
+    # ext_modules=extensions,
+    # zip_safe=False
+    )
