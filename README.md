@@ -69,6 +69,12 @@ qdist = qnet.qdistance(seq1, seq2, myqnet, myqnet)
 
 Examples are located [here](https://github.com/zeroknowledgediscovery/quasinet/tree/master/examples).
 
+## Papers
+
+For reference, please check out our paper: 
+
+[Preparing For the Next Pandemic: Learning Wild Mutational Patterns At Scale For Analyzing Sequence Divergence In Novel Pathogens](https://www.medrxiv.org/content/10.1101/2020.07.17.20156364v3)
+
 ## Authors
 
 You can reach the ZED lab at: zed.uchicago.edu
