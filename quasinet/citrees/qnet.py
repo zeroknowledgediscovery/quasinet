@@ -8,7 +8,7 @@ from tree import Node, get_nodes
 import numba
 from numba import njit, prange
 from numba.core import types
-from utils import assert_2d_array
+from utils import assert_array_rank
 
 class Qnet(object):
     """
@@ -30,7 +30,7 @@ class Qnet(object):
 
     def fit(self, X):
 
-        assert_2d_array(X)
+        assert_array_rank(X, 2)
 
         if not np.issubdtype(X.dtype, np.str_):
             raise ValueError('X must contain only strings!')
@@ -378,11 +378,7 @@ def membership_degree(seq, qnet):
         membership degree
     """
 
-    if not isinstance(seq, np.ndarray):
-        raise ValueError('You must pass in arrays as sequences.')
-
-    if len(seq.shape) != 1:
-        raise ValueError('The sequence must be 1d arrays.')
+    assert_array_rank(seq, 1)
 
     if len(seq) == 0:
         raise ValueError('The sequence cannot be empty.')
@@ -475,8 +471,8 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
         distance matrix
     """
 
-    assert_2d_array(seqs1)
-    assert_2d_array(seqs2)
+    assert_array_rank(seqs1, 2)
+    assert_array_rank(seqs2, 2)
 
     if seqs1.shape[1] != seqs2.shape[1]:
         raise ValueError('The columns of the two matrices must be equal.')

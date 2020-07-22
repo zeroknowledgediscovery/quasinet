@@ -117,6 +117,50 @@ def estimate_margin(y_probs, y_true):
     return true_probs - other_probs
 
 
-def assert_2d_array(X):
-    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
-        raise ValueError('You must pass in a 2D array!')
+
+def assert_array_rank(X, rank):
+    """Check if the input is an numpy array and has a certain rank.
+
+    Parameters
+    ----------
+    X : array-like
+        Array to check
+
+    rank : int
+        Rank of the tensor to check
+    
+    Returns
+    -------
+    None
+    """
+
+    if not isinstance(X, np.ndarray):
+        raise ValueError('You must pass in a numpy array!')
+
+    if len(X.shape) != rank:
+        raise ValueError('You must pass in a {}-rank array!'.format(rank))
+
+
+def sample_from_dict(distrib):
+    """Choose an item from the distribution
+
+    Parameters
+    ----------
+    distrib : dict
+        dictionary mapping keys to its probability values
+
+    Returns
+    -------
+    item : key of dict
+        a chosen key from the dictionary
+    """
+
+    keys = []
+    probs = []
+    for k, prob in distrib.items():
+        keys.append(k)
+        probs.append(prob)
+
+    item = np.random.choice(keys, p=probs)
+
+    return item
