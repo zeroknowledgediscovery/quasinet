@@ -104,6 +104,34 @@ class Qnet(object):
         return self.col_to_non_leaf_nodes
 
 
+    def clear_attributes(self):
+        """Remove the unneeded attributes to save memory.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+
+        self._check_is_fitted()
+
+        if hasattr(self, 'col_to_non_leaf_nodes'):
+            delattr(self, 'col_to_non_leaf_nodes')
+
+        new_estimator = {}
+        for col, tree in self.estimators_.items():
+            # TODO: set the parameters of this equal to that of the original construction
+            new_tree = CITreeClassifier(selector='chi2', random_state=42)
+            new_tree.root = tree.root
+            new_estimator[col] = new_tree
+
+        delattr(self, 'estimators_')
+
+        self.estimators_ = new_estimator
+
     def _combine_distributions(self, distributions):
         """Given a list of distributions, combine them together into
         an array.
@@ -520,7 +548,7 @@ def load_qnet(f):
 
     return qnet
 
-def save_qnet(qnet, f):
+def save_qnet(qnet, f, low_mem=False):
     """Save the qnet to a file.
 
     NOTE: The file name must end in `.joblib`
@@ -538,7 +566,11 @@ def save_qnet(qnet, f):
         A Qnet instance
 
     f : str
-        File name.
+        File name
+
+    low_mem : bool
+        If True, save the Qnet with low memory by deleting all data attributes 
+        except the tree structure
  
     Returns
     -------
@@ -549,4 +581,7 @@ def save_qnet(qnet, f):
     if not f.endswith('.joblib'):
         raise ValueError('The outfile must end with `.joblib`')
 
+    if low_mem:
+        qnet.clear_attributes()
+        
     dump(qnet, f) 
