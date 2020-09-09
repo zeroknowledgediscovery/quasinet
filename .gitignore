@@ -2,3 +2,6 @@ __pycache__
 *.pyc
 data/
 .vscode/
+build/
+dist/
+.ipynb_checkpoints
