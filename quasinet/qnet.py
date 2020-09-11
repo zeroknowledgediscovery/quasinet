@@ -9,12 +9,17 @@ from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .tree import Node, get_nodes
 from .utils import assert_array_rank
+from ._export import GraphvizExporter
 
 class Qnet(object):
     """Qnet architecture.
 
     Parameters
     ----------
+
+    feature_names : list
+        List of names describing the features
+
     min_samples_split : int
         Minimum samples required for a split
 
@@ -45,6 +50,7 @@ class Qnet(object):
     """
 
     def __init__(self, 
+                 feature_names,
                  min_samples_split=2,
                  alpha=.05,
                  max_depth=-1,
@@ -54,6 +60,7 @@ class Qnet(object):
                  random_state=None,
                  n_jobs=1):
 
+        self.feature_names = feature_names
         self.min_samples_split = min_samples_split
         self.alpha = alpha
         self.max_depth = max_depth
@@ -183,7 +190,9 @@ class Qnet(object):
                                         early_stopping=self.early_stopping,
                                         verbose=self.verbose,
                                         random_state=self.random_state)
+
             new_tree.root = tree.root
+            new_tree.labels_ = tree.labels_
             new_estimator[col] = new_tree
 
         delattr(self, 'estimators_')
@@ -639,3 +648,37 @@ def save_qnet(qnet, f, low_mem=False):
         qnet.clear_attributes()
         
     dump(qnet, f) 
+
+
+def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
+    """Export the tree.
+
+    Parameters
+    ----------
+    qnet : Qnet
+        A Qnet instance
+
+    index : int
+        Index of the tree to export
+
+    low_mem : bool
+        If True, save the Qnet with low memory by deleting all data attributes 
+        except the tree structure
+ 
+    Returns
+    -------
+    None
+    """
+
+    tree = qnet.estimators_[index]
+    feature_names = qnet.feature_names
+
+    if outformat == 'graphviz':
+        exporter = GraphvizExporter(tree=tree,
+                         outfile=outfile,
+                         response_name=feature_names[index],
+                         feature_names=feature_names)
+        exporter.export()
+
+    else:
+        raise NotImplementedError

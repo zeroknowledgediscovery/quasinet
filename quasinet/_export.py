@@ -53,8 +53,6 @@ class GraphvizExporter(object):
         self.pen_width = pen_width
         self.background_color = background_color
         self.rotate = rotate
-        
-        self.export()
 
     def export(self):
         nodes = get_nodes(
