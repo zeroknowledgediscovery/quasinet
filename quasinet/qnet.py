@@ -253,10 +253,11 @@ class Qnet(object):
 
         self._check_is_fitted()
 
-        if len(column_to_item) == 0:
-            raise NotImplementedError
-
         root = self.estimators_[column].root
+
+        if len(column_to_item) == 0:
+            return dict(root.label_frequency)
+
         nodes = get_nodes(root)
         distributions = []
         for node in nodes:
