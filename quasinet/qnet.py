@@ -84,6 +84,9 @@ class Qnet(object):
     def fit(self, X):
 
         assert_array_rank(X, 2)
+        
+        if X.shape[1] != len(self.feature_names):
+            raise ValueError('The number of features must match `feature_names`!')
 
         if not np.issubdtype(X.dtype, np.str_):
             raise ValueError('X must contain only strings!')
