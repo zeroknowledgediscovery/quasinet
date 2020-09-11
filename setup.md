@@ -24,9 +24,6 @@ conda install sphinx
 ## Running Build
 
 ```
-make html
-```
-
-```
 sphinx-apidoc -f -o docs/source quasinet
+make html
 ```
