@@ -1,0 +1,25 @@
+graph Tree {
+node [shape=box, style="filled, rounded", color="black",penwidth="2",                 fontname=helvetica] ;
+graph [ranksep=equally, splines=Curved,                 bgcolor=transparent, dpi=600] ;
+edge [fontname=helvetica, color=gray] ;
+LEGEND [label="Response: 1aaaa
+Classes: A|C|G|T
+",shape=note,align=left,                style=filled,fillcolor="slategray",                fontcolor="white",fontsize=10];
+0 [label="G
+Prob: 1.0", fillcolor="#ffffff",fontcolor="black"] ;
+1 [label="4aaaa pval: 2.03E-4", fillcolor="#ffffff",fontcolor="black"] ;
+2 [label="A
+Prob: 1.0", fillcolor="#ffffff",fontcolor="black"] ;
+3 [label="1aaaa pval: 4.54E-11", fillcolor="#ffffff",fontcolor="black"] ;
+4 [label="T
+Prob: 0.75", fillcolor="#ffffff",fontcolor="black"] ;
+5 [label="1aaaa pval: 1.48E-7", fillcolor="#ffffff",fontcolor="black"] ;
+6 [label="A
+Prob: 0.42", fillcolor="#ffffff",fontcolor="black"] ;
+1 -- 0 [label="A",fontcolor=deepskyblue4,penwidth=2] ;
+1 -- 2 [label="C\nT",fontcolor=deepskyblue4,penwidth=2] ;
+3 -- 1 [label="C",fontcolor=deepskyblue4,penwidth=2] ;
+3 -- 5 [label="A\nG\nT",fontcolor=deepskyblue4,penwidth=2] ;
+5 -- 4 [label="G",fontcolor=deepskyblue4,penwidth=2] ;
+5 -- 6 [label="A\nT",fontcolor=deepskyblue4,penwidth=2] ;
+{rank = same;}{rank = same; LEGEND;1;}}
