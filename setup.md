@@ -11,3 +11,18 @@ pip install jupyter_contrib_nbextensions
 
 python -m ipykernel install --user --name=${NAME}
 ```
+
+
+# Sphinx
+
+## Installation
+
+```
+conda install sphinx
+```
+
+## Running Build
+
+```
+make html
+```
