@@ -26,3 +26,7 @@ conda install sphinx
 ```
 make html
 ```
+
+```
+sphinx-apidoc -f -o docs/source quasinet
+```
