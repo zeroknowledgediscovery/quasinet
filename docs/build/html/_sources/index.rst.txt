@@ -9,6 +9,8 @@ Welcome to Quasinet's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   quasinet.rst
+   modules.rst
 
 
 

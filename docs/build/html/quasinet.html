@@ -1,0 +1,1355 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>quasinet package &#8212; Quasinet  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="quasinet-package">
+<h1>quasinet package<a class="headerlink" href="#quasinet-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="quasinet-ciforest-module">
+<h2>quasinet.ciforest module<a class="headerlink" href="#quasinet-ciforest-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-quasinet.citrees">
+<span id="quasinet-citrees-module"></span><h2>quasinet.citrees module<a class="headerlink" href="#module-quasinet.citrees" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="quasinet.citrees.CITreeBase">
+<em class="property">class </em><code class="sig-prename descclassname">quasinet.citrees.</code><code class="sig-name descname">CITreeBase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">n_permutations</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">muting</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for conditional inference tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_samples_split</strong> (<em>int</em>) – Minimum samples required for a split</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Threshold value for selecting feature with permutation tests. Smaller
+values correspond to shallower trees</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em>) – Maximum depth to grow tree</p></li>
+<li><p><strong>max_feats</strong> (<em>str</em><em> or </em><em>int</em>) – Maximum feats to select at each split. String arguments include ‘sqrt’,
+‘log’, and ‘all’</p></li>
+<li><p><strong>n_permutations</strong> (<em>int</em>) – Number of permutations during feature selection</p></li>
+<li><p><strong>early_stopping</strong> (<em>bool</em>) – Whether to implement early stopping during feature selection. If True,
+then as soon as the first permutation test returns a p-value less than
+alpha, this feature will be chosen as the splitting variable</p></li>
+<li><p><strong>muting</strong> (<em>bool</em>) – Whether to perform variable muting</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em> or </em><em>int</em>) – Controls verbosity of training and testing</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeBase.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>2d array-like</em>) – Array of categorical features</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Instance of CITreeBase class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#quasinet.citrees.CITreeBase" title="quasinet.citrees.CITreeBase">CITreeBase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeBase.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts labels on test data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeBase.predict_label">
+<code class="sig-name descname">predict_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">tree</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.predict_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts label</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>1d array-like</em>) – Array of features for single sample</p></li>
+<li><p><strong>tree</strong> (<a class="reference internal" href="#quasinet.citrees.CITreeBase" title="quasinet.citrees.CITreeBase"><em>CITreeBase</em></a>) – Trained tree</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>label</strong> – Predicted label</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int or float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeBase.print_tree">
+<code class="sig-name descname">print_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tree</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">' '</span></em>, <em class="sig-param"><span class="n">child</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.print_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints tree structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree</strong> (<a class="reference internal" href="#quasinet.citrees.CITreeBase" title="quasinet.citrees.CITreeBase"><em>CITreeBase</em></a>) – Trained tree model</p></li>
+<li><p><strong>indent</strong> (<em>str</em>) – Indent spacing</p></li>
+<li><p><strong>child</strong> (<a class="reference internal" href="#quasinet.tree.Node" title="quasinet.tree.Node"><em>Node</em></a>) – Left or right child node</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="quasinet.citrees.CITreeClassifier">
+<em class="property">class </em><code class="sig-prename descclassname">quasinet.citrees.</code><code class="sig-name descname">CITreeClassifier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">selector</span><span class="o">=</span><span class="default_value">'chi2'</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">n_permutations</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">muting</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quasinet.citrees.CITreeBase" title="quasinet.citrees.CITreeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">quasinet.citrees.CITreeBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.ClassifierMixin</span></code></p>
+<p>Conditional inference tree classifier</p>
+<p>NOTE: as of now, the features can only be categorical</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selector</strong> (<em>str</em>) – Variable selector for finding strongest association between a feature
+and the label</p></li>
+<li><p><strong>from CITreeBase class; see constructor for parameter definitions</strong> (<em>Derived</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeClassifier.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train conditional inference tree classifier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>2d array-like</em>) – Array of features</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>labels</strong> (<em>1d array-like</em>) – Array of unique class labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Instance of CITreeClassifier class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#quasinet.citrees.CITreeClassifier" title="quasinet.citrees.CITreeClassifier">CITreeClassifier</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeClassifier.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts class labels for feature vectors X</p>
+<p>TODO: treat a feature as missing data if there is that feature is
+not an instance of the corresponding training feature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Array of features</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>y</strong> – Array of predicted classes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.citrees.CITreeClassifier.predict_proba">
+<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts class probabilities for feature vectors X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Array of features</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>class_probs</strong> – Array of predicted class probabilities</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.feature_selectors">
+<span id="quasinet-feature-selectors-module"></span><h2>quasinet.feature_selectors module<a class="headerlink" href="#module-quasinet.feature_selectors" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_chi2">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_chi2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_chi2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutation test using chi-squared.</p>
+<p>This is used when x and y are nominal variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>n_classes</strong> (<em>int</em>) – Number of classes</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_dcor">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_dcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_dcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutation test for distance correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_dcor_parallel">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_dcor_parallel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_dcor_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallel implementation of permutation test for distance correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – Number of cpus to use for processing</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_mc">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_mc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">n_classes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_mc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutation test for multiple correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>n_classes</strong> (<em>int</em>) – Number of classes</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_mi">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_mi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_mi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutation test for mutual information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>n_classes</strong> (<em>int</em>) – Number of classes</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_pcor">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_pcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_pcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutation test for Pearson correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_rdc">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_rdc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_rdc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permutation test for randomized dependence coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.feature_selectors.permutation_test_rdc_parallel">
+<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_rdc_parallel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_rdc_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallel implementation of permutation test for randomized dependence
+coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>B</strong> (<em>int</em>) – Number of permutations</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – Number of cpus to use for processing</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Number of random projections for cca</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Achieved significance level</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.metrics">
+<span id="quasinet-metrics-module"></span><h2>quasinet.metrics module<a class="headerlink" href="#module-quasinet.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="quasinet.metrics.js_divergence">
+<code class="sig-prename descclassname">quasinet.metrics.</code><code class="sig-name descname">js_divergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1</span></em>, <em class="sig-param"><span class="n">p2</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">0.0001</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.js_divergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>1d array-like</em>) – probability distribution</p></li>
+<li><p><strong>p2</strong> (<em>1d array-like</em>) – probability distribution</p></li>
+<li><p><strong>smooth</strong> (<em>float</em>) – amount by which to smooth out the probability distribution of <cite>p2</cite>. This
+is intended to deal with categories with zero probability.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>js_div</strong> – js divergence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numeric</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.metrics.kl_divergence">
+<code class="sig-prename descclassname">quasinet.metrics.</code><code class="sig-name descname">kl_divergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1</span></em>, <em class="sig-param"><span class="n">p2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.kl_divergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Kullback–Leibler divergence of discrete probability distributions.</p>
+<p>NOTE: we will not perform error checking in this function because
+this function is used very frequently. The user should check that p1
+and p2 are in fact probability distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>1d array-like</em>) – probability distribution</p></li>
+<li><p><strong>p2</strong> (<em>1d array-like</em>) – probability distribution</p></li>
+<li><p><strong>smooth</strong> (<em>float</em>) – amount by which to smooth out the probability distribution of <cite>p2</cite>. This
+is intended to deal with categories with zero probability.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – kl divergence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numeric</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.qnet">
+<span id="quasinet-qnet-module"></span><h2>quasinet.qnet module<a class="headerlink" href="#module-quasinet.qnet" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="quasinet.qnet.Qnet">
+<em class="property">class </em><code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">Qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_names</span></em>, <em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Qnet architecture.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>feature_names</strong> (<em>list</em>) – List of names describing the features</p></li>
+<li><p><strong>min_samples_split</strong> (<em>int</em>) – Minimum samples required for a split</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Threshold value for selecting feature with permutation tests. Smaller
+values correspond to shallower trees</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em>) – Maximum depth to grow tree</p></li>
+<li><p><strong>max_feats</strong> (<em>str</em><em> or </em><em>int</em>) – Maximum feats to select at each split. String arguments include ‘sqrt’,
+‘log’, and ‘all’</p></li>
+<li><p><strong>early_stopping</strong> (<em>bool</em>) – Whether to implement early stopping during feature selection. If True,
+then as soon as the first permutation test returns a p-value less than
+alpha, this feature will be chosen as the splitting variable</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em> or </em><em>int</em>) – Controls verbosity of training and testing</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – Number of CPUs to use when training</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="quasinet.qnet.Qnet.clear_attributes">
+<code class="sig-name descname">clear_attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.clear_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the unneeded attributes to save memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.qnet.Qnet.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.qnet.Qnet.predict_distribution">
+<code class="sig-name descname">predict_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_to_item</span></em>, <em class="sig-param"><span class="n">column</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the probability distribution for a given column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_to_item</strong> (<em>dict</em>) – dictionary mapping the column to the values the columns take</p></li>
+<li><p><strong>column</strong> (<em>str</em>) – column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – dictionary mapping possible column values to probability values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.qnet.Qnet.predict_distributions">
+<code class="sig-name descname">predict_distributions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the probability distributions for all the columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>seq</strong> (<em>list</em>) – list of values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>prob_distributions</strong> – list of probability distributions, one for each index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.qnet.Qnet.predict_distributions_numba">
+<code class="sig-name descname">predict_distributions_numba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distributions_numba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.qnet.Qnet.predict_proba">
+<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.export_qnet_trees">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_trees</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_trees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – A Qnet instance</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – Index of the tree to export</p></li>
+<li><p><strong>low_mem</strong> (<em>bool</em>) – If True, save the Qnet with low memory by deleting all data attributes
+except the tree structure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.load_qnet">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">load_qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.load_qnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the qnet from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>str</em>) – File name.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>qnet</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet">Qnet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.membership_degree">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">membership_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">qnet</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.membership_degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the membership degree of a sequence in a qnet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> (<em>1d array-like</em>) – Array of values</p></li>
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq</cite> belongs to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>membership_degree</strong> – membership degree</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numeric</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.qdistance">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">qdistance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq1</span></em>, <em class="sig-param"><span class="n">seq2</span></em>, <em class="sig-param"><span class="n">qnet1</span></em>, <em class="sig-param"><span class="n">qnet2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> (<em>1d array-like</em>) – Array of values</p></li>
+<li><p><strong>seq2</strong> (<em>1d array-like</em>) – Array of values</p></li>
+<li><p><strong>qnet1</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq1</cite> belongs to</p></li>
+<li><p><strong>qnet2</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq2</cite> belongs to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – qdistance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numeric</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.qdistance_matrix">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">qdistance_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seqs1</span></em>, <em class="sig-param"><span class="n">seqs2</span></em>, <em class="sig-param"><span class="n">qnet1</span></em>, <em class="sig-param"><span class="n">qnet2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a distance matrix with the qdistance metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seqs1</strong> (<em>2d array-like</em>) – Array of values</p></li>
+<li><p><strong>seqs2</strong> (<em>2d array-like</em>) – Array of values</p></li>
+<li><p><strong>qnet1</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seqs1</cite> belongs to</p></li>
+<li><p><strong>qnet2</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seqs2</cite> belongs to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>distance_matrix</strong> – distance matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.save_qnet">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">save_qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">low_mem</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.save_qnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the qnet to a file.</p>
+<p>NOTE: The file name must end in <cite>.joblib</cite></p>
+<p>TODO: using joblib is actually less memory efficient than using pickle.
+However, I don’t know if this is a general problem or this only happens
+under certain circumstances.</p>
+<p>TODO: we may have to delete and garbage collection some attributes in the qnet
+to save memory. For example, <cite>.feature_importances_</cite>, <cite>.available_features_</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qnet1</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – A Qnet instance</p></li>
+<li><p><strong>f</strong> (<em>str</em>) – File name</p></li>
+<li><p><strong>low_mem</strong> (<em>bool</em>) – If True, save the Qnet with low memory by deleting all data attributes
+except the tree structure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.qsampling">
+<span id="quasinet-qsampling-module"></span><h2>quasinet.qsampling module<a class="headerlink" href="#module-quasinet.qsampling" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="quasinet.qsampling.qsample">
+<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">baseline_prob</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform q-sampling for multiple steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> (<em>1d array-like</em>) – Array of values</p></li>
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq</cite> belongs to</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – number of steps to run q-sampling</p></li>
+<li><p><strong>baseline_prob</strong> (<em>1d array-like</em>) – Baseline probability for sampling which index</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>seq</strong> – q-sampled sequence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qsampling.targeted_qsample">
+<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">targeted_qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq1</span></em>, <em class="sig-param"><span class="n">seq2</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.targeted_qsample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform q-sampling for multiple steps.</p>
+<p><cite>seq1</cite> is q-sampled towards <cite>seq2</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> (<em>1d array-like</em>) – Array of values</p></li>
+<li><p><strong>seq2</strong> (<em>1d array-like</em>) – Array of values.</p></li>
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq1</cite> belongs to</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – number of steps to run q-sampling</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>seq</strong> – q-sampled sequence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.qseqtools">
+<span id="quasinet-qseqtools-module"></span><h2>quasinet.qseqtools module<a class="headerlink" href="#module-quasinet.qseqtools" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="quasinet.qseqtools.list_trained_qnets">
+<code class="sig-prename descclassname">quasinet.qseqtools.</code><code class="sig-name descname">list_trained_qnets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.list_trained_qnets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the possible qnets we can use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qseqtools.load_sequence">
+<code class="sig-prename descclassname">quasinet.qseqtools.</code><code class="sig-name descname">load_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.load_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a fasta sequence from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – File of a fasta sequence</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>seq</strong> – A fasta sequence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1d-like array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qseqtools.load_trained_qnet">
+<code class="sig-prename descclassname">quasinet.qseqtools.</code><code class="sig-name descname">load_trained_qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet_type</span></em>, <em class="sig-param"><span class="n">extra_descriptions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.load_trained_qnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the pre-trained qnet.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">load_qnet</span><span class="p">(</span><span class="s1">&#39;coronavirus&#39;</span><span class="p">,</span> <span class="s1">&#39;bat&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">load_qnet</span><span class="p">(</span><span class="s1">&#39;influenza&#39;</span><span class="p">,</span> <span class="s1">&#39;h1n1;na;2009&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qnet_type</strong> (<em>str</em>) – The type of qnet to load</p></li>
+<li><p><strong>extra_descriptions</strong> (<em>str</em>) – Extra descriptions for which qnet to load. The descriptions must be
+split by <cite>;</cite> for influenza.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>trained_qnet</strong> – A trained qnet</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet">qnet.Qnet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.scorers">
+<span id="quasinet-scorers-module"></span><h2>quasinet.scorers module<a class="headerlink" href="#module-quasinet.scorers" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="quasinet.scorers.MEAN">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">MEAN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.MEAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.approx_wdcor">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">approx_wdcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.approx_wdcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate distance correlation by binning arrays</p>
+<dl class="simple">
+<dt>NOTE: Code ported from R function approx.dcor at:</dt><dd><p><a class="reference external" href="https://rdrr.io/cran/extracat/src/R/wdcor.R">https://rdrr.io/cran/extracat/src/R/wdcor.R</a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dcor</strong> – Distance correlation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.c_dcor">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">c_dcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.c_dcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for C version of distance correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dcor</strong> – Distance correlation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.c_wdcor">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">c_wdcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.c_wdcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for C version of weighted distance correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>weights</strong> (<em>1d array-like</em>) – Weight vector that sums to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dcor</strong> – Distance correlation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.cca">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">cca</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.cca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Largest canonical correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>2d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>Y</strong> (<em>2d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cor</strong> – Largest canonical correlation between X and Y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.cca_fast">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">cca_fast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.cca_fast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Largest canonical correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>2d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>Y</strong> (<em>2d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cor</strong> – Largest correlation between X and Y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.chi2">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">chi2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.chi2" title="Permalink to this definition">¶</a></dt>
+<dd><p>x and y are ordinal representations of categorical variables.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.create_chi2_table">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">create_chi2_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.create_chi2_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a chi-squared contingency table using x and y</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.gini_index">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">gini_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.gini_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gini index for node in tree</p>
+<dl class="simple">
+<dt>Note: Despite being jitted, this function is still slow and a bottleneck</dt><dd><p>in the actual training phase. Sklearn’s Cython version is used to
+find the best split and this function is then called on the parent node
+and two child nodes to calculate feature importances using the mean
+decrease impurity formula</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>labels</strong> (<em>1d array-like</em>) – Unique labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>gini</strong> – Gini index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.mc_fast">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">mc_fast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">n_classes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mc_fast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>n_classes</strong> (<em>int</em>) – Number of classes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cor</strong> – Multiple correlation coefficient between x and y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.mi">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">mi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutual information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>info</strong> – Mutual information between x and y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.mse">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">mse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean squared error for node in tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>error</strong> – Mean squared error</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.pcor">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">pcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.pcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pearson correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cor</strong> – Pearson correlation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.py_dcor">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">py_dcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.py_dcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python port of C function for distance correlation</p>
+<p>Note: Version is optimized for use with Numba</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dcor</strong> – Distance correlation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.py_wdcor">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">py_wdcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.py_wdcor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python port of C function for distance correlation</p>
+<p>Note: Version is optimized for use with Numba</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>weights</strong> (<em>1d array-like</em>) – Weight vector that sums to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dcor</strong> – Distance correlation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.rdc">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">rdc</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">k=10</em>, <em class="sig-param">s=0.16666666666666666</em>, <em class="sig-param">f=&lt;ufunc 'sin'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.rdc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomized dependence coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>2d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>Y</strong> (<em>2d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Number of random projections</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – Variance of Gaussian random variables</p></li>
+<li><p><strong>f</strong> (<em>function</em>) – Non-linear function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cor</strong> – Randomized dependence coefficient between X and Y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.scorers.rdc_fast">
+<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">rdc_fast</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">k=10</em>, <em class="sig-param">s=0.16666666666666666</em>, <em class="sig-param">f=&lt;ufunc 'sin'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.rdc_fast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomized dependence coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of n elements</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Number of random projections</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – Variance of Gaussian random variables</p></li>
+<li><p><strong>f</strong> (<em>function</em>) – Non-linear function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cor</strong> – Randomized dependence coefficient between x and y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.tree">
+<span id="quasinet-tree-module"></span><h2>quasinet.tree module<a class="headerlink" href="#module-quasinet.tree" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="quasinet.tree.Node">
+<em class="property">class </em><code class="sig-prename descclassname">quasinet.tree.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">col</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">col_pval</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lthreshold</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rthreshold</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">impurity</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">left</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">right</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">label_frequency</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.tree.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Decision node in tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>col</strong> (<em>int</em>) – Integer indexing the location of feature or column</p></li>
+<li><p><strong>col_pval</strong> (<em>float</em>) – Probability value from permutation test for feature selection</p></li>
+<li><p><strong>lthreshold</strong> (<em>list</em>) – List of items for taking the left edge down the tree</p></li>
+<li><p><strong>rthreshold</strong> (<em>list</em>) – List of items for taking the right edge down the tree</p></li>
+<li><p><strong>impurity</strong> (<em>float</em>) – Impurity measuring quality of split</p></li>
+<li><p><strong>value</strong> (<em>1d array-like</em><em> or </em><em>float</em>) – For classification trees, estimate of each class probability
+For regression trees, central tendency estimate</p></li>
+<li><p><strong>left</strong> (<a class="reference internal" href="#quasinet.tree.Node" title="quasinet.tree.Node"><em>Node</em></a>) – Another Node</p></li>
+<li><p><strong>right</strong> (<a class="reference internal" href="#quasinet.tree.Node" title="quasinet.tree.Node"><em>Node</em></a>) – Another Node</p></li>
+<li><p><strong>label_frequency</strong> (<em>dict</em>) – Dictionary mapping label to its frequency</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.tree.get_nodes">
+<code class="sig-prename descclassname">quasinet.tree.</code><code class="sig-name descname">get_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">get_leaves</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">get_non_leaves</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.tree.get_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverse a tree and get all the nodes.</p>
+<p>TODO: may need to change this into an iterator for speed purposes</p>
+<p>If <cite>get_leaves</cite> and <cite>get_non_leaves</cite> are both <cite>True</cite>, then
+we will get all the nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<a class="reference internal" href="#quasinet.tree.Node" title="quasinet.tree.Node"><em>Node</em></a>) – root node of the tree</p></li>
+<li><p><strong>get_leaves</strong> (<em>bool</em>) – If true, we get leaf nodes</p></li>
+<li><p><strong>get_non_leaves</strong> (<em>bool</em>) – If true, we get non leaf nodes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – list of <cite>Node</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.utils">
+<span id="quasinet-utils-module"></span><h2>quasinet.utils module<a class="headerlink" href="#module-quasinet.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="quasinet.utils.assert_array_rank">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">assert_array_rank</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">rank</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_array_rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the input is an numpy array and has a certain rank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em>) – Array to check</p></li>
+<li><p><strong>rank</strong> (<em>int</em>) – Rank of the tensor to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.auc_score">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">auc_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_prob</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.auc_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADD</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.bayes_boot_probs">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">bayes_boot_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.bayes_boot_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bayesian bootstrap sampling for case weights</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em>) – Number of Bayesian bootstrap samples</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>p</strong> – Array of sampling probabilities</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.estimate_margin">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">estimate_margin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_probs</span></em>, <em class="sig-param"><span class="n">y_true</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.estimate_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates margin function of forest ensemble</p>
+<p>Note : This function is similar to margin in R’s randomForest package</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_probs</strong> (<em>2d array-like</em>) – Predicted probabilities where each row represents predicted
+class distribution for sample and each column corresponds to
+estimated class probability</p></li>
+<li><p><strong>y_true</strong> (<em>1d array-like</em>) – Array of true class labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>margin</strong> – Estimated margin of forest ensemble</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.logger">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">logger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints messages with style “[NAME] message”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Short title of message, for example, train or test</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – Main description to be displayed in terminal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.powerset">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">powerset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.powerset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the power set of a list or set.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.remove_zeros">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">remove_zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.remove_zeros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove rows along a certain axis where the value is all zero.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.sample_from_dict">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">sample_from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distrib</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.sample_from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose an item from the distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distrib</strong> (<em>dict</em>) – dictionary mapping keys to its probability values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>item</strong> – a chosen key from the dictionary</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>key of dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.utils.scientific_notation">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">scientific_notation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.scientific_notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a number into scientific notation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num</strong> (<em>float</em>) – Any number</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – String representation of the number</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-quasinet" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Quasinet</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, ZeD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/quasinet.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
