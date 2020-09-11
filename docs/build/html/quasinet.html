@@ -15,6 +15,8 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="quasinet" href="modules.html" />
+    <link rel="prev" title="Welcome to Quasinet’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -36,8 +38,225 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="quasinet-ciforest-module">
-<h2>quasinet.ciforest module<a class="headerlink" href="#quasinet-ciforest-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-quasinet.ciforest">
+<span id="quasinet-ciforest-module"></span><h2>quasinet.ciforest module<a class="headerlink" href="#module-quasinet.ciforest" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="quasinet.ciforest.CIForestClassifier">
+<em class="property">class </em><code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">CIForestClassifier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">selector</span><span class="o">=</span><span class="default_value">'mc'</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">n_estimators</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">'sqrt'</span></em>, <em class="sig-param"><span class="n">n_permutations</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">muting</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bootstrap</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bayes</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">class_weight</span><span class="o">=</span><span class="default_value">'balanced'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.ClassifierMixin</span></code></p>
+<p>Conditional forest classifier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_samples_split</strong> (<em>int</em>) – Minimum samples required for a split</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Threshold value for selecting feature with permutation tests. Smaller
+values correspond to shallower trees</p></li>
+<li><p><strong>selector</strong> (<em>str</em>) – Variable selector for finding strongest association between a feature
+and the label</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em>) – Maximum depth to grow tree</p></li>
+<li><p><strong>max_feats</strong> (<em>str</em><em> or </em><em>int</em>) – Maximum feats to select at each split. String arguments include ‘sqrt’,
+‘log’, and ‘all’</p></li>
+<li><p><strong>n_permutations</strong> (<em>int</em>) – Number of permutations during feature selection</p></li>
+<li><p><strong>early_stopping</strong> (<em>bool</em>) – Whether to implement early stopping during feature selection. If True,
+then as soon as the first permutation test returns a p-value less than
+alpha, this feature will be chosen as the splitting variable</p></li>
+<li><p><strong>muting</strong> (<em>bool</em>) – Whether to perform variable muting</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em> or </em><em>int</em>) – Controls verbosity of training and testing</p></li>
+<li><p><strong>bootstrap</strong> (<em>bool</em>) – Whether to perform bootstrap sampling for each tree</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+<li><p><strong>class_weight</strong> (<em>str</em>) – Type of sampling during bootstrap, None for regular bootstrapping,
+‘balanced’ for balanced bootstrap sampling, and ‘stratify’ for
+stratified bootstrap sampling</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – Number of jobs for permutation testing</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="quasinet.ciforest.CIForestClassifier.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit conditional forest classifier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>2d array-like</em>) – Array of features</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Instance of CIForestClassifier</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#quasinet.ciforest.CIForestClassifier" title="quasinet.ciforest.CIForestClassifier">CIForestClassifier</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.ciforest.CIForestClassifier.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts class labels for feature vectors X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Array of features</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>y</strong> – Array of predicted classes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quasinet.ciforest.CIForestClassifier.predict_proba">
+<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts class probabilities for feature vectors X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Array of features</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>class_probs</strong> – Array of predicted class probabilities</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.ciforest.balanced_sampled_idx">
+<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">balanced_sampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em>, <em class="sig-param"><span class="n">min_class_p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.balanced_sampled_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indices for balanced bootstrap sampling in classification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+<li><p><strong>min_class_p</strong> (<em>float</em>) – Minimum proportion of class labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – Balanced sampled indices for each class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.ciforest.balanced_unsampled_idx">
+<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">balanced_unsampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em>, <em class="sig-param"><span class="n">min_class_p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.balanced_unsampled_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsampled indices for balanced bootstrap sampling in classification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+<li><p><strong>min_class_p</strong> (<em>float</em>) – Minimum proportion of class labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – Balanced unsampled indices for each class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.ciforest.normal_sampled_idx">
+<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">normal_sampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.normal_sampled_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indices for bootstrap sampling</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Sample size</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – Sampled indices</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.ciforest.normal_unsampled_idx">
+<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">normal_unsampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.normal_unsampled_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsampled indices for bootstrap sampling</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Sample size</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – Unsampled indices</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.ciforest.stratify_sampled_idx">
+<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">stratify_sampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.stratify_sampled_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indices for stratified bootstrap sampling in classification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – Stratified sampled indices for each class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.ciforest.stratify_unsampled_idx">
+<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">stratify_unsampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.stratify_unsampled_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsampled indices for stratified bootstrap sampling in classification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_state</strong> (<em>int</em>) – Sets seed for random number generator</p></li>
+<li><p><strong>y</strong> (<em>1d array-like</em>) – Array of labels</p></li>
+<li><p><strong>bayes</strong> (<em>bool</em>) – If True, performs Bayesian bootstrap sampling</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – Stratified unsampled indices for each class</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-quasinet.citrees">
 <span id="quasinet-citrees-module"></span><h2>quasinet.citrees module<a class="headerlink" href="#module-quasinet.citrees" title="Permalink to this headline">¶</a></h2>
@@ -1306,11 +1525,32 @@ estimated class probability</p></li>
 
 
 <h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">quasinet package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.ciforest">quasinet.ciforest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.citrees">quasinet.citrees module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.feature_selectors">quasinet.feature_selectors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.metrics">quasinet.metrics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.qnet">quasinet.qnet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.qsampling">quasinet.qsampling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.qseqtools">quasinet.qseqtools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.scorers">quasinet.scorers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.tree">quasinet.tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.utils">quasinet.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">quasinet</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Quasinet’s documentation!</a></li>
+      <li>Next: <a href="modules.html" title="next chapter">quasinet</a></li>
   </ul></li>
 </ul>
 </div>
