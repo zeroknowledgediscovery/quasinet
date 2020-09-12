@@ -2,19 +2,72 @@
 import numpy as np
 from joblib import dump, load, delayed, Parallel
 import numba
-from numba import njit, prange
+# from numba import njit, prange
 from numba.core import types
 
 from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .tree import Node, get_nodes
 from .utils import assert_array_rank
+from ._export import GraphvizExporter
 
 class Qnet(object):
-    """
+    """Qnet architecture.
+
+    Parameters
+    ----------
+
+    feature_names : list
+        List of names describing the features
+
+    min_samples_split : int
+        Minimum samples required for a split
+
+    alpha : float
+        Threshold value for selecting feature with permutation tests. Smaller
+        values correspond to shallower trees
+
+    max_depth : int
+        Maximum depth to grow tree
+
+    max_feats : str or int
+        Maximum feats to select at each split. String arguments include 'sqrt',
+        'log', and 'all'
+
+    early_stopping : bool
+        Whether to implement early stopping during feature selection. If True,
+        then as soon as the first permutation test returns a p-value less than
+        alpha, this feature will be chosen as the splitting variable
+
+    verbose : bool or int
+        Controls verbosity of training and testing
+
+    random_state : int
+        Sets seed for random number generator
+
+    n_jobs : int
+        Number of CPUs to use when training
     """
 
-    def __init__(self, n_jobs=1):
+    def __init__(self, 
+                 feature_names,
+                 min_samples_split=2,
+                 alpha=.05,
+                 max_depth=-1,
+                 max_feats=-1,
+                 early_stopping=False,
+                 verbose=0,
+                 random_state=None,
+                 n_jobs=1):
+
+        self.feature_names = feature_names
+        self.min_samples_split = min_samples_split
+        self.alpha = alpha
+        self.max_depth = max_depth
+        self.max_feats = max_feats
+        self.early_stopping = early_stopping
+        self.verbose = verbose
+        self.random_state = random_state
         self.n_jobs = n_jobs
 
     def __repr__(self):
@@ -31,6 +84,9 @@ class Qnet(object):
     def fit(self, X):
 
         assert_array_rank(X, 2)
+        
+        if X.shape[1] != len(self.feature_names):
+            raise ValueError('The number of features must match `feature_names`!')
 
         if not np.issubdtype(X.dtype, np.str_):
             raise ValueError('X must contain only strings!')
@@ -39,13 +95,19 @@ class Qnet(object):
         # Instantiate base tree models
         self.estimators_ = {}
 
-        # TODO: allow for more arguments to be passed to CITrees
         # TODO: we may not have any trees created. When that's the
         # case, we want to predict an equal probability distribution
 
         trees = []
         for col in np.arange(0, X.shape[1]):
-            tree = CITreeClassifier(selector='chi2', random_state=42)
+            tree = CITreeClassifier(min_samples_split=self.min_samples_split,
+                                    alpha=self.alpha,
+                                    selector='chi2',
+                                    max_depth=self.max_depth,
+                                    max_feats=self.max_feats,
+                                    early_stopping=self.early_stopping,
+                                    verbose=self.verbose,
+                                    random_state=self.random_state)
             trees.append(tree)
 
         trees = Parallel(n_jobs=self.n_jobs, backend='loky')(
@@ -104,6 +166,42 @@ class Qnet(object):
         return self.col_to_non_leaf_nodes
 
 
+    def clear_attributes(self):
+        """Remove the unneeded attributes to save memory.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+
+        self._check_is_fitted()
+
+        if hasattr(self, 'col_to_non_leaf_nodes'):
+            delattr(self, 'col_to_non_leaf_nodes')
+
+        new_estimator = {}
+        for col, tree in self.estimators_.items():
+            new_tree = CITreeClassifier(min_samples_split=self.min_samples_split,
+                                        alpha=self.alpha,
+                                        selector='chi2',
+                                        max_depth=self.max_depth,
+                                        max_feats=self.max_feats,
+                                        early_stopping=self.early_stopping,
+                                        verbose=self.verbose,
+                                        random_state=self.random_state)
+
+            new_tree.root = tree.root
+            new_tree.labels_ = tree.labels_
+            new_estimator[col] = new_tree
+
+        delattr(self, 'estimators_')
+
+        self.estimators_ = new_estimator
+
     def _combine_distributions(self, distributions):
         """Given a list of distributions, combine them together into
         an array.
@@ -158,10 +256,11 @@ class Qnet(object):
 
         self._check_is_fitted()
 
-        if len(column_to_item) == 0:
-            raise NotImplementedError
-
         root = self.estimators_[column].root
+
+        if len(column_to_item) == 0:
+            return dict(root.label_frequency)
+
         nodes = get_nodes(root)
         distributions = []
         for node in nodes:
@@ -240,7 +339,6 @@ class Qnet(object):
         raise NotImplementedError
 
 
-# @njit(cache=True, nogil=True, fastmath=True)
 def _combine_two_distribs(seq1_distrib, seq2_distrib):
     """Combine two distributions together.
 
@@ -281,7 +379,6 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
     return distrib
 
 
-# @njit(cache=True, nogil=True, fastmath=True)
 def _qdistance_with_prob_distribs(distrib1, distrib2):
     """
     
@@ -404,8 +501,6 @@ def membership_degree(seq, qnet):
 
     return membership_degree
 
-# @njit(parallel=True, fastmath=True)
-# @njit
 def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
     """Compute the qdistance matrix using the distributions.
 
@@ -520,7 +615,7 @@ def load_qnet(f):
 
     return qnet
 
-def save_qnet(qnet, f):
+def save_qnet(qnet, f, low_mem=False):
     """Save the qnet to a file.
 
     NOTE: The file name must end in `.joblib`
@@ -538,7 +633,11 @@ def save_qnet(qnet, f):
         A Qnet instance
 
     f : str
-        File name.
+        File name
+
+    low_mem : bool
+        If True, save the Qnet with low memory by deleting all data attributes 
+        except the tree structure
  
     Returns
     -------
@@ -549,4 +648,41 @@ def save_qnet(qnet, f):
     if not f.endswith('.joblib'):
         raise ValueError('The outfile must end with `.joblib`')
 
+    if low_mem:
+        qnet.clear_attributes()
+        
     dump(qnet, f) 
+
+
+def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
+    """Export the tree.
+
+    Parameters
+    ----------
+    qnet : Qnet
+        A Qnet instance
+
+    index : int
+        Index of the tree to export
+
+    low_mem : bool
+        If True, save the Qnet with low memory by deleting all data attributes 
+        except the tree structure
+ 
+    Returns
+    -------
+    None
+    """
+
+    tree = qnet.estimators_[index]
+    feature_names = qnet.feature_names
+
+    if outformat == 'graphviz':
+        exporter = GraphvizExporter(tree=tree,
+                         outfile=outfile,
+                         response_name=feature_names[index],
+                         feature_names=feature_names)
+        exporter.export()
+
+    else:
+        raise NotImplementedError

@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 
-from utils import assert_array_rank, sample_from_dict
+from .utils import assert_array_rank, sample_from_dict
 
 # def _qsample_with_prob_distribs(seq, distrib):
 

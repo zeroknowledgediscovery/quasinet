@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 # from numba import autojit
 import numpy as np
 
@@ -24,6 +26,22 @@ def remove_zeros(r, axis):
         return r[:, ~np.all(r == 0, axis=0)]
     else:
         raise ValueError('not a correct axis that we can use.')
+
+def scientific_notation(num):
+    """Convert a number into scientific notation
+
+    Parameters
+    ----------
+    num : float
+        Any number
+    
+    Returns
+    -------
+    output : str
+        String representation of the number
+    """
+
+    return "{:.2E}".format(Decimal(num))
 
 def bayes_boot_probs(n):
     """Bayesian bootstrap sampling for case weights

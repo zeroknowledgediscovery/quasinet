@@ -13,7 +13,8 @@ from .feature_selectors import permutation_test_chi2
 from .scorers import gini_index
 from .utils import logger, powerset
 from .tree import Node
-
+from ._config import get_config
+from ._encoders import OrdinalEncoderWithNaN
 
 class CITreeBase(object):
     """Base class for conditional inference tree
@@ -309,14 +310,16 @@ class CITreeBase(object):
         # Determine if we will follow left or right branch
         feature_value = X[tree.col]
 
-        if feature_value in tree.lthreshold:
+        lthreshold = tree.lthreshold
+        rthreshold = list(tree.rthreshold) + [get_config()['nan_value']]
+        if feature_value in lthreshold:
             branch = tree.left
-        elif feature_value in tree.rthreshold:
+        elif feature_value in rthreshold:
             branch = tree.right
         else:
             raise ValueError('{} is not in: {} or in: {}'.format(feature_value,
-                                                                 tree.lthreshold,
-                                                                 tree.rthreshold))
+                                                                 lthreshold,
+                                                                 rthreshold))
 
         return self.predict_label(X, branch)
 
@@ -508,8 +511,12 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         left, right = None, None
 
         X_col = X[:, col]
+        nan_value = get_config()['nan_value']
+        not_nan_indices = X_col != nan_value
 
-        lthreshold, rthreshold = self._split_by_gini(X_col, y)
+        lthreshold, rthreshold = self._split_by_gini(
+            X_col[not_nan_indices], 
+            y[not_nan_indices])
 
         idx = np.where(np.isin(X[:, col], lthreshold), 1, 0)
         
@@ -576,8 +583,11 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
 
             X_col = self.X_encs[col].transform(X_col.reshape(-1, 1)).reshape(-1)
 
-            pval = self._perm_test(x=X_col,
-                                   y=y,
+            # remove datapoints where X_col is NaN (-1)
+            not_nan_cols = X_col != -1
+
+            pval = self._perm_test(x=X_col[not_nan_cols],
+                                   y=y[not_nan_cols],
                                    n_classes=self.n_classes_,
                                    B=self.n_permutations,
                                    random_state=self.random_state)
@@ -638,13 +648,24 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
 
         if labels is None:
             labels = 'auto'
+
+        nan_value = get_config()['nan_value']
+
+        # remove datapoints where y is NaN
+        label_indices = y != nan_value
+        y = y[label_indices]
+        X = X[label_indices]
+
+        if y.shape[0] != X.shape[0]:
+            raise ValueError('`X` and `y` do not have the same number of samples.')
+
         self.y_enc = OrdinalEncoder(categories=labels, dtype=np.int32)
 
         self.y_enc.fit(y.reshape(-1, 1))
 
         self.X_encs = {}
         for col_index in np.arange(X.shape[1]):
-            enc = OrdinalEncoder(dtype=np.int32)
+            enc = OrdinalEncoderWithNaN(dtype=np.int32)
             enc.fit(X[:, col_index].reshape(-1, 1))
             self.X_encs[col_index] = enc
 
