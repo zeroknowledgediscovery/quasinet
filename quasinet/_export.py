@@ -105,7 +105,7 @@ class GraphvizExporter(object):
         if self.response_name is not None:
             label += "Response: {}\n".format(self.response_name)
 
-        label += "Classes: {}\n".format('|'.join(self.tree.labels_))
+        label += "Classes: {}\n".format(' | '.join(self.tree.labels_))
 
         f.write('LEGEND [label="{}",shape=note,align=left,\
                 style=filled,fillcolor="slategray",\
@@ -122,13 +122,14 @@ class GraphvizExporter(object):
             max_val = node.value[max_index]
             prediction = self.tree.labels_[max_index]
             node_labels += '{}\nProb: {}'.format(prediction, max_val)
+            node_color = '#E5FFCC'
         else:
             if self.feature_names is not None:
                 node_labels += self.feature_names[node.col]
             pval = scientific_notation(node.col_pval)
             node_labels += " pval: {}".format(pval)
+            node_color = '#ffffff'
 
-        node_color = '#ffffff'
         f.write('{} [label="{}"'.format(node_id, node_labels))
         f.write(', fillcolor="{}",fontcolor="{}"] ;\n'.format(node_color, self.text_color))
 
