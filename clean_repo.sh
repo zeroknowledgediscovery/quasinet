@@ -1,9 +1,15 @@
+# 1. first, update the version
+
+
+# 2. run this
 rm -r build/
 rm -r dist/
 rm -r quasinet.egg-info/
 rm -r .eggs/
 python3 setup.py sdist bdist_wheel
 
+
+# 3. upload to pypi
 
 # test.pypi
 # python3 -m twine upload --repository testpypi dist/*
