@@ -12,6 +12,7 @@ Welcome to Quasinet's documentation!
 
    quasinet
    modules
+   contributing
 
 
 
