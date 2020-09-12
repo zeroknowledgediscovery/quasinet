@@ -40,6 +40,8 @@ To install with pip:
 pip install quasinet
 ```
 
+NOTE: If trying to reproduce the paper below, please use `pip install quasinet==0.0.58`
+
 ### Dependencies
 
 * scikit-learn 
