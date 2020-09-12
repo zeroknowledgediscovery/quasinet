@@ -71,6 +71,10 @@ qdist = qnet.qdistance(seq1, seq2, myqnet, myqnet)
 
 Examples are located [here](https://github.com/zeroknowledgediscovery/quasinet/tree/master/examples).
 
+## Documentation
+
+For more documentation, see [here](https://zeroknowledgediscovery.github.io/quasinet/build/html/index.html).
+
 ## Papers
 
 For reference, please check out our paper: 
