@@ -16,6 +16,8 @@ python3 setup.py sdist bdist_wheel
 
 # for real:
 # twine upload dist/*
+# -- or --
+# python3 -m twine upload dist/*
 
 
 # download package:
