@@ -711,11 +711,14 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 <dt id="quasinet.qnet.Qnet.predict_distribution">
 <code class="sig-name descname">predict_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_to_item</span></em>, <em class="sig-param"><span class="n">column</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict the probability distribution for a given column.</p>
+<p>It may be the case that a certain column value does not appear in
+the resulting output. If that happens, that means the probability
+of that column is 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>column_to_item</strong> (<em>dict</em>) – dictionary mapping the column to the values the columns take</p></li>
-<li><p><strong>column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>column</strong> (<em>int</em>) – column index</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -731,6 +734,8 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 <dt id="quasinet.qnet.Qnet.predict_distributions">
 <code class="sig-name descname">predict_distributions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distributions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict the probability distributions for all the columns.</p>
+<p>If you do not want to set a particular value for an index of <cite>seq</cite>,
+then set the value at the index to <cite>None</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>seq</strong> (<em>list</em>) – list of values</p>
