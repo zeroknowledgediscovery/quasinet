@@ -240,13 +240,17 @@ class Qnet(object):
     def predict_distribution(self, column_to_item, column):
         """Predict the probability distribution for a given column.
 
+        It may be the case that a certain column value does not appear in 
+        the resulting output. If that happens, that means the probability
+        of that column is 0.
+
         Parameters
         ----------
         column_to_item : dict
             dictionary mapping the column to the values the columns take
 
-        column : str
-            column name
+        column : int
+            column index
 
         Returns
         -------
@@ -259,7 +263,10 @@ class Qnet(object):
         root = self.estimators_[column].root
 
         if len(column_to_item) == 0:
-            return dict(root.label_frequency)
+            distributions = dict(root.label_frequency)
+            values = float(sum(distributions.values()))
+            distributions = {k: v / values for k, v in distributions.items()}
+            return distributions
 
         nodes = get_nodes(root)
         distributions = []
@@ -292,6 +299,9 @@ class Qnet(object):
 
     def predict_distributions(self, seq):
         """Predict the probability distributions for all the columns.
+
+        If you do not want to set a particular value for an index of `seq`, 
+        then set the value at the index to `None`.
 
         Parameters
         ----------
