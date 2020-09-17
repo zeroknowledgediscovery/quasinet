@@ -10,6 +10,7 @@ from .metrics import js_divergence
 from .tree import Node, get_nodes
 from .utils import assert_array_rank
 from ._export import GraphvizExporter
+from ._config import get_config
 
 class Qnet(object):
     """Qnet architecture.
@@ -77,7 +78,9 @@ class Qnet(object):
         return self.__repr__()
 
     def _parallel_fit_tree(self, tree, X, col):
-        tree.fit(np.delete(X, col, 1), X[:, col])
+        new_features = np.copy(X)
+        new_features[:, col] = get_config()['nan_value']
+        tree.fit(new_features, X[:, col])
 
         return tree
 
