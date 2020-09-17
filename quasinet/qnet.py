@@ -492,7 +492,7 @@ def membership_degree(seq, qnet):
     
     seq_distribs = qnet.predict_distributions(seq)
 
-    index_probs = np.empty(len(seq))
+    index_probs = []
     for index, c in enumerate(seq):
         if index not in seq_distribs:
             continue
@@ -505,7 +505,7 @@ def membership_degree(seq, qnet):
             index_prob = distrib[c]
             
             if index_prob != 0:
-                index_probs[index] = index_prob
+                index_probs.append(index_prob)
 
     membership_degree = np.sum(np.log(index_probs))
 
