@@ -441,7 +441,12 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
             # we may introduce redundant splits
             for i in range(2 ** 6):
                 randint = np.random.randint(low=1, high=num_unique)
-                subset = unique_X[np.random.choice(num_unique, size=randint)]
+                indices = np.random.choice(
+                    num_unique, 
+                    size=randint,
+                    replace=False)
+                    
+                subset = unique_X[indices]
                 subsets.append(subset)
 
         for i, subset in enumerate(subsets):
