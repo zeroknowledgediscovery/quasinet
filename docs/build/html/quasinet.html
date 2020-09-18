@@ -735,13 +735,15 @@ of that column is 0.</p>
 <code class="sig-name descname">predict_distributions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distributions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict the probability distributions for all the columns.</p>
 <p>If you do not want to set a particular value for an index of <cite>seq</cite>,
-then set the value at the index to <cite>None</cite>.</p>
+then set the value at the index to the global <cite>nan_value</cite>. By default,
+this value is the empty string.</p>
+<p>The length of the input sequence must match the size of <cite>feature_names</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>seq</strong> (<em>list</em>) – list of values</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>prob_distributions</strong> – list of probability distributions, one for each index</p>
+<dd class="field-even"><p><strong>prob_distributions</strong> – list of dictionaries of probability distributions, one for each index</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
