@@ -84,12 +84,23 @@ class Qnet(object):
 
         return tree
 
+    def _check_input_size(self, size):
+        feature_size = len(self.feature_names)
+        if size != feature_size:
+            string = 'The number of input features ({}) ' + \
+                     'must match size of `feature_names` ({})!'
+            string = string.format(size, feature_size)
+            raise ValueError(string)
+
+    def _check_is_fitted(self):
+        if not hasattr(self, 'estimators_'):
+            raise ValueError('You need to call `fit` first! ')
+
     def fit(self, X):
 
         assert_array_rank(X, 2)
         
-        if X.shape[1] != len(self.feature_names):
-            raise ValueError('The number of features must match `feature_names`!')
+        self._check_input_size(X.shape[1])
 
         if not np.issubdtype(X.dtype, np.str_):
             raise ValueError('X must contain only strings!')
@@ -127,10 +138,6 @@ class Qnet(object):
 
         return self
 
-
-    def _check_is_fitted(self):
-        if not hasattr(self, 'estimators_'):
-            raise ValueError('You need to call `fit` first! ')
 
 
     def _map_col_to_non_leaf_nodes(self):
@@ -304,7 +311,10 @@ class Qnet(object):
         """Predict the probability distributions for all the columns.
 
         If you do not want to set a particular value for an index of `seq`, 
-        then set the value at the index to `None`.
+        then set the value at the index to the global `nan_value`. By default, 
+        this value is the empty string.
+
+        The length of the input sequence must match the size of `feature_names`.
 
         Parameters
         ----------
@@ -314,10 +324,11 @@ class Qnet(object):
         Returns
         -------
         prob_distributions : list
-            list of probability distributions, one for each index 
+            list of dictionaries of probability distributions, one for each index 
         """
 
         self._check_is_fitted()
+        self._check_input_size(len(seq))
 
         index_to_non_leaf_nodes = self._map_col_to_non_leaf_nodes()
 
