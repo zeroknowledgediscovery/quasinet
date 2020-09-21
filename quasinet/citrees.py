@@ -424,6 +424,11 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         y: 1d array-like
         """
 
+        # skip splitting because there's no way we can split the data
+        # so both subsets have size less than `min_samples_split` 
+        if y.shape[0] < 2 * self.min_samples_split:
+            return None, None
+
         index_to_gini_values = {}
         index_to_subset = {}
 
@@ -454,7 +459,7 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
 
             # ignore the case where the list is empty or the subset
             # is the set itself because no split is actually made
-            if len(subset)  == 0:
+            if len(subset) == 0:
                 continue 
             elif len(subset) == len(unique_X):
                 continue
@@ -463,10 +468,17 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
             y1 = y[np.isin(y, subset)]
             y2 = y[np.isin(y, subset_complement)]
 
+            # ignore splits that create small subsets
+            if y1.shape[0] < self.min_samples_split or y2.shape[0] < self.min_samples_split:
+                continue
+
             gini_value = gini_index(y1, subset) + gini_index(y2, subset_complement)
 
             index_to_gini_values[i] = gini_value
             index_to_subset[i] = subset
+
+        if len(index_to_subset) == 0:
+            return None, None
 
         min_key = min(index_to_gini_values, key=index_to_gini_values.get)
 
@@ -522,6 +534,10 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         lthreshold, rthreshold = self._split_by_gini(
             X_col[not_nan_indices], 
             y[not_nan_indices])
+
+        # Skip if we cannot find a split
+        if lthreshold is None and rthreshold is None:
+            return impurity, lthreshold, rthreshold, left, right
 
         idx = np.where(np.isin(X[:, col], lthreshold), 1, 0)
         
