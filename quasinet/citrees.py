@@ -438,7 +438,7 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         # if the number of unique possibilities is too large, we need to randomly
         # sample because the powerset grows exponentially
         if num_unique <= 6:
-            subsets = powerset(unique_X)
+            subsets = list(powerset(unique_X))
         else:
             # TODO: need to replace this with a generator
             subsets = []
@@ -465,8 +465,8 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
                 continue
 
             subset_complement = unique_X[~np.isin(unique_X, subset)]
-            y1 = y[np.isin(y, subset)]
-            y2 = y[np.isin(y, subset_complement)]
+            y1 = y[np.isin(X, subset)]
+            y2 = y[np.isin(X, subset_complement)]
 
             # ignore splits that create small subsets
             if y1.shape[0] < self.min_samples_split or y2.shape[0] < self.min_samples_split:
