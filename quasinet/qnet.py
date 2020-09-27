@@ -97,6 +97,25 @@ class Qnet(object):
             raise ValueError('You need to call `fit` first! ')
 
     def fit(self, X):
+        """Train the qnet
+
+        Examples
+        ----------
+        >>> from quasinet import qnet
+        >>> X = load_data()
+        >>> myqnet = qnet.Qnet(feature_names=feature_names)
+        >>> myqnet.fit(X)
+
+        Parameters
+        ----------
+        X : 2d array-like
+            Array of features
+
+        Returns
+        -------
+        self : Qnet
+            Instance of Qnet class
+        """
 
         assert_array_rank(X, 2)
         
@@ -110,7 +129,7 @@ class Qnet(object):
         self.estimators_ = {}
 
         # TODO: we may not have any trees created. When that's the
-        # case, we want to predict an equal probability distribution
+        # case, we may want to predict an equal probability distribution
 
         trees = []
         for col in np.arange(0, X.shape[1]):
@@ -132,9 +151,6 @@ class Qnet(object):
 
         for col, tree in enumerate(trees):
             self.estimators_[col] = tree
-
-            # clf.fit(np.delete(X, col, 1), X[:, col])
-            # self.estimators_[col] = clf
 
         return self
 
