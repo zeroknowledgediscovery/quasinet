@@ -17,7 +17,7 @@ from ._config import get_config
 from ._encoders import OrdinalEncoderWithNaN
 
 class CITreeBase(object):
-    """Base class for conditional inference tree
+    """Base class for conditional inference tree. 
 
     Parameters
     ----------
@@ -234,7 +234,9 @@ class CITreeBase(object):
 
 
     def fit(self, X, y=None):
-        """Train model.
+        """Train model. 
+        
+        X, y must contain only string datatypes.
 
         Parameters
         ----------
@@ -298,7 +300,7 @@ class CITreeBase(object):
 
         Returns
         -------
-        label : int or float
+        label : str
             Predicted label
         """
         # If we have a value => return value as the prediction
@@ -325,7 +327,10 @@ class CITreeBase(object):
 
 
     def predict(self, *args, **kwargs):
-        """Predicts labels on test data"""
+        """Predicts labels on test data. This method should not be 
+        callable from base class.
+        """
+        
         raise NotImplementedError("predict method not callable from base class")
 
 
@@ -342,6 +347,10 @@ class CITreeBase(object):
 
         child : Node
             Left or right child node
+
+        Returns
+        -------
+        None
         """
         # If we're at leaf => print the label
         if not tree: tree = self.root
@@ -723,9 +732,6 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
     def predict(self, X):
         """Predicts class labels for feature vectors X
 
-        TODO: treat a feature as missing data if there is that feature is
-        not an instance of the corresponding training feature
-
         Parameters
         ----------
         X : 2d array-like
@@ -737,6 +743,9 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
             Array of predicted classes
         """
         
+        # TODO: treat a feature as missing data if that feature is
+        # not an instance of the corresponding training feature
+
         y_proba = self.predict_proba(X)
         ordinal_prediction = np.argmax(y_proba, axis=1).reshape((-1, 1))
         categorical_prediction = self.y_enc.inverse_transform(ordinal_prediction)
