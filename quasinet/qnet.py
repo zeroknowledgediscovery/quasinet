@@ -356,7 +356,7 @@ class Qnet(object):
 
         return prob_distributions
 
-    def predict_distributions_numba(self, seq):
+    def _predict_distributions_numba(self, seq):
         raise NotImplementedError
         prob_distributions = self.predict_distributions(seq)
 
@@ -372,7 +372,7 @@ class Qnet(object):
 
         return numba_prob_distributions
 
-    def predict_proba(self, X):
+    def _predict_proba(self, X):
 
         self._check_is_fitted()
 
