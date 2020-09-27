@@ -97,6 +97,25 @@ class Qnet(object):
             raise ValueError('You need to call `fit` first! ')
 
     def fit(self, X):
+        """Train the qnet
+
+        Examples
+        ----------
+        >>> from quasinet import qnet
+        >>> X = load_data()
+        >>> myqnet = qnet.Qnet(feature_names=feature_names)
+        >>> myqnet.fit(X)
+
+        Parameters
+        ----------
+        X : 2d array-like
+            Array of features
+
+        Returns
+        -------
+        self : Qnet
+            Instance of Qnet class
+        """
 
         assert_array_rank(X, 2)
         
@@ -110,7 +129,7 @@ class Qnet(object):
         self.estimators_ = {}
 
         # TODO: we may not have any trees created. When that's the
-        # case, we want to predict an equal probability distribution
+        # case, we may want to predict an equal probability distribution
 
         trees = []
         for col in np.arange(0, X.shape[1]):
@@ -132,9 +151,6 @@ class Qnet(object):
 
         for col, tree in enumerate(trees):
             self.estimators_[col] = tree
-
-            # clf.fit(np.delete(X, col, 1), X[:, col])
-            # self.estimators_[col] = clf
 
         return self
 
@@ -340,7 +356,7 @@ class Qnet(object):
 
         return prob_distributions
 
-    def predict_distributions_numba(self, seq):
+    def _predict_distributions_numba(self, seq):
         raise NotImplementedError
         prob_distributions = self.predict_distributions(seq)
 
@@ -356,7 +372,7 @@ class Qnet(object):
 
         return numba_prob_distributions
 
-    def predict_proba(self, X):
+    def _predict_proba(self, X):
 
         self._check_is_fitted()
 
