@@ -3,7 +3,7 @@ import numpy as np
 from joblib import dump, load, delayed, Parallel
 import numba
 # from numba import njit, prange
-from numba.core import types
+# from numba.core import types
 
 from .citrees import CITreeClassifier
 from .metrics import js_divergence
@@ -358,19 +358,19 @@ class Qnet(object):
 
     def _predict_distributions_numba(self, seq):
         raise NotImplementedError
-        prob_distributions = self.predict_distributions(seq)
+        # prob_distributions = self.predict_distributions(seq)
 
-        numba_prob_distributions = []
-        for prob_distribution in prob_distributions:
-            d = numba.typed.Dict.empty(
-                key_type=types.unicode_type,
-                value_type=types.float32)
+        # numba_prob_distributions = []
+        # for prob_distribution in prob_distributions:
+        #     d = numba.typed.Dict.empty(
+        #         key_type=types.unicode_type,
+        #         value_type=types.float32)
 
-            for k, v in prob_distribution.items():
-                d[k] = v
-            numba_prob_distributions.append(d)
+        #     for k, v in prob_distribution.items():
+        #         d[k] = v
+        #     numba_prob_distributions.append(d)
 
-        return numba_prob_distributions
+        # return numba_prob_distributions
 
     def _predict_proba(self, X):
 
@@ -695,7 +695,7 @@ def save_qnet(qnet, f, low_mem=False):
 
 
 def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
-    """Export the tree.
+    """Export the tree. 
 
     Parameters
     ----------
@@ -709,6 +709,10 @@ def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
         If True, save the Qnet with low memory by deleting all data attributes 
         except the tree structure
  
+    outformat : str
+        Can only be `graphviz` for now. This will output a `.dot` file, which you 
+        can then compile using a command like `dot -Tpng file.dot -o file.png`
+
     Returns
     -------
     None
