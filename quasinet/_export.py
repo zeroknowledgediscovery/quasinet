@@ -44,6 +44,7 @@ class GraphvizExporter(object):
                  rotate=False):
         
         self.tree = tree
+        self._total_samples = sum(tree.root.label_frequency.values())
         self.outfile = outfile
         self.response_name = response_name
         self.feature_names = feature_names
@@ -119,9 +120,15 @@ class GraphvizExporter(object):
 
         if (node.left is None) and (node.right is None):
             max_index = np.argmax(node.value)
-            max_val = node.value[max_index]
+            max_val = round(node.value[max_index], 4)
+            occurence = sum(node.label_frequency.values()) / self._total_samples
+            occurence = round(occurence, 4)
             prediction = self.tree.labels_[max_index]
-            node_labels += '{}\nProb: {}'.format(prediction, max_val)
+            
+            node_labels += '{}\nProb: {}\nSample Proportion: {}'.format(
+                prediction, 
+                max_val,
+                occurence)
             node_color = '#E5FFCC'
         else:
             if self.feature_names is not None:
