@@ -718,6 +718,10 @@ def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
     None
     """
 
+    if index not in qnet.estimators_:
+        print('We do not have a tree for index {}! '.format(index))
+        return 
+
     tree = qnet.estimators_[index]
     feature_names = qnet.feature_names
 
