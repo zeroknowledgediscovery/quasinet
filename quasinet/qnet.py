@@ -524,7 +524,7 @@ def membership_degree(seq, qnet):
 
     index_probs = []
     for index, c in enumerate(seq):
-        if index not in seq_distribs:
+        if seq_distribs[index] is None:
             continue
 
         distrib = seq_distribs[index]
