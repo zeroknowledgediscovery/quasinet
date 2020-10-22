@@ -730,11 +730,10 @@ def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
                                     outfile=outfile,
                                     response_name=feature_names[index],
                                     feature_names=feature_names,
-                                    pen_width=9,
+                                    pen_width=3,
                                     edge_color='black',
                                     edge_label_color='black',
-                                    add_legend=False,
-                                    font_size=24)
+                                    add_legend=False)
         exporter.export()
 
     else:

@@ -183,18 +183,17 @@ class GraphvizExporter(object):
         style = ['filled', 'rounded']
         style = ', '.join(style)
 
-        f.write(''', style="{}", color="{}",penwidth="{}", fontsize="{}" \
+        f.write(''', style="{}",color="{}",penwidth="{}",fontcolor="{}", \
                 fontname=helvetica] ;\n'''.format(style,
                                                   self.text_color,
                                                   self.pen_width,
-                                                  self.font_size))
+                                                  self.text_color))
 
-        f.write('''graph [ranksep=equally, splines=Curved, \
+        f.write('''graph [ranksep="0 equally", splines=straight, \
                 bgcolor={}, dpi={}] ;\n'''.format(self.background_color, self.dpi))
 
-        f.write('edge [fontname=helvetica, color={}, fontsize="{}"] ;\n'.format(
-            self.edge_color,
-            self.font_size))
+        f.write('edge [fontname=helvetica, color={}] ;\n'.format(
+            self.edge_color))
 
         if self.rotate:
             f.write('rankdir=LR ;\n')
@@ -213,7 +212,7 @@ class GraphvizExporter(object):
 
         f.write('LEGEND [label="{}",shape=note,align=left,\
                 style=filled,fillcolor="slategray",\
-                fontcolor="white",fontsize={}];\n'.format(label, self.font_size))
+                fontcolor="white"];\n'.format(label))
 
     def _find_node_color(self, node):
         label_freq = node.label_frequency
@@ -239,22 +238,20 @@ class GraphvizExporter(object):
             occurence = round(occurence, 3)
             prediction = self.tree.labels_[max_index]
             
-            node_labels += '{}\nProb: {}\nSample Proportion: {}'.format(
+            node_labels += '{}\nProb: {}\nFrac: {}'.format(
                 prediction, 
                 max_val,
                 occurence)
-            #node_color = '#E5FFCC'
         else:
             if self.feature_names is not None:
                 node_labels += self.feature_names[node.col]
             pval = scientific_notation(node.col_pval)
-            node_labels += " pval: {}".format(pval)
-            #node_color = '#ffffff'
+            # node_labels += " pval: {}".format(pval)
 
         node_color = self._find_node_color(node)
         f.write('{} [label="{}"'.format(node_id, node_labels))
-        f.write(', fillcolor="{}",fontcolor="{}", fontsize="{}"] ;\n'.format(
-            node_color, self.text_color, self.font_size))
+        f.write(', fillcolor="{}"] ;\n'.format(
+            node_color))
 
     def _write_node_attributes(self, f):
         nodes = get_nodes(
@@ -265,35 +262,35 @@ class GraphvizExporter(object):
         for node in nodes:
             self._write_node_attribute(f, node)
 
-    def _write_edge_attribute(self, f, node):
-        string_format = '{} -- {} [label="{}",fontcolor={},penwidth={},fontsize={}] ;\n'
+    def _write_edge_labels(self, f, parent_node, node, node_type):
 
-        parent_id = node.unique_id
+        string_format = '{} -- {} [label="{}",penwidth={}] ;\n'
+
+        parent_id = parent_node.unique_id
+
+        if node_type == 'left':
+            threshold = parent_node.lthreshold
+        elif node_type == 'right':
+            threshold = parent_node.rthreshold
+        else:
+            raise ValueError
+
+        child_id = node.unique_id
+        edge_label = ' ' + '\\n '.join(threshold)
+        
+        f.write(string_format.format(parent_id,
+                                     child_id,
+                                     edge_label,
+                                     self.pen_width))
+
+    def _write_edge_attribute(self, f, node):
         left_node = node.left
         right_node = node.right
 
-        
-
         if left_node is not None:
-            child_id = left_node.unique_id
-            child_label = '\\n'.join(node.lthreshold)
-            
-            f.write(string_format.format(parent_id,
-                                         child_id,
-                                         child_label,
-                                         self.edge_label_color,
-                                         self.pen_width,
-                                         self.font_size))
+            self._write_edge_labels(f, node, left_node, 'left')
         if right_node is not None:
-            child_id = right_node.unique_id
-            child_label = '\\n'.join(node.rthreshold)
-
-            f.write(string_format.format(parent_id,
-                                         child_id,
-                                         child_label,
-                                         self.edge_label_color,
-                                         self.pen_width,
-                                         self.font_size))
+            self._write_edge_labels(f, node, right_node, 'right')
 
     def _write_edge_attributes(self, f):
         nodes = get_nodes(
