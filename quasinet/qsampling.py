@@ -3,13 +3,32 @@ import random
 import numpy as np
 
 from .utils import assert_array_rank, sample_from_dict
+from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
 
-def _qsample_once(seq, qnet, baseline_prob):
+def _qsample_once(seq, qnet, baseline_prob, force_change=False):
     """Perform one instance of q-sampling.
 
     NOTE: `seq` is modified in-place
+
+    Parameters
+    ----------
+    seq : 1d array-like
+        Array of values
+
+    qnet : Qnet
+        The Qnet that `seq` belongs to 
+
+    baseline_prob : 1d array-like
+        Baseline probability for sampling which index
+
+    force_change : bool
+        Whether to force the sequence to change when sampling.
+
+    Returns
+    -------
+    None
     """
 
     seq_distribs = qnet.predict_distributions(seq)
@@ -26,6 +45,10 @@ def _qsample_once(seq, qnet, baseline_prob):
 
     distrib = seq_distribs[index]
 
+    if force_change:
+        if seq[index] in distrib:
+            del distrib[seq[index]]
+
     item = sample_from_dict(distrib)
 
     seq[index] = item
@@ -39,10 +62,10 @@ def qsample(seq, qnet, steps, baseline_prob=None):
         Array of values
 
     qnet : Qnet
-        the Qnet that `seq` belongs to 
+        The Qnet that `seq` belongs to 
 
     steps : int
-        number of steps to run q-sampling
+        Number of steps to run q-sampling
 
     baseline_prob : 1d array-like
         Baseline probability for sampling which index
@@ -77,10 +100,10 @@ def targeted_qsample(seq1, seq2, qnet, steps):
         Array of values. 
 
     qnet : Qnet
-        the Qnet that `seq1` belongs to 
+        The Qnet that `seq1` belongs to 
 
     steps : int
-        number of steps to run q-sampling
+        Number of steps to run q-sampling
 
     Returns
     -------
