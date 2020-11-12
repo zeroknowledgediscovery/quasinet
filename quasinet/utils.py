@@ -163,12 +163,12 @@ def sample_from_dict(distrib):
     Parameters
     ----------
     distrib : dict
-        dictionary mapping keys to its probability values
+        Dictionary mapping keys to its probability values
 
     Returns
     -------
     item : key of dict
-        a chosen key from the dictionary
+        A chosen key from the dictionary
     """
 
     keys = []
@@ -176,6 +176,9 @@ def sample_from_dict(distrib):
     for k, prob in distrib.items():
         keys.append(k)
         probs.append(prob)
+
+    probs = np.array(probs)
+    probs /= probs.sum()
 
     item = np.random.choice(keys, p=probs)
 
