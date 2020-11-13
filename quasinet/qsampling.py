@@ -36,19 +36,25 @@ def _qsample_once(seq, qnet, baseline_prob, force_change=False):
     None
     """
 
-    seq_distribs = qnet.predict_distributions(seq)
+    seq_len = len(seq)
 
-    seq_distribs_len = len(seq_distribs)
+    if seq_len != len(qnet.estimators_):
+        message = ('The input sequence length ({}) must match the' 
+                  'number of features trained on the qnet ({})')
+        raise ValueError(message.format(seq_len, len(qnet.estimators_)))
 
-    # choose a distribution
+    # get the index distribution from a distribution
     if baseline_prob is None:
-        index = np.random.randint(0, seq_distribs_len)
+        index = np.random.randint(0, seq_len)
     else:
         index = np.random.choice(
-            np.arange(0, seq_distribs_len),
+            np.arange(0, seq_len),
             p=baseline_prob)
 
-    distrib = seq_distribs[index]
+    # get distribution corresponding to the index
+    index_to_non_leaf_nodes = qnet._map_col_to_non_leaf_nodes()
+    col_to_item = {i: seq[i] for i in index_to_non_leaf_nodes[index]}
+    distrib = qnet.predict_distribution(col_to_item, index)
 
     if force_change:
         if seq[index] in distrib:
