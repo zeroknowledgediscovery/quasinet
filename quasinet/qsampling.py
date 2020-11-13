@@ -7,7 +7,7 @@ from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
 
-def _qsample_once(seq, qnet, baseline_prob, force_change=False):
+def _qsample_once(seq, qnet, baseline_prob, force_change):
     """Perform one instance of q-sampling.
 
     NOTE: `seq` is modified in-place
@@ -67,7 +67,7 @@ def _qsample_once(seq, qnet, baseline_prob, force_change=False):
 
     seq[index] = item
 
-def qsample(seq, qnet, steps, baseline_prob=None):
+def qsample(seq, qnet, steps, baseline_prob=None, force_change=False):
     """Perform q-sampling for multiple steps.
 
     Parameters
@@ -84,6 +84,9 @@ def qsample(seq, qnet, steps, baseline_prob=None):
     baseline_prob : 1d array-like
         Baseline probability for sampling which index
 
+    force_change : bool
+        Whether to force the sequence to change when sampling. 
+
     Returns
     -------
     seq : 1d array-like
@@ -98,11 +101,15 @@ def qsample(seq, qnet, steps, baseline_prob=None):
 
     seq = seq.copy()
     for _ in range(steps):
-        _qsample_once(seq, qnet, baseline_prob)
+        _qsample_once(
+            seq, 
+            qnet, 
+            baseline_prob,
+            force_change=force_change)
 
     return seq
 
-def targeted_qsample(seq1, seq2, qnet, steps):
+def targeted_qsample(seq1, seq2, qnet, steps, force_change=False):
     """Perform q-sampling for multiple steps.
 
     `seq1` is q-sampled towards `seq2`.
@@ -120,6 +127,9 @@ def targeted_qsample(seq1, seq2, qnet, steps):
 
     steps : int
         Number of steps to run q-sampling
+
+    force_change : bool
+        Whether to force the sequence to change when sampling. 
 
     Returns
     -------
@@ -148,6 +158,10 @@ def targeted_qsample(seq1, seq2, qnet, steps):
 
         probs /= np.sum(probs)
 
-        _qsample_once(seq, qnet, baseline_prob=probs)
+        _qsample_once(
+            seq, 
+            qnet, 
+            baseline_prob=probs,
+            force_change=force_change)
 
     return seq
