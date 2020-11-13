@@ -143,13 +143,9 @@ def targeted_qsample(seq1, seq2, qnet, steps):
 
         # only allow different indexes to be sampled
         probs = np.zeros(seq_len, dtype=np.float32)
-        for i in range(seq_len):
-            if seq[i] != seq2[i]:
-                probs[i] = 1.0
+        probs[seq != seq2] = 1.0
+        probs[seq2 == nan_value] = 0.0
 
-            if seq2[i] == nan_value:
-                probs[i] = 0.0
-                
         probs /= np.sum(probs)
 
         _qsample_once(seq, qnet, baseline_prob=probs)
