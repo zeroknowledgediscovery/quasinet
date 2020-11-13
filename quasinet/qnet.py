@@ -8,7 +8,7 @@ import numba
 from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .tree import Node, get_nodes
-from .utils import assert_array_rank
+from .utils import assert_array_rank, assert_string_type
 from ._export import GraphvizExporter
 from ._config import get_config
 
@@ -121,9 +121,7 @@ class Qnet(object):
         
         self._check_input_size(X.shape[1])
 
-        if not np.issubdtype(X.dtype, np.str_):
-            raise ValueError('X must contain only strings!')
-            
+        assert_string_type(X, 'X')
 
         # Instantiate base tree models
         self.estimators_ = {}

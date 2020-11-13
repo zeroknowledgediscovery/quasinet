@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 
-from .utils import assert_array_rank, sample_from_dict
+from .utils import assert_array_rank, sample_from_dict, assert_string_type
 from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
@@ -91,6 +91,8 @@ def qsample(seq, qnet, steps, baseline_prob=None):
     """
 
     assert_array_rank(seq, 1)
+    assert_string_type(seq, 'seq')
+
     if baseline_prob is not None:
         assert_array_rank(baseline_prob, 1)
 
@@ -127,6 +129,8 @@ def targeted_qsample(seq1, seq2, qnet, steps):
 
     assert_array_rank(seq1, 1)
     assert_array_rank(seq2, 1)
+    assert_string_type(seq1, 'seq1')
+    assert_string_type(seq2, 'seq2')
 
     if seq1.shape[0] != seq2.shape[0]:
         raise ValueError('The lengths of the two sequences must be equal!')

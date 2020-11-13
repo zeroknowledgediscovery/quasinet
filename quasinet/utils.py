@@ -156,6 +156,24 @@ def assert_array_rank(X, rank):
     if len(X.shape) != rank:
         raise ValueError('You must pass in a {}-rank array!'.format(rank))
 
+def assert_string_type(X, name):
+    """Check if the input is of string datatype.
+
+    Parameters
+    ----------
+    X : array-like
+        Array to check
+
+    name : str
+        Name of the input
+    
+    Returns
+    -------
+    None
+    """
+
+    if not np.issubdtype(X.dtype, np.str_):
+        raise ValueError('{} must contain only strings!'.format(name))
 
 def sample_from_dict(distrib):
     """Choose an item from the distribution
