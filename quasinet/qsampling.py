@@ -135,6 +135,7 @@ def targeted_qsample(seq1, seq2, qnet, steps):
     if seq1.shape[0] != seq2.shape[0]:
         raise ValueError('The lengths of the two sequences must be equal!')
 
+    nan_value = get_config()['nan_value']
     seq = seq1.copy()
     seq_len = seq.shape[0]
 
@@ -146,6 +147,9 @@ def targeted_qsample(seq1, seq2, qnet, steps):
             if seq[i] != seq2[i]:
                 probs[i] = 1.0
 
+            if seq2[i] == nan_value:
+                probs[i] = 0.0
+                
         probs /= np.sum(probs)
 
         _qsample_once(seq, qnet, baseline_prob=probs)
