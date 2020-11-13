@@ -24,7 +24,12 @@ def _qsample_once(seq, qnet, baseline_prob, force_change=False):
         Baseline probability for sampling which index
 
     force_change : bool
-        Whether to force the sequence to change when sampling.
+        Whether to force the sequence to change when sampling. 
+        There is a special cases where the predicted distribution is a single 
+        item with 100% probability and the item is exactly the item in the
+        corresponding index of `seq`. Then in that case, we are unable to
+        force the sequence to change and we simply return the original sequence.
+
 
     Returns
     -------
@@ -48,6 +53,9 @@ def _qsample_once(seq, qnet, baseline_prob, force_change=False):
     if force_change:
         if seq[index] in distrib:
             del distrib[seq[index]]
+
+        if len(distrib) == 0:
+            return
 
     item = sample_from_dict(distrib)
 
