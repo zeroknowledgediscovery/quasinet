@@ -70,6 +70,10 @@ def _qsample_once(seq, qnet, baseline_prob, force_change):
 def qsample(seq, qnet, steps, baseline_prob=None, force_change=False):
     """Perform q-sampling for multiple steps.
 
+    Qsampling works as follows: Say you have a sequence and a qnet. Then 
+    we randomly pick one of the items in the sequence and then change the
+    value of that item based on the prediction of the qnet.
+
     Parameters
     ----------
     seq : 1d array-like
@@ -110,9 +114,12 @@ def qsample(seq, qnet, steps, baseline_prob=None, force_change=False):
     return seq
 
 def targeted_qsample(seq1, seq2, qnet, steps, force_change=False):
-    """Perform q-sampling for multiple steps.
+    """Perform targeted q-sampling for multiple steps.
 
     `seq1` is q-sampled towards `seq2`.
+
+    This is similar to `qsample`, except that we perform changes to `seq1`
+    to try to approach `seq2`.
 
     Parameters
     ----------
