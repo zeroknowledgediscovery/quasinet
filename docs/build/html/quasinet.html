@@ -916,15 +916,19 @@ except the tree structure</p></li>
 <span id="quasinet-qsampling-module"></span><h2>quasinet.qsampling module<a class="headerlink" href="#module-quasinet.qsampling" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="quasinet.qsampling.qsample">
-<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">baseline_prob</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">baseline_prob</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force_change</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform q-sampling for multiple steps.</p>
+<p>Qsampling works as follows: Say you have a sequence and a qnet. Then
+we randomly pick one of the items in the sequence and then change the
+value of that item based on the prediction of the qnet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>seq</strong> (<em>1d array-like</em>) – Array of values</p></li>
-<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq</cite> belongs to</p></li>
-<li><p><strong>steps</strong> (<em>int</em>) – number of steps to run q-sampling</p></li>
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – The Qnet that <cite>seq</cite> belongs to</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – Number of steps to run q-sampling</p></li>
 <li><p><strong>baseline_prob</strong> (<em>1d array-like</em>) – Baseline probability for sampling which index</p></li>
+<li><p><strong>force_change</strong> (<em>bool</em>) – Whether to force the sequence to change when sampling.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -938,16 +942,19 @@ except the tree structure</p></li>
 
 <dl class="py function">
 <dt id="quasinet.qsampling.targeted_qsample">
-<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">targeted_qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq1</span></em>, <em class="sig-param"><span class="n">seq2</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.targeted_qsample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform q-sampling for multiple steps.</p>
+<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">targeted_qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq1</span></em>, <em class="sig-param"><span class="n">seq2</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">force_change</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.targeted_qsample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform targeted q-sampling for multiple steps.</p>
 <p><cite>seq1</cite> is q-sampled towards <cite>seq2</cite>.</p>
+<p>This is similar to <cite>qsample</cite>, except that we perform changes to <cite>seq1</cite>
+to try to approach <cite>seq2</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>seq1</strong> (<em>1d array-like</em>) – Array of values</p></li>
 <li><p><strong>seq2</strong> (<em>1d array-like</em>) – Array of values.</p></li>
-<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq1</cite> belongs to</p></li>
-<li><p><strong>steps</strong> (<em>int</em>) – number of steps to run q-sampling</p></li>
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – The Qnet that <cite>seq1</cite> belongs to</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – Number of steps to run q-sampling</p></li>
+<li><p><strong>force_change</strong> (<em>bool</em>) – Whether to force the sequence to change when sampling.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1415,6 +1422,26 @@ we will get all the nodes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="quasinet.utils.assert_string_type">
+<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">assert_string_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_string_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the input is of string datatype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em>) – Array to check</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the input</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="quasinet.utils.auc_score">
 <code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">auc_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_prob</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.auc_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>ADD</p>
@@ -1498,10 +1525,10 @@ estimated class probability</p></li>
 <dd><p>Choose an item from the distribution</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>distrib</strong> (<em>dict</em>) – dictionary mapping keys to its probability values</p>
+<dd class="field-odd"><p><strong>distrib</strong> (<em>dict</em>) – Dictionary mapping keys to its probability values</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>item</strong> – a chosen key from the dictionary</p>
+<dd class="field-even"><p><strong>item</strong> – A chosen key from the dictionary</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>key of dict</p>
