@@ -610,7 +610,10 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     if seqs1.shape[1] != seqs2.shape[1]:
         raise ValueError('The columns of the two matrices must be equal.')
 
-    symmetric = np.all(seqs1 == seqs2) and (qnet1 == qnet2)
+    if seqs1.shape[0] != seqs2.shape[0]:
+        symmetric = False
+    else:
+        symmetric = np.all(seqs1 == seqs2) and (qnet1 == qnet2)
 
     # WARNING: do not try to access seqs1_distribs with non-numba code, 
     # as it will create a segmentation fault
