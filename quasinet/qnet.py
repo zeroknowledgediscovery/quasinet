@@ -126,6 +126,11 @@ class Qnet(object):
         # Instantiate base tree models
         self.estimators_ = {}
 
+        nan_value = get_config()['nan_value']
+        if np.any(np.all(X == nan_value, axis=0)):
+            raise ValueError('There is at least one column where all'
+                + ' values are `{}`. Please remove those columns!'.format(nan_value))
+
         # TODO: we may not have any trees created. When that's the
         # case, we may want to predict an equal probability distribution
 
