@@ -1,4 +1,5 @@
 import random
+import warnings
 
 import numpy as np
 
@@ -41,7 +42,7 @@ def _qsample_once(seq, qnet, baseline_prob, force_change):
     if seq_len != len(qnet.estimators_):
         message = ('The input sequence length ({}) must match the' 
                   'number of features trained on the qnet ({})')
-        raise ValueError(message.format(seq_len, len(qnet.estimators_)))
+        warnings.warn(message.format(seq_len, len(qnet.estimators_)))
 
     # get the index distribution from a distribution
     if baseline_prob is None:
@@ -61,6 +62,9 @@ def _qsample_once(seq, qnet, baseline_prob, force_change):
             del distrib[seq[index]]
 
         if len(distrib) == 0:
+            return
+
+        if np.sum(list(distrib.values())) == 0:
             return
 
     item = sample_from_dict(distrib)
