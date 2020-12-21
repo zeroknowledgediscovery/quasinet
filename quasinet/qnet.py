@@ -628,10 +628,13 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     for seq1 in seqs1:
         seqs1_distribs.append(qnet1.predict_distributions(seq1))
 
-    # seqs2_distribs = numba.typed.List()
-    seqs2_distribs = []
-    for seq2 in seqs2:
-        seqs2_distribs.append(qnet2.predict_distributions(seq2))
+    if symmetric:
+        seqs2_distribs = seqs1_distribs
+    else:
+        # seqs2_distribs = numba.typed.List()
+        seqs2_distribs = []
+        for seq2 in seqs2:
+            seqs2_distribs.append(qnet2.predict_distributions(seq2))
 
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
