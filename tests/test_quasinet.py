@@ -48,7 +48,7 @@ class TestQnet(unittest.TestCase):
 
         return self.myqnet
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_qdistance(self):
         X = self.load_data()
 
@@ -56,8 +56,9 @@ class TestQnet(unittest.TestCase):
         seq2 = X[2]
         myqnet = self.test_create_qnet()
         qdist = qdistance(seq1, seq2, myqnet, myqnet) 
+        self.assertGreaterEqual(qdist, 0)
 
-    @unittest.skip('Correct')
+    # @unittest.skip('Correct')
     def test_membership_degree(self):
         X = self.load_data()
         seq1 = X[1]
