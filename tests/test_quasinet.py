@@ -31,8 +31,10 @@ class TestQnet(unittest.TestCase):
 
     def load_data(self):
         if not hasattr(self, 'X'):
+            max_rows = 5
             X = pd.read_csv(self.DATA_DIR + 'cchfl_test.csv')
-            X = X.values.astype(str)[:, :5]
+            self.features = list(X.columns.astype(str))[:max_rows]
+            X = X.values.astype(str)[:, :max_rows]
             self.X = X
 
         return self.X
@@ -40,7 +42,7 @@ class TestQnet(unittest.TestCase):
     def test_create_qnet(self):
         if not hasattr(self, 'myqnet'):
             X = self.load_data()
-            myqnet = Qnet(n_jobs=1)
+            myqnet = Qnet(feature_names=self.features, n_jobs=1)
             myqnet.fit(X)
             self.myqnet = myqnet
 
