@@ -427,6 +427,26 @@ and the label</p></li>
 
 </dd></dl>
 
+<dl class="py function">
+<dt id="quasinet.citrees.get_feature_importance">
+<code class="sig-prename descclassname">quasinet.citrees.</code><code class="sig-name descname">get_feature_importance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">citree</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.get_feature_importance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the feature importance of the citree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>citree</strong> (<a class="reference internal" href="#quasinet.citrees.CITreeBase" title="quasinet.citrees.CITreeBase"><em>CITreeBase</em></a>) – A conditional inference tree</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em>) – Whether to normalize the feature importance or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>col_to_importance</strong> – Mapping from column index to total feature importance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-quasinet.feature_selectors">
 <span id="quasinet-feature-selectors-module"></span><h2>quasinet.feature_selectors module<a class="headerlink" href="#module-quasinet.feature_selectors" title="Permalink to this headline">¶</a></h2>
@@ -779,16 +799,35 @@ this value is the empty string.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.export_qnet_trees">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_trees</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_trees" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export the tree.</p>
+<dt id="quasinet.qnet.export_qnet_graph">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">outfile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the <cite>qnet</cite> as a graph of dependencies. The output will be in
+the <cite>.dot</cite> file format for graphs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – A Qnet instance</p></li>
+<li><p><strong>outfile</strong> (<em>str</em>) – File name to save to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="quasinet.qnet.export_qnet_tree">
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a tree from <cite>qnet</cite>. The <cite>index</cite> determines which tree to export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>qnet</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – A Qnet instance</p></li>
 <li><p><strong>index</strong> (<em>int</em>) – Index of the tree to export</p></li>
-<li><p><strong>low_mem</strong> (<em>bool</em>) – If True, save the Qnet with low memory by deleting all data attributes
-except the tree structure</p></li>
 <li><p><strong>outformat</strong> (<em>str</em>) – Can only be <cite>graphviz</cite> for now. This will output a <cite>.dot</cite> file, which you
 can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite></p></li>
 </ul>
