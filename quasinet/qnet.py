@@ -703,8 +703,8 @@ def save_qnet(qnet, f, low_mem=False):
     dump(qnet, f) 
 
 
-def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
-    """Export the tree. 
+def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
+    """Export a tree from `qnet`. The `index` determines which tree to export. 
 
     Parameters
     ----------
