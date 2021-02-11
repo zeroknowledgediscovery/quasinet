@@ -741,8 +741,6 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
     None
     """
 
-    _assert_is_qnet(qnet)
-
     if index not in qnet.estimators_:
         print('We do not have a tree for index {}! '.format(index))
         return 
@@ -782,8 +780,6 @@ def export_qnet_graph(qnet, threshold, outfile):
     -------
     None
     """
-
-    _assert_is_qnet(qnet)
 
     exporter = QnetGraphExporter(
         qnet, 
