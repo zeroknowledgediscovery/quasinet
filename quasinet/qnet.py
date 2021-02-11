@@ -50,16 +50,17 @@ class Qnet(object):
         Number of CPUs to use when training
     """
 
-    def __init__(self, 
-                 feature_names,
-                 min_samples_split=2,
-                 alpha=.05,
-                 max_depth=-1,
-                 max_feats=-1,
-                 early_stopping=False,
-                 verbose=0,
-                 random_state=None,
-                 n_jobs=1):
+    def __init__(
+        self, 
+        feature_names,
+        min_samples_split=2,
+        alpha=.05,
+        max_depth=-1,
+        max_feats=-1,
+        early_stopping=False,
+        verbose=0,
+        random_state=None,
+        n_jobs=1):
 
         self.feature_names = feature_names
         self.min_samples_split = min_samples_split
@@ -136,14 +137,15 @@ class Qnet(object):
 
         trees = []
         for col in np.arange(0, X.shape[1]):
-            tree = CITreeClassifier(min_samples_split=self.min_samples_split,
-                                    alpha=self.alpha,
-                                    selector='chi2',
-                                    max_depth=self.max_depth,
-                                    max_feats=self.max_feats,
-                                    early_stopping=self.early_stopping,
-                                    verbose=self.verbose,
-                                    random_state=self.random_state)
+            tree = CITreeClassifier(
+                min_samples_split=self.min_samples_split,
+                alpha=self.alpha,
+                selector='chi2',
+                max_depth=self.max_depth,
+                max_feats=self.max_feats,
+                early_stopping=self.early_stopping,
+                verbose=self.verbose,
+                random_state=self.random_state)
             trees.append(tree)
 
         trees = Parallel(n_jobs=self.n_jobs, backend='loky')(

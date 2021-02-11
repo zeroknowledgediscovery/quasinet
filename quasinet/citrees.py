@@ -53,16 +53,17 @@ class CITreeBase(object):
         Sets seed for random number generator
     """
 
-    def __init__(self, 
-                 min_samples_split=2, 
-                 alpha=.05, 
-                 max_depth=-1,
-                 max_feats=-1, 
-                 n_permutations=100, 
-                 early_stopping=False,
-                 muting=True, 
-                 verbose=0, 
-                 random_state=None):
+    def __init__(
+        self, 
+        min_samples_split=2, 
+        alpha=.05, 
+        max_depth=-1,
+        max_feats=-1, 
+        n_permutations=100, 
+        early_stopping=False,
+        muting=True, 
+        verbose=0, 
+        random_state=None):
 
         if alpha <= 0 or alpha > 1:
             raise ValueError("Alpha (%.2f) should be in (0, 1]" % alpha)
@@ -180,13 +181,15 @@ class CITreeBase(object):
 
             # Find column with strongest association with outcome
             try:
-                col_idx = np.random.choice(self.available_features_,
-                                           size=self.max_feats, 
-                                           replace=False)
+                col_idx = np.random.choice(
+                    self.available_features_,
+                    size=self.max_feats, 
+                    replace=False)
             except:
-                col_idx = np.random.choice(self.available_features_,
-                                           size=len(self.available_features_),
-                                           replace=False)
+                col_idx = np.random.choice(
+                    self.available_features_,
+                    size=len(self.available_features_),
+                    replace=False)
 
             col, col_pval = self._selector(X, y, col_idx)
             
@@ -217,11 +220,16 @@ class CITreeBase(object):
                     right = self._build_tree(*right, depth=depth+1)
 
                     # Return all arguments to constructor except value
-                    return Node(col=col, col_pval=col_pval, 
-                                lthreshold=lthreshold,
-                                rthreshold=rthreshold,
-                                left=left, right=right,
-                                impurity=impurity, label_frequency=Counter(y))
+                    node = Node(
+                        col=col, 
+                        col_pval=col_pval, 
+                        lthreshold=lthreshold,
+                        rthreshold=rthreshold,
+                        left=left, 
+                        right=right,
+                        impurity=impurity, 
+                        label_frequency=Counter(y))
+                    return node
 
         # Calculate terminal node value
         if self.verbose: 
@@ -386,17 +394,18 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
     Derived from CITreeBase class; see constructor for parameter definitions
     """
 
-    def __init__(self,
-                 min_samples_split=2,
-                 alpha=.05,
-                 selector='chi2',
-                 max_depth=-1,
-                 max_feats=-1,
-                 n_permutations=100,
-                 early_stopping=False,
-                 muting=True,
-                 verbose=0,
-                 random_state=None):
+    def __init__(
+        self,
+        min_samples_split=2,
+        alpha=.05,
+        selector='chi2',
+        max_depth=-1,
+        max_feats=-1,
+        n_permutations=100,
+        early_stopping=False,
+        muting=True,
+        verbose=0,
+        random_state=None):
 
         # Define node estimate
         self.node_estimate = self._estimate_proba
