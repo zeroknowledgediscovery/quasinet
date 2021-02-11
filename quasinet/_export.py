@@ -1,5 +1,6 @@
 import numpy as np
 
+from .citrees import get_feature_importance
 from .tree import get_nodes
 from .utils import scientific_notation
 
@@ -337,5 +338,64 @@ class QnetGraphExporter(object):
         self.outfile = outfile
         self.threshold = threshold
 
+        # `nodes` will store the column as indices
+        self.nodes = set()
+
+        # `edges` will be a list of dictionaries.
+        self.edges = []
+
+    def _col_to_desc(self, col):
+        """Get the description of `col`. """
+        return self.qnet.feature_names[col]
+
+    def _get_nodes_and_edges(self):
+
+        for i, tree in self.qnet.estimators_.items():
+            feature_imp = get_feature_importance(tree, normalize=True)
+            for col, imp in feature_imp.items():
+                if imp >= self.threshold:
+                    self.nodes.add(i)
+                    self.nodes.add(col)
+
+                    edge = {
+                        'start': col,
+                        'end': i,
+                        'weight': imp
+                    }
+                    self.edges.append(edge)
+
+
+    def _write_start(self, f):
+        """Write the starting text of the .dot file. """
+        f.write('strict digraph  {\n')
+
+    def _write_nodes(self, f):
+        """Write the nodes to the .dot file. """
+
+        for node in self.nodes:
+            f.write('{};\n'.format(self._col_to_desc(node)))
+
+    def _write_edges(self, f):
+        """Write the edges to the .dot file. """
+
+        fmt = '{} -> {}  [weight="{}"];\n'
+        for edge in self.edges:
+            start = self._col_to_desc(edge['start'])
+            end = self._col_to_desc(edge['end'])
+            f.write(fmt.format(
+                start,
+                end,
+                edge['weight']))
+
+    def _write_end(self, f):
+        """Write the ending text of the .dot file. """
+        f.write('}')
+
     def export(self):
-        pass
+        self._get_nodes_and_edges()
+
+        with open(self.outfile, 'w+') as f:
+            self._write_start(f)
+            self._write_nodes(f)
+            self._write_edges(f)
+            self._write_end(f)
