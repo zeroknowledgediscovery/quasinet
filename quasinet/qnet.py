@@ -773,6 +773,10 @@ def export_qnet_graph(qnet, threshold, outfile):
     qnet : Qnet
         A Qnet instance
  
+    threshold : float
+        Numeric cutoff for edge weights. If the edge weights exceed 
+        this cutoff, then we include it into the graph.
+
     outfile : str
         File name to save to.
 
