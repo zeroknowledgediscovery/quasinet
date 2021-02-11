@@ -74,7 +74,7 @@ def _color_brew(n, alpha=1.0):
     return np.array(color_array)
 
 
-class GraphvizExporter(object):
+class GraphvizTreeExporter(object):
     """Export the tree using graphviz.
 
     Parameters

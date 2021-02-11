@@ -9,7 +9,7 @@ from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .tree import Node, get_nodes
 from .utils import assert_array_rank, assert_string_type
-from ._export import GraphvizExporter
+from ._export import GraphvizTreeExporter
 from ._config import get_config
 
 class Qnet(object):
@@ -731,14 +731,15 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
     feature_names = qnet.feature_names
 
     if outformat == 'graphviz':
-        exporter = GraphvizExporter(tree=tree,
-                                    outfile=outfile,
-                                    response_name=feature_names[index],
-                                    feature_names=feature_names,
-                                    pen_width=3,
-                                    edge_color='black',
-                                    edge_label_color='black',
-                                    add_legend=False)
+        exporter = GraphvizTreeExporter(
+            tree=tree,
+            outfile=outfile,
+            response_name=feature_names[index],
+            feature_names=feature_names,
+            pen_width=3,
+            edge_color='black',
+            edge_label_color='black',
+            add_legend=False)
         exporter.export()
 
     else:
