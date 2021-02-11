@@ -713,10 +713,6 @@ def export_qnet_trees(qnet, index, outfile, outformat='graphviz'):
 
     index : int
         Index of the tree to export
-
-    low_mem : bool
-        If True, save the Qnet with low memory by deleting all data attributes 
-        except the tree structure
  
     outformat : str
         Can only be `graphviz` for now. This will output a `.dot` file, which you 
