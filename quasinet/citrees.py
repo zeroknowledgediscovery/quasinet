@@ -1,5 +1,5 @@
 import warnings
-from collections import Counter
+from collections import Counter, defaultdict
 
 from joblib import delayed, Parallel
 import numpy as np
@@ -8,11 +8,10 @@ from sklearn.preprocessing import OrdinalEncoder
 
 warnings.simplefilter('ignore')
 
-# Package imports
 from .feature_selectors import permutation_test_chi2
 from .scorers import gini_index
 from .utils import logger, powerset
-from .tree import Node
+from .tree import Node, get_nodes
 from ._config import get_config
 from ._encoders import OrdinalEncoderWithNaN
 
@@ -761,6 +760,43 @@ class CITreeClassifier(CITreeBase, BaseEstimator, ClassifierMixin):
         y = categorical_prediction.reshape(-1)
         return y
         
+
+
+def get_feature_importance(citree, normalize=True):
+    """Get the feature importance of the citree.
+
+    Parameters
+    ----------
+    citree : CITreeBase
+        A conditional inference tree
+
+    normalize : bool
+        Whether to normalize the feature importance or not
+
+    Returns
+    -------
+    col_to_importance : dict
+        Mapping from column index to total feature importance
+    """
+
+    # if not isinstance(citree, CITreeClassifier):
+    #     raise ValueError('The input must be a `CITreeClassifier`.')
+
+    nodes = get_nodes(citree.root, get_leaves=False)
+
+    col_to_importance_ = defaultdict(lambda: 0)
+
+    for node in nodes:
+        col_to_importance_[node.col] += node.impurity
+
+    if normalize:
+        total = sum(col_to_importance_.values())
+        col_to_importance = {k: float(v) / total for k, v in col_to_importance_.items()}
+    else:
+        col_to_importance = dict(col_to_importance_)
+
+    return col_to_importance
+
 
 
 
