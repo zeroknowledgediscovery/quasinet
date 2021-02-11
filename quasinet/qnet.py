@@ -9,7 +9,7 @@ from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .tree import Node, get_nodes
 from .utils import assert_array_rank, assert_string_type
-from ._export import GraphvizTreeExporter
+from ._export import GraphvizTreeExporter, QnetGraphExporter
 from ._config import get_config
 
 class Qnet(object):
@@ -382,6 +382,22 @@ class Qnet(object):
         raise NotImplementedError
 
 
+def _assert_is_qnet(object_):
+    """Check that the object is a qnet
+
+    Parameters
+    ----------
+    object_ : obj
+        Any object to check whether it is a `Qnet` or not.
+
+    Returns
+    -------
+    None
+    """
+
+    if not isinstance(object_, Qnet):
+        raise ValueError('The input is not a qnet.')
+
 def _combine_two_distribs(seq1_distrib, seq2_distrib):
     """Combine two distributions together.
 
@@ -723,6 +739,8 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
     None
     """
 
+    _assert_is_qnet(qnet)
+
     if index not in qnet.estimators_:
         print('We do not have a tree for index {}! '.format(index))
         return 
@@ -744,3 +762,32 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
 
     else:
         raise NotImplementedError
+
+
+def export_qnet_graph(qnet, threshold, outfile):
+    """Export the `qnet` as a graph of dependencies. The output will be in
+    the `.dot` file format for graphs.
+
+    Parameters
+    ----------
+    qnet : Qnet
+        A Qnet instance
+ 
+    outfile : str
+        File name to save to.
+
+    Returns
+    -------
+    None
+    """
+
+    _assert_is_qnet(qnet)
+
+    exporter = QnetGraphExporter(
+        qnet, 
+        outfile=outfile,
+        threshold=threshold)
+
+    exporter.export()
+
+    

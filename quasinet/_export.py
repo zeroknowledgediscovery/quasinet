@@ -79,8 +79,11 @@ class GraphvizTreeExporter(object):
 
     Parameters
     ----------
-    outfile : Qnet
+    qnet : Qnet
         A Qnet instance
+
+    outfile : str
+        Output file to save results to
 
     response_name : str
         Name of the y variable that we are predicting
@@ -111,20 +114,21 @@ class GraphvizTreeExporter(object):
     None
     """
 
-    def __init__(self, 
-                 tree,
-                 outfile,
-                 response_name,
-                 feature_names, 
-                 text_color='black', 
-                 edge_color='gray',
-                 font_size=10,
-                 edge_label_color='deepskyblue4',
-                 pen_width=2,
-                 background_color='transparent',
-                 dpi=200,
-                 rotate=False,
-                 add_legend=True):
+    def __init__(
+        self, 
+        tree,
+        outfile,
+        response_name,
+        feature_names, 
+        text_color='black', 
+        edge_color='gray',
+        font_size=10,
+        edge_label_color='deepskyblue4',
+        pen_width=2,
+        background_color='transparent',
+        dpi=200,
+        rotate=False,
+        add_legend=True):
         
         self.tree = tree
         self._total_samples = sum(tree.root.label_frequency.values())
@@ -303,3 +307,35 @@ class GraphvizTreeExporter(object):
 
 
 
+class QnetGraphExporter(object):
+    """Export the qnet as a graph to a dot file format.
+
+    Parameters
+    ----------
+    qnet : Qnet
+        A Qnet instance
+
+    outfile : str
+        Output file to save results to
+
+    threshold : float
+        Numeric cutoff for edge weights. If the edge weights exceed 
+        this cutoff, then we include it into the graph.
+
+    Returns
+    -------
+    None
+    """
+
+    def __init__(
+        self, 
+        qnet,
+        outfile,
+        threshold):
+
+        self.qnet = qnet
+        self.outfile = outfile
+        self.threshold = threshold
+
+    def export(self):
+        pass
