@@ -9,7 +9,7 @@ from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .tree import Node, get_nodes
 from .utils import assert_array_rank, assert_string_type
-from ._export import GraphvizTreeExporter, QnetGraphExporter
+from .export import GraphvizTreeExporter, QnetGraphExporter
 from ._config import get_config
 
 class Qnet(object):
