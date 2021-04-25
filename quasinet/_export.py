@@ -110,6 +110,9 @@ class GraphvizTreeExporter(object):
     add_legend : bool
         If True, add a legend to the tree
 
+    detailed_output : bool
+        If True, output max. likelihood label in leaves, else output prob. distribution. 
+
     Returns
     -------
     None
@@ -129,7 +132,8 @@ class GraphvizTreeExporter(object):
         background_color='transparent',
         dpi=200,
         rotate=False,
-        add_legend=True):
+        add_legend=True,
+        detailed_output=False):
         
         self.tree = tree
         self._total_samples = sum(tree.root.label_frequency.values())
@@ -145,6 +149,7 @@ class GraphvizTreeExporter(object):
         self.dpi = dpi
         self.rotate = rotate
         self.add_legend = add_legend
+        self.detailed_output = detailed_output
 
     def export(self):
 
@@ -243,10 +248,16 @@ class GraphvizTreeExporter(object):
             occurence = round(occurence, 3)
             prediction = self.tree.labels_[max_index]
             
-            node_labels += '{}\nProb: {}\nFrac: {}'.format(
-                prediction, 
-                max_val,
-                occurence)
+            if not self.detailed_output:            
+                node_labels += '{}\nProb: {}\nFrac: {}'.format(
+                    prediction, 
+                    max_val,
+                    occurence)
+            else:
+                node_labels += '{}\nProb: {}\nFrac: {}'.format(
+                    prediction,
+                    ' '.join(["%.1f" % x for x in node.value]),
+                    occurence)
         else:
             if self.feature_names is not None:
                 node_labels += self.feature_names[node.col]
