@@ -111,7 +111,7 @@ class GraphvizTreeExporter(object):
         If True, add a legend to the tree
 
     detailed_output : bool
-        If True, output max. likelihood label in leaves, else output prob. distribution. 
+        If False output probability of max likelihood of label in leaves (default), else output prob. distribution. 
 
     Returns
     -------
