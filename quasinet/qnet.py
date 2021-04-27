@@ -721,7 +721,7 @@ def save_qnet(qnet, f, low_mem=False):
     dump(qnet, f) 
 
 
-def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
+def export_qnet_tree(qnet, index, outfile, outformat='graphviz', detailed_output=False):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
     Parameters
@@ -735,6 +735,8 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
     outformat : str
         Can only be `graphviz` for now. This will output a `.dot` file, which you 
         can then compile using a command like `dot -Tpng file.dot -o file.png`
+    detailed_output : bool
+        If True return detailed probabilities of output labels in leaf nodes. default: False
 
     Returns
     -------
@@ -757,7 +759,8 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz'):
             pen_width=3,
             edge_color='black',
             edge_label_color='black',
-            add_legend=False)
+            add_legend=False,
+            detailed_output=False)
         exporter.export()
 
     else:
