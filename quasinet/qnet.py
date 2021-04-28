@@ -760,7 +760,7 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz', detailed_output
             edge_color='black',
             edge_label_color='black',
             add_legend=False,
-            detailed_output=False)
+            detailed_output=detailed_output)
         exporter.export()
 
     else:
