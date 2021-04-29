@@ -256,7 +256,8 @@ class GraphvizTreeExporter(object):
             else:
                 node_labels += '{}\nProb: {}\nFrac: {}'.format(
                     prediction,
-                    ' '.join(["%.1f" % x for x in node.value]),
+                    ' '.join([l+':'+"{:1.1f}".format(v)
+                              for (l,v) in zip(self.tree.labels,node.value)]),
                     occurence)
         else:
             if self.feature_names is not None:
