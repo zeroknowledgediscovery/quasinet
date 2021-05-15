@@ -56,7 +56,8 @@ setup(
         "numpy", 
         "numba", 
         "pandas",
-        "joblib", 
+        "joblib",
+        "dill",
         "biopython"],
     python_requires='>=3.6',
     classifiers=[
