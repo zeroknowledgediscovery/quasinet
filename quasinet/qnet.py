@@ -710,15 +710,15 @@ def save_qnet(qnet, f, low_mem=False):
     -------
     None
     """
-
+    import dill as pickle
     assert isinstance(qnet, Qnet)
     if not f.endswith('.joblib'):
         raise ValueError('The outfile must end with `.joblib`')
 
     if low_mem:
         qnet.clear_attributes()
-        
-    dump(qnet, f) 
+    filehandler = open(f,"wb")    
+    pickle.dump(qnet, filehandler) 
 
 
 def export_qnet_tree(qnet, index, outfile, outformat='graphviz', detailed_output=False):
