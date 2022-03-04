@@ -113,6 +113,9 @@ class GraphvizTreeExporter(object):
     detailed_output : bool
         If False output probability of max likelihood of label in leaves (default), else output prob. distribution. 
 
+    edge_font_color : str
+        Color of edge label text
+
     Returns
     -------
     None
@@ -131,6 +134,7 @@ class GraphvizTreeExporter(object):
         pen_width=2,
         background_color='transparent',
         dpi=200,
+        edge_fontcolor='grey14',
         rotate=False,
         add_legend=True,
         detailed_output=False):
@@ -150,7 +154,8 @@ class GraphvizTreeExporter(object):
         self.rotate = rotate
         self.add_legend = add_legend
         self.detailed_output = detailed_output
-
+        self.edge_fontcolor = edge_fontcolor
+        
     def export(self):
 
         labels = self.tree.labels_
@@ -202,7 +207,7 @@ class GraphvizTreeExporter(object):
         f.write('''graph [ranksep="0 equally", splines=straight, \
                 bgcolor={}, dpi={}] ;\n'''.format(self.background_color, self.dpi))
 
-        f.write('edge [fontname=helvetica, color={}] ;\n'.format(
+        f.write('edge [fontname=helvetica, fontcolor={},color={}] ;\n'.format(self.edge_fontcolor,
             self.edge_color))
 
         if self.rotate:

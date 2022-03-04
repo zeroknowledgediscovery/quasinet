@@ -733,6 +733,7 @@ def export_qnet_tree(qnet, index,
                      font_size=10,
                      background_color='transparent',
                      rotate=False,
+                     edge_fontcolor='grey14',
                      add_legend=False):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
@@ -766,6 +767,11 @@ def export_qnet_tree(qnet, index,
 
     add_legend : bool
         If True, add a legend to the tree
+
+    edge_font_color : str
+        Color of edge label text
+
+
     Returns
     -------
     None
@@ -793,6 +799,7 @@ def export_qnet_tree(qnet, index,
             dpi = dpi,
             rotate = rotate,
             text_color = text_color,
+            edge_fontcolor=edge_fontcolor,
             detailed_output=detailed_output)
         exporter.export()
 
