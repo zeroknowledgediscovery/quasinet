@@ -140,6 +140,7 @@ class GraphvizTreeExporter(object):
         edge_fontcolor='grey14',
         rotate=False,
         add_legend=True,
+        min_size=1,
         detailed_output=False):
         
         self.tree = tree
