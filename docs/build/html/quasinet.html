@@ -889,7 +889,7 @@ this cutoff, then we include it into the graph.</p></li>
 
 <dl class="py function">
 <dt id="quasinet.qnet.export_qnet_tree">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em>, <em class="sig-param"><span class="n">detailed_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a tree from <cite>qnet</cite>. The <cite>index</cite> determines which tree to export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -898,6 +898,7 @@ this cutoff, then we include it into the graph.</p></li>
 <li><p><strong>index</strong> (<em>int</em>) – Index of the tree to export</p></li>
 <li><p><strong>outformat</strong> (<em>str</em>) – Can only be <cite>graphviz</cite> for now. This will output a <cite>.dot</cite> file, which you
 can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite></p></li>
+<li><p><strong>detailed_output</strong> (<em>bool</em>) – If True return detailed probabilities of output labels in leaf nodes. default: False</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
