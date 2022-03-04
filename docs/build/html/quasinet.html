@@ -889,7 +889,7 @@ this cutoff, then we include it into the graph.</p></li>
 
 <dl class="py function">
 <dt id="quasinet.qnet.export_qnet_tree">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em>, <em class="sig-param"><span class="n">detailed_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em>, <em class="sig-param"><span class="n">detailed_output</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pen_width</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">edge_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">edge_label_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">dpi</span><span class="o">=</span><span class="default_value">200</span></em>, <em class="sig-param"><span class="n">text_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">font_size</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">background_color</span><span class="o">=</span><span class="default_value">'transparent'</span></em>, <em class="sig-param"><span class="n">rotate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">add_legend</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a tree from <cite>qnet</cite>. The <cite>index</cite> determines which tree to export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -899,6 +899,12 @@ this cutoff, then we include it into the graph.</p></li>
 <li><p><strong>outformat</strong> (<em>str</em>) – Can only be <cite>graphviz</cite> for now. This will output a <cite>.dot</cite> file, which you
 can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite></p></li>
 <li><p><strong>detailed_output</strong> (<em>bool</em>) – If True return detailed probabilities of output labels in leaf nodes. default: False</p></li>
+<li><p><strong>text_color</strong> (<em>str</em>) – Color to set the text</p></li>
+<li><p><strong>edge_color</strong> (<em>str</em>) – Color to set the edges</p></li>
+<li><p><strong>pen_width</strong> (<em>int</em>) – Width of pen for drawing boundaries</p></li>
+<li><p><strong>dpi</strong> (<em>int</em>) – Image resolution</p></li>
+<li><p><strong>rotate</strong> (<em>bool</em>) – If True, rotate the tree</p></li>
+<li><p><strong>add_legend</strong> (<em>bool</em>) – If True, add a legend to the tree</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

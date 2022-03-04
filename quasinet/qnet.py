@@ -721,7 +721,19 @@ def save_qnet(qnet, f, low_mem=False):
     pickle.dump(qnet, filehandler) 
 
 
-def export_qnet_tree(qnet, index, outfile, outformat='graphviz', detailed_output=False):
+def export_qnet_tree(qnet, index,
+                     outfile,
+                     outformat='graphviz',
+                     detailed_output=False,
+                     pen_width=3,
+                     edge_color='black',
+                     edge_label_color='black',
+                     dpi=200,
+                     text_color='black',
+                     font_size=10,
+                     background_color='transparent',
+                     rotate=False,
+                     add_legend=False):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
     Parameters
@@ -737,7 +749,23 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz', detailed_output
         can then compile using a command like `dot -Tpng file.dot -o file.png`
     detailed_output : bool
         If True return detailed probabilities of output labels in leaf nodes. default: False
+    text_color : str
+        Color to set the text
 
+    edge_color : str
+        Color to set the edges
+
+    pen_width : int
+        Width of pen for drawing boundaries
+ 
+    dpi : int
+        Image resolution
+        
+    rotate : bool
+        If True, rotate the tree
+
+    add_legend : bool
+        If True, add a legend to the tree
     Returns
     -------
     None
@@ -756,10 +784,15 @@ def export_qnet_tree(qnet, index, outfile, outformat='graphviz', detailed_output
             outfile=outfile,
             response_name=feature_names[index],
             feature_names=feature_names,
-            pen_width=3,
-            edge_color='black',
-            edge_label_color='black',
-            add_legend=False,
+            pen_width=pen_width,
+            edge_color=edge_color,
+            edge_label_color=edge_label_color,
+            add_legend=add_legend,
+            font_size = font_size,
+            background_color = background_color,
+            dpi = dpi,
+            rotate = rotate,
+            text_color = text_color,
             detailed_output=detailed_output)
         exporter.export()
 
