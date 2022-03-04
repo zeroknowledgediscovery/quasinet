@@ -734,7 +734,7 @@ def export_qnet_tree(qnet, index,
                      background_color='transparent',
                      rotate=False,
                      edge_fontcolor='grey14',
-                     min_node_num = 1,
+                     min_size = 1,
                      add_legend=False):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
@@ -803,7 +803,7 @@ def export_qnet_tree(qnet, index,
             rotate = rotate,
             text_color = text_color,
             edge_fontcolor=edge_fontcolor,
-            min_size=min_node_num,
+            min_size=min_size,
             detailed_output=detailed_output)
         exporter.export()
 
