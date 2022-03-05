@@ -140,6 +140,7 @@ class GraphvizTreeExporter(object):
         edge_fontcolor='grey14',
         rotate=False,
         add_legend=True,
+        min_size=1,
         detailed_output=False):
         
         self.tree = tree
@@ -158,7 +159,7 @@ class GraphvizTreeExporter(object):
         self.add_legend = add_legend
         self.detailed_output = detailed_output
         self.edge_fontcolor = edge_fontcolor
-        self.min_node_num = min_size
+        self.min_size = min_size
         
     def export(self):
 
@@ -174,7 +175,7 @@ class GraphvizTreeExporter(object):
             get_leaves=True, 
             get_non_leaves=True)
 
-        if len(nodes) < self.min_node_num:
+        if len(nodes) < self.min_size:
             return False
         
         for i, node in enumerate(nodes):
