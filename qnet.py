@@ -510,11 +510,17 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     if len(seq1.shape) != 1 or len(seq2.shape) != 1:
         raise ValueError('The two sequences must be 1d arrays.')
 
-    if seq1.shape[0] != seq2.shape[0]:
-        raise ValueError('The two sequences must be of equal lengths.')
+#    if seq1.shape[0] != seq2.shape[0]:
+#        raise ValueError('The two sequences must be of equal lengths.')
 
     seq1_distribs = qnet1.predict_distributions(seq1)
     seq2_distribs = qnet2.predict_distributions(seq2)
+
+    if seq1.shape[0] != seq2.shape[0]:
+        keys=seq1_distribs.keys() & seq2_distribs.keys()
+        seq1_distribs={i:seq1_distribs[i] for i in keys}
+        seq2_distribs={i:seq2_distribs[i] for i in keys}
+       
     
     divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
     return divergence
