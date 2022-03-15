@@ -520,7 +520,7 @@ def qdistance(seq1, seq2, qnet1, qnet2):
         keys=seq1_distribs.keys() & seq2_distribs.keys()
         seq1_distribs={i:seq1_distribs[i] for i in keys}
         seq2_distribs={i:seq2_distribs[i] for i in keys}
-       
+        
     
     divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
     return divergence
