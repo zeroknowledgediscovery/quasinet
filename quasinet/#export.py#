@@ -141,7 +141,6 @@ class GraphvizTreeExporter(object):
         rotate=False,
         add_legend=True,
         min_size=1,
-        color_alpha=-1.5,
         detailed_output=False):
         
         self.tree = tree
@@ -161,7 +160,6 @@ class GraphvizTreeExporter(object):
         self.detailed_output = detailed_output
         self.edge_fontcolor = edge_fontcolor
         self.min_size = min_size
-        self.color_alpha = color_alpha
         
     def export(self):
 
@@ -169,7 +167,7 @@ class GraphvizTreeExporter(object):
         self.num_labels = len(labels)
 
         # esablish the color scheme
-        color_brew = _color_brew(self.num_labels, alpha=self.color_alpha)
+        color_brew = _color_brew(self.num_labels, alpha=1.5)
         self.class_colors = {labels[i]: color_brew[i] for i in range(self.num_labels)}
 
         nodes = get_nodes(

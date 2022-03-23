@@ -517,9 +517,9 @@ def qdistance(seq1, seq2, qnet1, qnet2):
     seq2_distribs = qnet2.predict_distributions(seq2)
 
     if seq1.shape[0] != seq2.shape[0]:
-        keys=seq1_distribs.keys() & seq2_distribs.keys()
-        seq1_distribs={i:seq1_distribs[i] for i in keys}
-        seq2_distribs={i:seq2_distribs[i] for i in keys}
+        keys=seq1_distribs[0].keys() & seq2_distribs[0].keys()
+        seq1_distribs=[{i:seq1_distribs[0][i] for i in keys}]
+        seq2_distribs=[{i:seq2_distribs[0][i] for i in keys}]
     
     divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
     return divergence
@@ -740,6 +740,7 @@ def export_qnet_tree(qnet, index,
                      rotate=False,
                      edge_fontcolor='grey14',
                      min_size = 1,
+                     color_alpha = 1.5,
                      add_legend=False):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
@@ -780,6 +781,9 @@ def export_qnet_tree(qnet, index,
     min_size : int
         Minimum number of nodes to draw the tree
 
+    color_alpha : float
+        Parameter for color brightness
+
     Returns
     -------
     None
@@ -809,6 +813,7 @@ def export_qnet_tree(qnet, index,
             text_color = text_color,
             edge_fontcolor=edge_fontcolor,
             min_size=min_size,
+            color_alpha=color_alpha,
             detailed_output=detailed_output)
         exporter.export()
 
