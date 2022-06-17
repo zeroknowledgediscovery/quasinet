@@ -148,7 +148,8 @@ class Qnet(object):
                 random_state=self.random_state)
             trees.append(tree)
 
-        trees = Parallel(n_jobs=self.n_jobs, backend='loky')(
+        # changing to     multiprocessing from loky @ishanu June 2022
+        trees = Parallel(n_jobs=self.n_jobs, backend='multiprocessing')(
             delayed(self._parallel_fit_tree)(
                 trees[col], X, col)
             for col in range(0, X.shape[1])

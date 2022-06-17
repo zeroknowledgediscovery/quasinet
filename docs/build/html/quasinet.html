@@ -6,13 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>quasinet package &#8212; Quasinet  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quasinet" href="modules.html" />
@@ -41,8 +40,8 @@
 <div class="section" id="module-quasinet.ciforest">
 <span id="quasinet-ciforest-module"></span><h2>quasinet.ciforest module<a class="headerlink" href="#module-quasinet.ciforest" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="quasinet.ciforest.CIForestClassifier">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">CIForestClassifier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">selector</span><span class="o">=</span><span class="default_value">'mc'</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">n_estimators</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">'sqrt'</span></em>, <em class="sig-param"><span class="n">n_permutations</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">muting</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bootstrap</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bayes</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">class_weight</span><span class="o">=</span><span class="default_value">'balanced'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.CIForestClassifier">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">CIForestClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sqrt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'balanced'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.ClassifierMixin</span></code></p>
 <p>Conditional forest classifier</p>
 <dl class="field-list simple">
@@ -73,8 +72,8 @@ stratified bootstrap sampling</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="quasinet.ciforest.CIForestClassifier.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.CIForestClassifier.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit conditional forest classifier</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -93,8 +92,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.ciforest.CIForestClassifier.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.CIForestClassifier.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicts class labels for feature vectors X</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -110,8 +109,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.ciforest.CIForestClassifier.predict_proba">
-<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.CIForestClassifier.predict_proba">
+<span class="sig-name descname"><span class="pre">predict_proba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.CIForestClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicts class probabilities for feature vectors X</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -129,8 +128,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.ciforest.balanced_sampled_idx">
-<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">balanced_sampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em>, <em class="sig-param"><span class="n">min_class_p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.balanced_sampled_idx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.balanced_sampled_idx">
+<span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">balanced_sampled_idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_class_p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.balanced_sampled_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indices for balanced bootstrap sampling in classification</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -151,8 +150,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.ciforest.balanced_unsampled_idx">
-<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">balanced_unsampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em>, <em class="sig-param"><span class="n">min_class_p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.balanced_unsampled_idx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.balanced_unsampled_idx">
+<span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">balanced_unsampled_idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_class_p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.balanced_unsampled_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsampled indices for balanced bootstrap sampling in classification</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -173,8 +172,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.ciforest.normal_sampled_idx">
-<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">normal_sampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.normal_sampled_idx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.normal_sampled_idx">
+<span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">normal_sampled_idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.normal_sampled_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indices for bootstrap sampling</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -194,8 +193,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.ciforest.normal_unsampled_idx">
-<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">normal_unsampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.normal_unsampled_idx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.normal_unsampled_idx">
+<span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">normal_unsampled_idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.normal_unsampled_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsampled indices for bootstrap sampling</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -216,8 +215,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.ciforest.stratify_sampled_idx">
-<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">stratify_sampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.stratify_sampled_idx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.stratify_sampled_idx">
+<span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">stratify_sampled_idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.stratify_sampled_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indices for stratified bootstrap sampling in classification</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -237,8 +236,8 @@ stratified bootstrap sampling</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.ciforest.stratify_unsampled_idx">
-<code class="sig-prename descclassname">quasinet.ciforest.</code><code class="sig-name descname">stratify_unsampled_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">random_state</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">bayes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.stratify_unsampled_idx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.ciforest.stratify_unsampled_idx">
+<span class="sig-prename descclassname"><span class="pre">quasinet.ciforest.</span></span><span class="sig-name descname"><span class="pre">stratify_unsampled_idx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bayes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.ciforest.stratify_unsampled_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsampled indices for stratified bootstrap sampling in classification</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -261,8 +260,8 @@ stratified bootstrap sampling</p></li>
 <div class="section" id="module-quasinet.citrees">
 <span id="quasinet-citrees-module"></span><h2>quasinet.citrees module<a class="headerlink" href="#module-quasinet.citrees" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="quasinet.citrees.CITreeBase">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.citrees.</code><code class="sig-name descname">CITreeBase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">n_permutations</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">muting</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.citrees.</span></span><span class="sig-name descname"><span class="pre">CITreeBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for conditional inference tree.</p>
 <dl class="field-list simple">
@@ -285,8 +284,8 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeBase.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeBase.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train model.</p>
 <p>X, y must contain only string datatypes.</p>
 <dl class="field-list simple">
@@ -306,15 +305,15 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeBase.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.predict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeBase.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicts labels on test data. This method should not be
 callable from base class.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeBase.predict_label">
-<code class="sig-name descname">predict_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">tree</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.predict_label" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeBase.predict_label">
+<span class="sig-name descname"><span class="pre">predict_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.predict_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicts label</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -333,8 +332,8 @@ callable from base class.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeBase.print_tree">
-<code class="sig-name descname">print_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tree</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">' '</span></em>, <em class="sig-param"><span class="n">child</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.print_tree" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeBase.print_tree">
+<span class="sig-name descname"><span class="pre">print_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">child</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeBase.print_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints tree structure</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,8 +355,8 @@ callable from base class.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="quasinet.citrees.CITreeClassifier">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.citrees.</code><code class="sig-name descname">CITreeClassifier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">selector</span><span class="o">=</span><span class="default_value">'chi2'</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">n_permutations</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">muting</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeClassifier">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.citrees.</span></span><span class="sig-name descname"><span class="pre">CITreeClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'chi2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#quasinet.citrees.CITreeBase" title="quasinet.citrees.CITreeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">quasinet.citrees.CITreeBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.ClassifierMixin</span></code></p>
 <p>Conditional inference tree classifier</p>
 <p>NOTE: as of now, the features can only be categorical</p>
@@ -366,13 +365,13 @@ callable from base class.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>selector</strong> (<em>str</em>) – Variable selector for finding strongest association between a feature
 and the label</p></li>
-<li><p><strong>from CITreeBase class; see constructor for parameter definitions</strong> (<em>Derived</em>) – </p></li>
+<li><p><strong>definitions</strong> (<em>Derived from CITreeBase class; see constructor for parameter</em>) – </p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeClassifier.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeClassifier.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train conditional inference tree classifier</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -392,8 +391,8 @@ and the label</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeClassifier.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeClassifier.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicts class labels for feature vectors X</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -409,8 +408,8 @@ and the label</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.citrees.CITreeClassifier.predict_proba">
-<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.CITreeClassifier.predict_proba">
+<span class="sig-name descname"><span class="pre">predict_proba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.CITreeClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicts class probabilities for feature vectors X</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -428,8 +427,8 @@ and the label</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.citrees.get_feature_importance">
-<code class="sig-prename descclassname">quasinet.citrees.</code><code class="sig-name descname">get_feature_importance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">citree</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.get_feature_importance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.citrees.get_feature_importance">
+<span class="sig-prename descclassname"><span class="pre">quasinet.citrees.</span></span><span class="sig-name descname"><span class="pre">get_feature_importance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">citree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.citrees.get_feature_importance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the feature importance of the citree.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,8 +450,8 @@ and the label</p></li>
 <div class="section" id="module-quasinet.export">
 <span id="quasinet-export-module"></span><h2>quasinet.export module<a class="headerlink" href="#module-quasinet.export" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="quasinet.export.GraphvizTreeExporter">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.export.</code><code class="sig-name descname">GraphvizTreeExporter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tree</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">response_name</span></em>, <em class="sig-param"><span class="n">feature_names</span></em>, <em class="sig-param"><span class="n">text_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">edge_color</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">font_size</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">edge_label_color</span><span class="o">=</span><span class="default_value">'deepskyblue4'</span></em>, <em class="sig-param"><span class="n">pen_width</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">background_color</span><span class="o">=</span><span class="default_value">'transparent'</span></em>, <em class="sig-param"><span class="n">dpi</span><span class="o">=</span><span class="default_value">200</span></em>, <em class="sig-param"><span class="n">edge_fontcolor</span><span class="o">=</span><span class="default_value">'grey14'</span></em>, <em class="sig-param"><span class="n">rotate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">add_legend</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">min_size</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">color_alpha</span><span class="o">=</span><span class="default_value">- 1.5</span></em>, <em class="sig-param"><span class="n">detailed_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.GraphvizTreeExporter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.export.GraphvizTreeExporter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.export.</span></span><span class="sig-name descname"><span class="pre">GraphvizTreeExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_label_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deepskyblue4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pen_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transparent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_fontcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grey14'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.GraphvizTreeExporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export the tree using graphviz.</p>
 <dl class="field-list simple">
@@ -481,15 +480,15 @@ and the label</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="quasinet.export.GraphvizTreeExporter.export">
-<code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.GraphvizTreeExporter.export" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.export.GraphvizTreeExporter.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.GraphvizTreeExporter.export" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="quasinet.export.QnetGraphExporter">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.export.</code><code class="sig-name descname">QnetGraphExporter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">threshold</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.QnetGraphExporter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.export.QnetGraphExporter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.export.</span></span><span class="sig-name descname"><span class="pre">QnetGraphExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.QnetGraphExporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export the qnet as a graph to a dot file format.</p>
 <dl class="field-list simple">
@@ -509,8 +508,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="quasinet.export.QnetGraphExporter.export">
-<code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.QnetGraphExporter.export" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.export.QnetGraphExporter.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.QnetGraphExporter.export" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -519,8 +518,8 @@ this cutoff, then we include it into the graph.</p></li>
 <div class="section" id="module-quasinet.feature_selectors">
 <span id="quasinet-feature-selectors-module"></span><h2>quasinet.feature_selectors module<a class="headerlink" href="#module-quasinet.feature_selectors" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_chi2">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_chi2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_chi2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_chi2">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_chi2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_chi2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutation test using chi-squared.</p>
 <p>This is used when x and y are nominal variables.</p>
 <dl class="field-list simple">
@@ -543,8 +542,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_dcor">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_dcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_dcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_dcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_dcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_dcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutation test for distance correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -565,8 +564,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_dcor_parallel">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_dcor_parallel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_dcor_parallel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_dcor_parallel">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_dcor_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_dcor_parallel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallel implementation of permutation test for distance correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -588,8 +587,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_mc">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_mc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">n_classes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_mc" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_mc">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_mc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_mc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutation test for multiple correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -611,8 +610,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_mi">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_mi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_mi" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_mi">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_mi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_mi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutation test for mutual information</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -634,8 +633,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_pcor">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_pcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_pcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_pcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_pcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_pcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutation test for Pearson correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -656,8 +655,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_rdc">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_rdc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_rdc" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_rdc">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_rdc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_rdc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutation test for randomized dependence coefficient</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -678,8 +677,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.feature_selectors.permutation_test_rdc_parallel">
-<code class="sig-prename descclassname">quasinet.feature_selectors.</code><code class="sig-name descname">permutation_test_rdc_parallel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">B</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_rdc_parallel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.feature_selectors.permutation_test_rdc_parallel">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_selectors.</span></span><span class="sig-name descname"><span class="pre">permutation_test_rdc_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_selectors.permutation_test_rdc_parallel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallel implementation of permutation test for randomized dependence
 coefficient</p>
 <dl class="field-list simple">
@@ -706,8 +705,8 @@ coefficient</p>
 <div class="section" id="module-quasinet.metrics">
 <span id="quasinet-metrics-module"></span><h2>quasinet.metrics module<a class="headerlink" href="#module-quasinet.metrics" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="quasinet.metrics.js_divergence">
-<code class="sig-prename descclassname">quasinet.metrics.</code><code class="sig-name descname">js_divergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1</span></em>, <em class="sig-param"><span class="n">p2</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">0.0001</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.js_divergence" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.metrics.js_divergence">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">js_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.js_divergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -728,8 +727,8 @@ is intended to deal with categories with zero probability.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.metrics.kl_divergence">
-<code class="sig-prename descclassname">quasinet.metrics.</code><code class="sig-name descname">kl_divergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1</span></em>, <em class="sig-param"><span class="n">p2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.kl_divergence" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.metrics.kl_divergence">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">kl_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.kl_divergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Kullback–Leibler divergence of discrete probability distributions.</p>
 <p>NOTE: we will not perform error checking in this function because
 this function is used very frequently. The user should check that p1
@@ -756,8 +755,8 @@ is intended to deal with categories with zero probability.</p></li>
 <div class="section" id="module-quasinet.qnet">
 <span id="quasinet-qnet-module"></span><h2>quasinet.qnet module<a class="headerlink" href="#module-quasinet.qnet" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="quasinet.qnet.Qnet">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">Qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_names</span></em>, <em class="sig-param"><span class="n">min_samples_split</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_feats</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">early_stopping</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.Qnet">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">Qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Qnet architecture.</p>
 <dl class="field-list simple">
@@ -780,8 +779,8 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="quasinet.qnet.Qnet.clear_attributes">
-<code class="sig-name descname">clear_attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.clear_attributes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.Qnet.clear_attributes">
+<span class="sig-name descname"><span class="pre">clear_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.clear_attributes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the unneeded attributes to save memory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -797,8 +796,8 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.qnet.Qnet.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.Qnet.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train the qnet</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">quasinet</span> <span class="kn">import</span> <span class="n">qnet</span>
@@ -821,8 +820,8 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.qnet.Qnet.predict_distribution">
-<code class="sig-name descname">predict_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_to_item</span></em>, <em class="sig-param"><span class="n">column</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distribution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.Qnet.predict_distribution">
+<span class="sig-name descname"><span class="pre">predict_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_to_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict the probability distribution for a given column.</p>
 <p>It may be the case that a certain column value does not appear in
 the resulting output. If that happens, that means the probability
@@ -844,8 +843,8 @@ of that column is 0.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quasinet.qnet.Qnet.predict_distributions">
-<code class="sig-name descname">predict_distributions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distributions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.Qnet.predict_distributions">
+<span class="sig-name descname"><span class="pre">predict_distributions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.predict_distributions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict the probability distributions for all the columns.</p>
 <p>If you do not want to set a particular value for an index of <cite>seq</cite>,
 then set the value at the index to the global <cite>nan_value</cite>. By default,
@@ -867,8 +866,8 @@ this value is the empty string.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.export_qnet_graph">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">outfile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_graph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.export_qnet_graph">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">export_qnet_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export the <cite>qnet</cite> as a graph of dependencies. The output will be in
 the <cite>.dot</cite> file format for graphs.</p>
 <dl class="field-list simple">
@@ -890,8 +889,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.export_qnet_tree">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">export_qnet_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">outformat</span><span class="o">=</span><span class="default_value">'graphviz'</span></em>, <em class="sig-param"><span class="n">detailed_output</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pen_width</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">edge_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">edge_label_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">dpi</span><span class="o">=</span><span class="default_value">200</span></em>, <em class="sig-param"><span class="n">text_color</span><span class="o">=</span><span class="default_value">'black'</span></em>, <em class="sig-param"><span class="n">font_size</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">background_color</span><span class="o">=</span><span class="default_value">'transparent'</span></em>, <em class="sig-param"><span class="n">rotate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">edge_fontcolor</span><span class="o">=</span><span class="default_value">'grey14'</span></em>, <em class="sig-param"><span class="n">min_size</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">color_alpha</span><span class="o">=</span><span class="default_value">1.5</span></em>, <em class="sig-param"><span class="n">add_legend</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.export_qnet_tree">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">export_qnet_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graphviz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pen_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_label_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transparent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_fontcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grey14'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.export_qnet_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a tree from <cite>qnet</cite>. The <cite>index</cite> determines which tree to export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -922,8 +921,8 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.load_qnet">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">load_qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.load_qnet" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.load_qnet">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">load_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.load_qnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the qnet from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -939,8 +938,8 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.membership_degree">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">membership_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">qnet</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.membership_degree" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.membership_degree">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">membership_degree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.membership_degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the membership degree of a sequence in a qnet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -959,8 +958,8 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.qdistance">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">qdistance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq1</span></em>, <em class="sig-param"><span class="n">seq2</span></em>, <em class="sig-param"><span class="n">qnet1</span></em>, <em class="sig-param"><span class="n">qnet2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.qdistance">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">qdistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -981,8 +980,8 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.qdistance_matrix">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">qdistance_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seqs1</span></em>, <em class="sig-param"><span class="n">seqs2</span></em>, <em class="sig-param"><span class="n">qnet1</span></em>, <em class="sig-param"><span class="n">qnet2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance_matrix" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.qdistance_matrix">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">qdistance_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqs2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute a distance matrix with the qdistance metric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1003,8 +1002,8 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qnet.save_qnet">
-<code class="sig-prename descclassname">quasinet.qnet.</code><code class="sig-name descname">save_qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">low_mem</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.save_qnet" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qnet.save_qnet">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">save_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.save_qnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the qnet to a file.</p>
 <p>NOTE: The file name must end in <cite>.joblib</cite></p>
 <p>TODO: using joblib is actually less memory efficient than using pickle.
@@ -1034,8 +1033,8 @@ except the tree structure</p></li>
 <div class="section" id="module-quasinet.qsampling">
 <span id="quasinet-qsampling-module"></span><h2>quasinet.qsampling module<a class="headerlink" href="#module-quasinet.qsampling" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="quasinet.qsampling.qsample">
-<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">baseline_prob</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force_change</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qsampling.qsample">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qsampling.</span></span><span class="sig-name descname"><span class="pre">qsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform q-sampling for multiple steps.</p>
 <p>Qsampling works as follows: Say you have a sequence and a qnet. Then
 we randomly pick one of the items in the sequence and then change the
@@ -1060,8 +1059,8 @@ value of that item based on the prediction of the qnet.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qsampling.targeted_qsample">
-<code class="sig-prename descclassname">quasinet.qsampling.</code><code class="sig-name descname">targeted_qsample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq1</span></em>, <em class="sig-param"><span class="n">seq2</span></em>, <em class="sig-param"><span class="n">qnet</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">force_change</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.targeted_qsample" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qsampling.targeted_qsample">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qsampling.</span></span><span class="sig-name descname"><span class="pre">targeted_qsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.targeted_qsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform targeted q-sampling for multiple steps.</p>
 <p><cite>seq1</cite> is q-sampled towards <cite>seq2</cite>.</p>
 <p>This is similar to <cite>qsample</cite>, except that we perform changes to <cite>seq1</cite>
@@ -1089,8 +1088,8 @@ to try to approach <cite>seq2</cite>.</p>
 <div class="section" id="module-quasinet.qseqtools">
 <span id="quasinet-qseqtools-module"></span><h2>quasinet.qseqtools module<a class="headerlink" href="#module-quasinet.qseqtools" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="quasinet.qseqtools.list_trained_qnets">
-<code class="sig-prename descclassname">quasinet.qseqtools.</code><code class="sig-name descname">list_trained_qnets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.list_trained_qnets" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qseqtools.list_trained_qnets">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qseqtools.</span></span><span class="sig-name descname"><span class="pre">list_trained_qnets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.list_trained_qnets" title="Permalink to this definition">¶</a></dt>
 <dd><p>List the possible qnets we can use.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1106,8 +1105,8 @@ to try to approach <cite>seq2</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qseqtools.load_sequence">
-<code class="sig-prename descclassname">quasinet.qseqtools.</code><code class="sig-name descname">load_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.load_sequence" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qseqtools.load_sequence">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qseqtools.</span></span><span class="sig-name descname"><span class="pre">load_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.load_sequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a fasta sequence from file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1123,8 +1122,8 @@ to try to approach <cite>seq2</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.qseqtools.load_trained_qnet">
-<code class="sig-prename descclassname">quasinet.qseqtools.</code><code class="sig-name descname">load_trained_qnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qnet_type</span></em>, <em class="sig-param"><span class="n">extra_descriptions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.load_trained_qnet" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.qseqtools.load_trained_qnet">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qseqtools.</span></span><span class="sig-name descname"><span class="pre">load_trained_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_descriptions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qseqtools.load_trained_qnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the pre-trained qnet.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">load_qnet</span><span class="p">(</span><span class="s1">&#39;coronavirus&#39;</span><span class="p">,</span> <span class="s1">&#39;bat&#39;</span><span class="p">)</span>
@@ -1152,13 +1151,13 @@ split by <cite>;</cite> for influenza.</p></li>
 <div class="section" id="module-quasinet.scorers">
 <span id="quasinet-scorers-module"></span><h2>quasinet.scorers module<a class="headerlink" href="#module-quasinet.scorers" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="quasinet.scorers.MEAN">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">MEAN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.MEAN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.MEAN">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">MEAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.MEAN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.approx_wdcor">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">approx_wdcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.approx_wdcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.approx_wdcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">approx_wdcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.approx_wdcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Approximate distance correlation by binning arrays</p>
 <dl class="simple">
 <dt>NOTE: Code ported from R function approx.dcor at:</dt><dd><p><a class="reference external" href="https://rdrr.io/cran/extracat/src/R/wdcor.R">https://rdrr.io/cran/extracat/src/R/wdcor.R</a></p>
@@ -1181,8 +1180,8 @@ split by <cite>;</cite> for influenza.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.c_dcor">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">c_dcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.c_dcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.c_dcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">c_dcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.c_dcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for C version of distance correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1201,8 +1200,8 @@ split by <cite>;</cite> for influenza.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.c_wdcor">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">c_wdcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.c_wdcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.c_wdcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">c_wdcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.c_wdcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for C version of weighted distance correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1222,8 +1221,8 @@ split by <cite>;</cite> for influenza.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.cca">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">cca</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.cca" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.cca">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">cca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.cca" title="Permalink to this definition">¶</a></dt>
 <dd><p>Largest canonical correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1242,8 +1241,8 @@ split by <cite>;</cite> for influenza.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.cca_fast">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">cca_fast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.cca_fast" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.cca_fast">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">cca_fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.cca_fast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Largest canonical correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1262,20 +1261,20 @@ split by <cite>;</cite> for influenza.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.chi2">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">chi2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.chi2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.chi2">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">chi2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.chi2" title="Permalink to this definition">¶</a></dt>
 <dd><p>x and y are ordinal representations of categorical variables.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.create_chi2_table">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">create_chi2_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.create_chi2_table" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.create_chi2_table">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">create_chi2_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.create_chi2_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a chi-squared contingency table using x and y</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.gini_index">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">gini_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.gini_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.gini_index">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">gini_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.gini_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gini index for node in tree</p>
 <dl class="simple">
 <dt>Note: Despite being jitted, this function is still slow and a bottleneck</dt><dd><p>in the actual training phase. Sklearn’s Cython version is used to
@@ -1301,8 +1300,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.mc_fast">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">mc_fast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">n_classes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mc_fast" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.mc_fast">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">mc_fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mc_fast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multiple correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1322,8 +1321,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.mi">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">mi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mi" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.mi">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">mi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mutual information</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1342,8 +1341,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.mse">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">mse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.mse">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">mse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.mse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mean squared error for node in tree</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1359,8 +1358,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.pcor">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">pcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.pcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.pcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">pcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.pcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pearson correlation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1379,8 +1378,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.py_dcor">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">py_dcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.py_dcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.py_dcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">py_dcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.py_dcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Python port of C function for distance correlation</p>
 <p>Note: Version is optimized for use with Numba</p>
 <dl class="field-list simple">
@@ -1400,8 +1399,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.py_wdcor">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">py_wdcor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.py_wdcor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.py_wdcor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">py_wdcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.py_wdcor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Python port of C function for distance correlation</p>
 <p>Note: Version is optimized for use with Numba</p>
 <dl class="field-list simple">
@@ -1422,8 +1421,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.rdc">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">rdc</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y</em>, <em class="sig-param">k=10</em>, <em class="sig-param">s=0.16666666666666666</em>, <em class="sig-param">f=&lt;ufunc 'sin'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.rdc" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.rdc">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">rdc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">X</span></em>, <em class="sig-param"><span class="pre">Y</span></em>, <em class="sig-param"><span class="pre">k=10</span></em>, <em class="sig-param"><span class="pre">s=0.16666666666666666</span></em>, <em class="sig-param"><span class="pre">f=&lt;ufunc</span> <span class="pre">'sin'&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.rdc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Randomized dependence coefficient</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1445,8 +1444,8 @@ decrease impurity formula</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.scorers.rdc_fast">
-<code class="sig-prename descclassname">quasinet.scorers.</code><code class="sig-name descname">rdc_fast</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">k=10</em>, <em class="sig-param">s=0.16666666666666666</em>, <em class="sig-param">f=&lt;ufunc 'sin'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.rdc_fast" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.scorers.rdc_fast">
+<span class="sig-prename descclassname"><span class="pre">quasinet.scorers.</span></span><span class="sig-name descname"><span class="pre">rdc_fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">k=10</span></em>, <em class="sig-param"><span class="pre">s=0.16666666666666666</span></em>, <em class="sig-param"><span class="pre">f=&lt;ufunc</span> <span class="pre">'sin'&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.scorers.rdc_fast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Randomized dependence coefficient</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1471,8 +1470,8 @@ decrease impurity formula</p>
 <div class="section" id="module-quasinet.tree">
 <span id="quasinet-tree-module"></span><h2>quasinet.tree module<a class="headerlink" href="#module-quasinet.tree" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="quasinet.tree.Node">
-<em class="property">class </em><code class="sig-prename descclassname">quasinet.tree.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">col</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">col_pval</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lthreshold</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rthreshold</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">impurity</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">left</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">right</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">label_frequency</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.tree.Node" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.tree.Node">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.tree.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_pval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lthreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rthreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impurity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.tree.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Decision node in tree</p>
 <dl class="field-list simple">
@@ -1494,8 +1493,8 @@ For regression trees, central tendency estimate</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.tree.get_nodes">
-<code class="sig-prename descclassname">quasinet.tree.</code><code class="sig-name descname">get_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">get_leaves</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">get_non_leaves</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.tree.get_nodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.tree.get_nodes">
+<span class="sig-prename descclassname"><span class="pre">quasinet.tree.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_leaves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_non_leaves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.tree.get_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Traverse a tree and get all the nodes.</p>
 <p>TODO: may need to change this into an iterator for speed purposes</p>
 <p>If <cite>get_leaves</cite> and <cite>get_non_leaves</cite> are both <cite>True</cite>, then
@@ -1521,8 +1520,8 @@ we will get all the nodes.</p>
 <div class="section" id="module-quasinet.utils">
 <span id="quasinet-utils-module"></span><h2>quasinet.utils module<a class="headerlink" href="#module-quasinet.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="quasinet.utils.assert_array_rank">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">assert_array_rank</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">rank</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_array_rank" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.assert_array_rank">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">assert_array_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_array_rank" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the input is an numpy array and has a certain rank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1541,8 +1540,8 @@ we will get all the nodes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.assert_string_type">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">assert_string_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_string_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.assert_string_type">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">assert_string_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_string_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the input is of string datatype.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1561,14 +1560,14 @@ we will get all the nodes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.auc_score">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">auc_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_prob</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.auc_score" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.auc_score">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">auc_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.auc_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>ADD</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.bayes_boot_probs">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">bayes_boot_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.bayes_boot_probs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.bayes_boot_probs">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">bayes_boot_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.bayes_boot_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bayesian bootstrap sampling for case weights</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1584,8 +1583,8 @@ we will get all the nodes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.estimate_margin">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">estimate_margin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_probs</span></em>, <em class="sig-param"><span class="n">y_true</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.estimate_margin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.estimate_margin">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">estimate_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_probs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.estimate_margin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates margin function of forest ensemble</p>
 <p>Note : This function is similar to margin in R’s randomForest package</p>
 <dl class="field-list simple">
@@ -1607,8 +1606,8 @@ estimated class probability</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.logger">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">logger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.logger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.logger">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints messages with style “[NAME] message”</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1627,20 +1626,20 @@ estimated class probability</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.powerset">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">powerset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.powerset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.powerset">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">powerset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.powerset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the power set of a list or set.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.remove_zeros">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">remove_zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.remove_zeros" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.remove_zeros">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">remove_zeros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.remove_zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove rows along a certain axis where the value is all zero.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.sample_from_dict">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">sample_from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distrib</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.sample_from_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.sample_from_dict">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">sample_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.sample_from_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Choose an item from the distribution</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1656,8 +1655,8 @@ estimated class probability</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="quasinet.utils.scientific_notation">
-<code class="sig-prename descclassname">quasinet.utils.</code><code class="sig-name descname">scientific_notation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.scientific_notation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.utils.scientific_notation">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">scientific_notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.scientific_notation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a number into scientific notation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1695,7 +1694,7 @@ estimated class probability</p></li>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">quasinet package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -1733,7 +1732,7 @@ estimated class probability</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -1755,7 +1754,7 @@ estimated class probability</p></li>
       &copy;2020, ZeD.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
