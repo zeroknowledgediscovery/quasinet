@@ -639,10 +639,26 @@ def chi2(x, y):
     x and y are ordinal representations of categorical variables.
     """
 
+    #@ishanu experimenting
+    if len(x) == 0:
+        return 1.0
+    if len(y) == 0:
+        return 1.0
+
+    
     chi2_table = create_chi2_table(x, y)
 
+    #@ishanu experimenting
+    if len(chi2_table) == 0:
+        return 1.0
+    
     chi2_table = remove_zeros(chi2_table, axis=1)
     chi2_table = remove_zeros(chi2_table, axis=0)
+
+    #@ishanu experimenting
+    if len(chi2_table) == 0:
+        return 1.0
+
     
     p_value = chi2_contingency(chi2_table)[1]
 
