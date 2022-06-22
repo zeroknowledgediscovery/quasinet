@@ -71,6 +71,7 @@ class Qnet(object):
         self.verbose = verbose
         self.random_state = random_state
         self.n_jobs = n_jobs
+        self.mixed = False
 
     def __repr__(self):
         return "qnet.Qnet"
@@ -161,6 +162,34 @@ class Qnet(object):
         return self
 
 
+    def mix(self,qnet_2,feature_name_list):
+        """Take column from qnet_2, and switch its estimator with current qnet
+        """
+
+        #check if qnet_2 is a qnet
+        if not hasattr(qnet_2, 'feature_names'):
+            raise ValueError('qnet_2 must be a qnet! ')
+        
+        #check if columns match
+        if len([x for x in qnet_2.feature_names if x not in self.feature_names])>0:
+            print("some qnet_2 features not present in current qnet. cannot mix")
+        #check if estimators_ exist for both qnets
+
+        if not hasattr(self, 'estimators_'):
+            raise ValueError('You need to call `fit` first! ')
+        if not hasattr(qnet_2, 'estimators_'):
+            raise ValueError('You need to call `fit` first on qnet_2! ')
+
+        column_list=[list(self.feature_names).index(x) for x in feature_name_list]
+
+        # find column_list form feature_list
+        for col in column_list:
+            self.estimators_[col]=qnet_2.estimators_[col]
+
+        if hasattr(self, 'col_to_non_leaf_nodes'):
+            del self.col_to_non_leaf_nodes
+        self._map_col_to_non_leaf_nodes()
+        self.mixed=True
 
     def _map_col_to_non_leaf_nodes(self):
         """Get a mapping from column indexes to an array of all 
@@ -722,7 +751,8 @@ def save_qnet(qnet, f, low_mem=False):
         raise ValueError('The outfile must end with `.joblib`')
 
     if low_mem:
-        qnet.clear_attributes()
+        if not self.mixed:
+            qnet.clear_attributes()
     filehandler = open(f,"wb")    
     pickle.dump(qnet, filehandler) 
 
