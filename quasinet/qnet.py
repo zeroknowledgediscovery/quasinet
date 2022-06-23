@@ -181,10 +181,11 @@ class Qnet(object):
             raise ValueError('You need to call `fit` first on qnet_2! ')
 
         column_list=[list(self.feature_names).index(x) for x in feature_name_list]
+        column_list2=[list(qnet_2.feature_names).index(x) for x in feature_name_list]
 
         # find column_list form feature_list
-        for col in column_list:
-            self.estimators_[col]=qnet_2.estimators_[col]
+        for col,col2 in zip(column_list,column_list2):
+            self.estimators_[col]=qnet_2.estimators_[col2]
 
         if hasattr(self, 'col_to_non_leaf_nodes'):
             del self.col_to_non_leaf_nodes
