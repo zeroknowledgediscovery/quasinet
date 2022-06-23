@@ -751,8 +751,11 @@ def save_qnet(qnet, f, low_mem=False):
         raise ValueError('The outfile must end with `.joblib`')
 
     if low_mem:
-        if not self.mixed:
+        if not hasattr(qnet, 'mixed'):
             qnet.clear_attributes()
+        else:
+            if not qnet.mixed:
+                qnet.clear_attributes()
     filehandler = open(f,"wb")    
     pickle.dump(qnet, filehandler) 
 
