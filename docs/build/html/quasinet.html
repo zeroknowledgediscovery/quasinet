@@ -822,7 +822,21 @@ alpha, this feature will be chosen as the splitting variable</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="quasinet.qnet.Qnet.mix">
 <span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_name_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.mix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Take column from qnet_2, and switch its estimator with current qnet</p>
+<dd><p>Take column from qnet_2, and switch its estimator with current qnet in-place. Makes it possible to simulate behavior of current qnet if some of the estimators were behaving like a second one, and can be used to identify the maximally divergent rules of orgnaization between the two models. Also sets the attribute self.mixed to be True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qnet_2</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – A Qnet instance</p></li>
+<li><p><strong>feature_name_list</strong> (<em>list</em>) – A list of variable (feature) names that would be replaced in self from qnet_2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

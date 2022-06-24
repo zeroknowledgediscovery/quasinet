@@ -163,7 +163,19 @@ class Qnet(object):
 
 
     def mix(self,qnet_2,feature_name_list):
-        """Take column from qnet_2, and switch its estimator with current qnet
+        """Take column from qnet_2, and switch its estimator with current qnet in-place. Makes it possible to simulate behavior of current qnet if some of the estimators were behaving like a second one, and can be used to identify the maximally divergent rules of orgnaization between the two models. Also sets the attribute self.mixed to be True.
+
+        Parameters
+        ----------
+        qnet_2 : Qnet
+            A Qnet instance
+
+        feature_name_list : list
+            A list of variable (feature) names that would be replaced in self from qnet_2
+
+        Returns
+        -------
+        None
         """
 
         #check if qnet_2 is a qnet
