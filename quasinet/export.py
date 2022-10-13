@@ -166,9 +166,11 @@ class GraphvizTreeExporter(object):
         self.edge_fontcolor = edge_fontcolor
         self.min_size = min_size
         self.color_alpha = color_alpha
+        self.labels = labels
         
     def export(self):
 
+        labels=self.labels
         if labels is None:
             labels = self.tree.labels_
 
