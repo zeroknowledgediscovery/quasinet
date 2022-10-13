@@ -119,6 +119,9 @@ class GraphvizTreeExporter(object):
     min_size : int
         Minimum number of nodes to draw the tree
 
+    labels : list
+        List of all labels, optional
+
     Returns
     -------
     None
@@ -142,6 +145,7 @@ class GraphvizTreeExporter(object):
         add_legend=True,
         min_size=1,
         color_alpha=-1.5,
+        labels = None,
         detailed_output=False):
         
         self.tree = tree
@@ -165,7 +169,12 @@ class GraphvizTreeExporter(object):
         
     def export(self):
 
-        labels = self.tree.labels_
+        if labels is None:
+            labels = self.tree.labels_
+
+        if not np.all([x in labels for x in self.tree.labels_]):
+            raise ValueError('all tree labels not in specified lebelset')
+
         self.num_labels = len(labels)
 
         # esablish the color scheme

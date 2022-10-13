@@ -195,10 +195,11 @@ class Qnet(object):
         column_list=[list(self.feature_names).index(x) for x in feature_name_list]
         column_list2=[list(qnet_2.feature_names).index(x) for x in feature_name_list]
 
-        # find column_list form feature_list
+        # find column_list from feature_list
         for col,col2 in zip(column_list,column_list2):
             self.estimators_[col]=qnet_2.estimators_[col2]
 
+        # regenerate cached maps    
         if hasattr(self, 'col_to_non_leaf_nodes'):
             del self.col_to_non_leaf_nodes
         self._map_col_to_non_leaf_nodes()
@@ -788,7 +789,6 @@ def export_qnet_tree(qnet, index,
                      edge_fontcolor='grey14',
                      min_size = 1,
                      color_alpha = 1.5,
-                     labels=None,
                      add_legend=False):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
@@ -832,9 +832,6 @@ def export_qnet_tree(qnet, index,
     color_alpha : float
         Parameter for color brightness
 
-    labels : list
-        List of all labels, optional
-
     Returns
     -------
     None
@@ -865,7 +862,6 @@ def export_qnet_tree(qnet, index,
             edge_fontcolor=edge_fontcolor,
             min_size=min_size,
             color_alpha=color_alpha,
-            labels = labels,
             detailed_output=detailed_output)
         exporter.export()
 
