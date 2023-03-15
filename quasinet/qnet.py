@@ -98,7 +98,7 @@ class Qnet(object):
         if not hasattr(self, 'estimators_'):
             raise ValueError('You need to call `fit` first! ')
 
-    def fit(self, X):
+    def fit(self, X, index_array=None):
         """Train the qnet
 
         Examples
@@ -112,6 +112,9 @@ class Qnet(object):
         ----------
         X : 2d array-like
             Array of features
+
+        index_array : 1d array-like
+            Array of indices to generate estimators for. Uses all indices by default or if set to None.
 
         Returns
         -------
@@ -149,11 +152,14 @@ class Qnet(object):
                 random_state=self.random_state)
             trees.append(tree)
 
-        # changing to     multiprocessing from loky @ishanu June 2022
+        if index_array is None:
+            index_array=range(0, X.shape[1])
+
+        # changing to  multiprocessing from loky @ishanu June 2022
         trees = Parallel(n_jobs=self.n_jobs, backend='multiprocessing')(
             delayed(self._parallel_fit_tree)(
                 trees[col], X, col)
-            for col in range(0, X.shape[1])
+            for col in index_array
             )
 
         for col, tree in enumerate(trees):
