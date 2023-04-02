@@ -2,6 +2,32 @@ from setuptools import setup, Extension, find_packages
 from codecs import open
 from os import path
 import warnings
+from setuptools.command.install import install
+import atexit
+import sys
+import os
+from sys import platform
+
+
+class CustomInstall(install):
+    def run(self):
+        def _post_install():
+            def find_module_path():
+                for p in sys.path:
+                    if os.path.isdir(p) and my_name in os.listdir(p):
+                        return os.path.join(p, my_name)
+            install_path = find_module_path()
+
+            # Add your post install code here
+            if platform == "darwin":
+                import shutil
+                shutil.move(install_path+'/bin/dcor.so.mac',
+                            install_path+'/bin/dcor.so)
+        atexit.register(_post_install)
+        install.run(self)
+
+
+
 
 # try:
 #     from Cython.Build import cythonize
@@ -52,6 +78,7 @@ setup(
     long_description_content_type='text/markdown',
     install_requires=[
         "scikit-learn", 
+        "shutil",
         "scipy", 
         "numpy", 
         "numba", 
@@ -77,6 +104,7 @@ setup(
     #         ])
     #     ],
     include_package_data=True,
+    cmdclass={'install': CustomInstall},
     # ext_modules=extensions,
     # zip_safe=False
     )
