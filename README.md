@@ -40,6 +40,15 @@ To install with pip:
 pip install quasinet
 ```
 
+To fix error in Mac:
+
+```
+from quasinet.macfix import macfix
+macfix()
+```
+
+
+
 NOTE: If trying to reproduce the paper below, please use `pip install quasinet==0.0.58`
 
 ### Dependencies

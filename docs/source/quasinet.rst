@@ -36,6 +36,14 @@ quasinet.feature\_selectors module
    :undoc-members:
    :show-inheritance:
 
+quasinet.macfix module
+----------------------
+
+.. automodule:: quasinet.macfix
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 quasinet.metrics module
 -----------------------
 
