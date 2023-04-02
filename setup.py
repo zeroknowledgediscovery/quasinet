@@ -22,7 +22,7 @@ class CustomInstall(install):
             if platform == "darwin":
                 import shutil
                 print('copying dcor for mac')
-                shutil.copy(install_path+'/bin/dcor.so.mac',
+                shutil.copy(install_path+'/bin/macnew_dcor.so',
                             install_path+'/bin/dcor.so')
         atexit.register(_post_install)
         install.run(self)
