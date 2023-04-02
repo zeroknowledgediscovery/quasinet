@@ -19,7 +19,7 @@ class CustomInstall(install):
             install_path = find_module_path()
 
             # Add your post install code here
-            if platform == "darwin":
+            if platform.system() == "Darwin":
                 import shutil
                 print('copying dcor for mac')
                 shutil.copy(install_path+'/bin/macnew_dcor.so',
