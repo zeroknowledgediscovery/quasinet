@@ -79,7 +79,6 @@ setup(
     long_description_content_type='text/markdown',
     install_requires=[
         "scikit-learn", 
-        "shutil",
         "scipy", 
         "numpy", 
         "numba", 
