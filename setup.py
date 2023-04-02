@@ -14,8 +14,8 @@ class CustomInstall(install):
         def _post_install():
             def find_module_path():
                 for p in sys.path:
-                    if os.path.isdir(p) and quasinet in os.listdir(p):
-                        return os.path.join(p, quasinet)
+                    if os.path.isdir(p) and 'quasinet' in os.listdir(p):
+                        return os.path.join(p, 'quasinet')
             install_path = find_module_path()
 
             # Add your post install code here
