@@ -1,1 +1,1 @@
-recursive-include quasinet *.joblib *.c *.so *.pyx *.so.mac
+recursive-include quasinet *.joblib *.c *.so *.pyx *.mac
