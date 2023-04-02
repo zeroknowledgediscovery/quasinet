@@ -24,6 +24,8 @@ class CustomInstall(install):
                 print('copying dcor for mac')
                 shutil.copy(install_path+'/bin/macnew_dcor.so',
                             install_path+'/bin/dcor.so')
+            else:
+                print('no mac exception triggered')
         atexit.register(_post_install)
         install.run(self)
 
