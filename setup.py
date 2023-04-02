@@ -6,7 +6,7 @@ from setuptools.command.install import install
 import atexit
 import sys
 import os
-from sys import platform
+import platform
 
 
 class CustomInstall(install):
