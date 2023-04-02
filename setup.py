@@ -3,33 +3,8 @@ from codecs import open
 from os import path
 import warnings
 from setuptools.command.install import install
-import atexit
 import sys
 import os
-import platform
-
-
-class CustomInstall(install):
-    def run(self):
-        def _post_install():
-            def find_module_path():
-                for p in sys.path:
-                    if os.path.isdir(p) and 'quasinet' in os.listdir(p):
-                        return os.path.join(p, 'quasinet')
-            install_path = find_module_path()
-
-            # Add your post install code here
-            if platform.system() == "Darwin":
-                import shutil
-                print('copying dcor for mac')
-                shutil.copy(install_path+'/bin/macnew_dcor.so',
-                            install_path+'/bin/dcor.so')
-            else:
-                print('no mac exception triggered')
-        atexit.register(_post_install)
-        install.run(self)
-
-
 
 
 # try:
@@ -106,7 +81,6 @@ setup(
     #         ])
     #     ],
     include_package_data=True,
-    cmdclass={'install': CustomInstall},
     # ext_modules=extensions,
     # zip_safe=False
     )
