@@ -22,7 +22,7 @@ class CustomInstall(install):
             if platform == "darwin":
                 import shutil
                 shutil.move(install_path+'/bin/dcor.so.mac',
-                            install_path+'/bin/dcor.so)
+                            install_path+'/bin/dcor.so')
         atexit.register(_post_install)
         install.run(self)
 
