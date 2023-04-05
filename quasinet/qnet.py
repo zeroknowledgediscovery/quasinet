@@ -158,11 +158,12 @@ class Qnet(object):
         # changing to  multiprocessing from loky @ishanu June 2022
         trees = Parallel(n_jobs=self.n_jobs, backend='multiprocessing')(
             delayed(self._parallel_fit_tree)(
-                trees[col], X, col)
-            for col in index_array
+                trees[col], X, col
             )
+            for col in index_array
+        )
 
-        for col, tree in enumerate(trees):
+        for col, tree in zip(index_array, trees):
             self.estimators_[col] = tree
 
         return self
@@ -198,12 +199,9 @@ class Qnet(object):
         if not hasattr(qnet_2, 'estimators_'):
             raise ValueError('You need to call `fit` first on qnet_2! ')
 
-        column_list=[list(self.feature_names).index(x) for x in feature_name_list]
-        column_list2=[list(qnet_2.feature_names).index(x) for x in feature_name_list]
-
         # find column_list form feature_list
-        for col,col2 in zip(column_list,column_list2):
-            self.estimators_[col]=qnet_2.estimators_[col2]
+        for new_col in list(qnet_2.estimators_.keys()):
+            self.estimators_[new_col]=qnet_2.estimators_[new_col]
 
         if hasattr(self, 'col_to_non_leaf_nodes'):
             del self.col_to_non_leaf_nodes
