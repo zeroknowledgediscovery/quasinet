@@ -172,7 +172,7 @@ def assert_string_type(X, name):
     None
     """
 
-    if not np.issubdtype(X.dtype, np.string_):
+    if not np.issubdtype(X.dtype, np.str_):
         raise ValueError('{} must contain only strings!'.format(name))
 
 def sample_from_dict(distrib):
