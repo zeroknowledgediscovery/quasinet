@@ -1,5 +1,6 @@
 
 import numpy as np
+from numpy.linalg import norm
 from joblib import dump, load, delayed, Parallel
 import numba
 # from numba import njit, prange
@@ -7,6 +8,7 @@ import numba
 
 from .citrees import CITreeClassifier
 from .metrics import js_divergence
+from .metrics import theta
 from .tree import Node, get_nodes
 from .utils import assert_array_rank, assert_string_type
 from .export import GraphvizTreeExporter, QnetGraphExporter
@@ -487,7 +489,7 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
     return distrib
 
 
-def _qdistance_with_prob_distribs(distrib1, distrib2):
+def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.000001):
     """
     
     NOTE: using njit may worsen speed performance
@@ -502,6 +504,10 @@ def _qdistance_with_prob_distribs(distrib1, distrib2):
         List of dictionaries. Each dictionary maps random variables 
         to probabilities.
 
+    MC_PREC : float
+        This should not be required. This only exists due to the 
+        bunch of monkeys who wrote python and numpy       
+ 
     Returns
     -------
     avg_divergence : scalar
@@ -519,6 +525,9 @@ def _qdistance_with_prob_distribs(distrib1, distrib2):
         
         distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
 
+        if norm(distrib[0]-distrib[1],ord=np.inf) < MC_PREC:
+            return 0.0
+    
         total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1]))
 
         total += 1
@@ -568,7 +577,8 @@ def qdistance(seq1, seq2, qnet1, qnet2):
         seq1_distribs=[{i:seq1_distribs[0][i] for i in keys}]
         seq2_distribs=[{i:seq2_distribs[0][i] for i in keys}]
     
-    divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
+#    divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
+    divergence = theta(seq1_distribs, seq2_distribs)
     return divergence
 
 def membership_degree(seq, qnet):
