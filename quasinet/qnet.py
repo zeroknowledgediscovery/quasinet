@@ -656,8 +656,9 @@ def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
             if symmetric and (i >= j):
                 dist = 0.0
             else:
-                dist = _qdistance_with_prob_distribs(seqs1_distribs[i], 
-                                                     seqs2_distribs[j])
+                dist =  theta(seq1_distribs[i], seq2_distribs[j])
+                #_qdistance_with_prob_distribs(seqs1_distribs[i], 
+                #                                     seqs2_distribs[j])
 
             distance_matrix[i, j] = dist
 
