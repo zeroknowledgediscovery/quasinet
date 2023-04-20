@@ -43,6 +43,65 @@ def theta(seq1_list, seq2_list):
     return result
 
 
+# Define the input type and return type of the C functions
+Cfunc.fill_matrix.argtypes = [ctypes.POINTER(ctypes.c_double),
+                              ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
+                              ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
+                              ctypes.c_size_t, ctypes.c_size_t, ctypes.c_size_t]
+Cfunc.fill_matrix.restype = None
+
+
+
+def theta_matrix(seq1_list, seq2_list):
+    num_seqs1 = len(seq1_list)
+    num_seqs2 = len(seq2_list)
+
+    # Create the matrix
+    matrix = np.empty((num_seqs1, num_seqs2), dtype=np.float64)
+    matrix_ptr = matrix.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+
+    keys = set()
+    for seq1, seq2 in zip(seq1_list, seq2_list):
+        for d1, d2 in zip(seq1, seq2):
+            keys = keys.union(d1.keys()).union(d2.keys())
+
+    V1_list = []
+    V2_list = []
+    for seq1, seq2 in zip(seq1_list, seq2_list):
+        V1_seq = []
+        V2_seq = []
+        for d1, d2 in zip(seq1, seq2):
+            V1 = np.array([d1.get(k, 0.0) for k in keys], dtype=np.float64)
+            V2 = np.array([d2.get(k, 0.0) for k in keys], dtype=np.float64)
+            V1_seq.append((ctypes.c_double * len(V1))(*V1))
+            V2_seq.append((ctypes.c_double * len(V2))(*V2))
+        V1_list.append(V1_seq)
+        V2_list.append(V2_seq)
+
+    V1_list_c = (ctypes.POINTER(ctypes.c_double) * num_seqs1)()
+    V2_list_c = (ctypes.POINTER(ctypes.c_double) * num_seqs2)()
+
+    for i in range(num_seqs1):
+        V1_list_c[i] = (ctypes.POINTER(ctypes.c_double) * len(V1_list[i]))()
+        for j in range(len(V1_list[i])):
+            V1_list_c[i][j] = V1_list[i][j]
+
+    for i in range(num_seqs2):
+        V2_list_c[i] = (ctypes.POINTER(ctypes.c_double) * len(V2_list[i]))()
+        for j in range(len(V2_list[i])):
+            V2_list_c[i][j] = V2_list[i][j]
+
+    # Call the C function
+    Cfunc.fill_matrix(matrix_ptr, V1_list_c, V2_list_c, num_seqs1, num_seqs2, len(V1_list_c[0]))
+
+    # Set the diagonal entries to zero
+    np.fill_diagonal(matrix, 0.0)
+
+    return matrix
+
+
+
+
 
 
 @njit(cache=True, nogil=True, fastmath=True)
