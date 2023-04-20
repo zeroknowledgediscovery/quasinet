@@ -721,10 +721,10 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
 
-    if symmetric:
-        distance_matrix = theta_matrix(seqs1_distribs,seqs2_distribs)
-    else:
-        distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
+    #if symmetric:
+    #    distance_matrix = theta_matrix(seqs1_distribs,seqs2_distribs)
+    #else:
+    distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
                                                           seqs2_distribs,
                                                           symmetric=symmetric)
 
