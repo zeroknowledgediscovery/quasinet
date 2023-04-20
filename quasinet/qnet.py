@@ -490,7 +490,7 @@ def _combine_two_distribs(seq1_distrib, seq2_distrib):
     return distrib
 
 
-def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.000001):
+def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.00000001):
     """
     
     NOTE: using njit may worsen speed performance
@@ -518,7 +518,7 @@ def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.000001):
     total_divergence = 0
     total = 0
     for i, seq1_distrib in enumerate(distrib1):
-            
+        total += 1    
         seq2_distrib = distrib2[i]
 
         if seq2_distrib is None or seq1_distrib is None:
@@ -526,12 +526,13 @@ def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.000001):
         
         distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
 
-        if norm(distrib[0]-distrib[1],ord=np.inf) < MC_PREC:
-            return 0.0
-    
-        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1]))
+       # print(distrib[0],distrib[1],np.max(distrib[0]-distrib[1]),'---')
+        
+        if np.max(distrib[0]-distrib[1]) < MC_PREC:
+            continue
 
-        total += 1
+        
+        total_divergence += np.sqrt(js_divergence(distrib[0], distrib[1]))
         
     avg_divergence = total_divergence / total
 
@@ -578,8 +579,8 @@ def qdistance(seq1, seq2, qnet1, qnet2):
         seq1_distribs=[{i:seq1_distribs[0][i] for i in keys}]
         seq2_distribs=[{i:seq2_distribs[0][i] for i in keys}]
     
-#    divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
-    divergence = theta(seq1_distribs, seq2_distribs)
+    divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
+    #divergence = theta(seq1_distribs, seq2_distribs)
     return divergence
 
 def membership_degree(seq, qnet):
@@ -657,9 +658,9 @@ def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
             if symmetric and (i >= j):
                 dist = 0.0
             else:
-                dist =  theta(seqs1_distribs[i], seqs2_distribs[j])
-                #_qdistance_with_prob_distribs(seqs1_distribs[i], 
-                #                                     seqs2_distribs[j])
+                #dist =  theta(seqs1_distribs[i], seqs2_distribs[j])
+                dist = _qdistance_with_prob_distribs(seqs1_distribs[i], 
+                                                     seqs2_distribs[j])
 
             distance_matrix[i, j] = dist
 
@@ -721,10 +722,10 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
 
-    #if symmetric:
-    #    distance_matrix = theta_matrix(seqs1_distribs,seqs2_distribs)
-    #else:
-    distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
+    if symmetric:
+        distance_matrix = theta_matrix(seqs1_distribs,seqs2_distribs)
+    else:
+        distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
                                                           seqs2_distribs,
                                                           symmetric=symmetric)
 
