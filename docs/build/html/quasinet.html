@@ -997,7 +997,7 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.qnet.qdistance">
-<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">qdistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">qdistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1006,6 +1006,7 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 <li><p><strong>seq2</strong> (<em>1d array-like</em>) – Array of values</p></li>
 <li><p><strong>qnet1</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq1</cite> belongs to</p></li>
 <li><p><strong>qnet2</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – the Qnet that <cite>seq2</cite> belongs to</p></li>
+<li><p><strong>mismatch</strong> (<em>bool</em>) – Indicate if there is a mismatch in feature names</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

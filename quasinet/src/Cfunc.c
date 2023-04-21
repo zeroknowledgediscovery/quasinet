@@ -24,27 +24,38 @@ double jsd(double* V1, double* V2, size_t length) {
     return jsd;
 }
 
-double avg_jsd(double* V1_list[], double* V2_list[], size_t list_length, size_t length) {
+double avg_jsd(double* V1_list[], double* V2_list[], size_t list_length, size_t length[]) {
     double sum_jsd = 0.0;
-    for (size_t i = 0; i < list_length; i++) {
-        sum_jsd += jsd(V1_list[i], V2_list[i], length);
-    }
+    for (size_t i = 0; i < list_length; i++)
+      {
+	double jsd_ = jsd(V1_list[i], V2_list[i], length[i]);
+	if (jsd_ > 0.0000000001)
+	  sum_jsd += sqrt(jsd_);
+      }
     return sum_jsd / list_length;
 }
 
 
+/*
 void fill_matrix(double* matrix,
-		 double** V1_list,
-		 double** V2_list,
-		 size_t num_seqs1,
-		 size_t num_seqs2,
-		 size_t length) {
-    #pragma omp parallel for collapse(2)
+                 double** V1_list,
+                 double** V2_list,
+                 size_t num_seqs1,
+                 size_t num_seqs2,
+                 size_t length) {
+#pragma omp parallel for collapse(2)
     for (size_t i = 0; i < num_seqs1; i++) {
         for (size_t j = i + 1; j < num_seqs2; j++) {
-            double avg_jsd_value = avg_jsd(V1_list[i], V2_list[j], length, length);
+            double* V1_ptrs[length];
+            double* V2_ptrs[length];
+            for (size_t k = 0; k < length; k++) {
+                V1_ptrs[k] = V1_list[i] + k * length;
+                V2_ptrs[k] = V2_list[j] + k * length;
+            }
+            double avg_jsd_value = avg_jsd(V1_ptrs, V2_ptrs, length, length);
             matrix[i * num_seqs2 + j] = avg_jsd_value;
             matrix[j * num_seqs1 + i] = avg_jsd_value;
         }
     }
 }
+*/
