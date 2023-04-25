@@ -714,6 +714,11 @@ coefficient</p>
 <div class="section" id="module-quasinet.metrics">
 <span id="quasinet-metrics-module"></span><h2>quasinet.metrics module<a class="headerlink" href="#module-quasinet.metrics" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="quasinet.metrics.convert_lists_to_ctypes">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">convert_lists_to_ctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.convert_lists_to_ctypes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="quasinet.metrics.js_divergence">
 <span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">js_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.js_divergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
@@ -761,8 +766,33 @@ is intended to deal with categories with zero probability.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="quasinet.metrics.process_dict1_list">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">process_dict1_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.process_dict1_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.metrics.process_dict2_list">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">process_dict2_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict2_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.process_dict2_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="quasinet.metrics.theta">
 <span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.theta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.metrics.theta_">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">theta_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.theta_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.metrics.theta_matrix">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">theta_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_dict1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dict2_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.theta_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.metrics.theta_matrix_par">
+<span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">theta_matrix_par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_dict1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dict2_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.theta_matrix_par" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -997,7 +1027,7 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.qnet.qdistance">
-<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">qdistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">qdistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FULL_C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.qdistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Jensen-Shannon of discrete probability distributions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

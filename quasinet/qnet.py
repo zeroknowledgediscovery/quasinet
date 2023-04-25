@@ -9,7 +9,8 @@ import numba
 from .citrees import CITreeClassifier
 from .metrics import js_divergence
 from .metrics import theta
-#from .metrics import theta_matrix
+from .metrics import theta_
+from .metrics import theta_matrix
 from .tree import Node, get_nodes
 from .utils import assert_array_rank, assert_string_type
 from .export import GraphvizTreeExporter, QnetGraphExporter
@@ -542,7 +543,7 @@ def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.00000001):
     return avg_divergence
 
 
-def qdistance(seq1, seq2, qnet1, qnet2, mismatch=False):
+def qdistance(seq1, seq2, qnet1, qnet2, mismatch=False, FULL_C=False):
     """Compute the Jensen-Shannon of discrete probability distributions.
 
     Parameters
@@ -574,17 +575,12 @@ def qdistance(seq1, seq2, qnet1, qnet2, mismatch=False):
     if len(seq1.shape) != 1 or len(seq2.shape) != 1:
         raise ValueError('The two sequences must be 1d arrays.')
 
-    #if seq1.shape[0] != seq2.shape[0]:
-    #    raise ValueError('The two sequences must be of equal lengths.')
-
     seq1_distribs = qnet1.predict_distributions(seq1)
     seq2_distribs = qnet2.predict_distributions(seq2)
 
-    if mismatch:
-        common_features = set(qnet1.feature_names).intersect(set(qnet2.feature_names))
-        index1= [i for i in range(qnet1.feature_names) if qnet1.feature_names[i] in common_features]
-        index2= [i for i in range(qnet2.feature_names) if qnet2.feature_names[i] in common_features]
-
+    if mismatch and not (qnet1.feature_names == qnet2.feature_names): 
+        common_features = set(qnet1.feature_names).intersection(set(qnet2.feature_names))
+        
         seq1_d=[]
         seq2_d=[]
         for feature in common_features:
@@ -595,7 +591,10 @@ def qdistance(seq1, seq2, qnet1, qnet2, mismatch=False):
         return theta(seq1_d, seq2_d)
         
     #divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
+    if FULL_C:
+        return theta_(seq1_distribs,seq2_distribs)
     return theta(seq1_distribs,seq2_distribs)
+    
 
 def membership_degree(seq, qnet):
     """Compute the membership degree of a sequence in a qnet.
@@ -736,12 +735,15 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     # seqs1_distribs = [qnet1.predict_distributions_numba(seq) for seq in seqs1]
     # seqs2_distribs = [qnet2.predict_distributions_numba(seq) for seq in seqs2]
 
-    #    if symmetric:
-    #        distance_matrix = theta_matrix(seqs1_distribs,seqs2_distribs)
-    #    else:
-    distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
-                                                      seqs2_distribs,
-                                                      symmetric=symmetric)
+    if symmetric:
+        print('symmetric case')
+        distance_matrix = theta_matrix(seqs1_distribs)
+    else:
+        distance_matrix = theta_matrix(seqs1_distribs,seqs2_distribs)
+
+        #distance_matrix = _qdistance_matrix_with_distribs(seqs1_distribs, 
+        #                                                  seqs2_distribs,
+        #                                                  symmetric=symmetric)
 
     return distance_matrix
     
