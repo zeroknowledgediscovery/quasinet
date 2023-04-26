@@ -1,12 +1,19 @@
-def macfix():
+def macfix(OS=None):
+    import shutil
     import platform
     import os
     import quasinet
     install_path=os.path.dirname(quasinet.__file__)
-    if platform.system() == "Darwin":
-        import shutil
-        print('copying dcor for mac')
-        shutil.copy(install_path+'/bin/macnew_dcor.so',
-                    install_path+'/bin/dcor.so')
-
+    if OS is None:
+        if platform.system() == "Darwin":
+            shutil.copy(install_path+'/bin/macnew_dcor.so',
+                        install_path+'/bin/dcor.so')
+            shutil.copy(install_path+'/bin/macnew_Cfunc.so',
+                    install_path+'/bin/Cfunc.so')
+    if OS == 'win':
+            shutil.copy(install_path+'/bin/win_dcor.so',
+                        install_path+'/bin/dcor.so')
+            shutil.copy(install_path+'/bin/win_Cfunc.so',
+                    install_path+'/bin/Cfunc.so')
+        
         
