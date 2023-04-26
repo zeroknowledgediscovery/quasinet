@@ -63,7 +63,7 @@ setup(
         "joblib",
         "dill",
         "biopython"],
-    python_requires='>=3.6',
+    python_requires='>=3.3',
     classifiers=[
         'Development Status :: 4 - Beta',
         "Intended Audience :: Developers",
@@ -72,7 +72,7 @@ setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "Topic :: Software Development :: Libraries",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.6"],
+        "Programming Language :: Python :: 3.3"],
     # data_files=[
     #     ('qnet_example/example1', [
     #         example_dir + "create_qnet.py",
