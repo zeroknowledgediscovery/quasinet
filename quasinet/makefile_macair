@@ -1,0 +1,9 @@
+CFLAGS  = -fPIC -Ofast -ffast-math 
+LDFLAGS = -shared
+CC      = llvm-gcc
+
+bin/dcor.so: src/dcor.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o bin/dcor.so src/dcor.c
+
+clean:
+	rm -f bin/*so
