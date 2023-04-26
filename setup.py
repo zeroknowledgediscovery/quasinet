@@ -61,8 +61,7 @@ setup(
         "numba", 
         "pandas",
         "joblib",
-        "dill",
-        "biopython"],
+        "dill"],
     python_requires='>=3.3',
     classifiers=[
         'Development Status :: 4 - Beta',
