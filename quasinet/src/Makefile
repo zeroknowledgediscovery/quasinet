@@ -1,19 +1,18 @@
 CC = gcc
-CFLAGS = -O3 -march=native -fPIC
-OMPFLAGS = -fopenmp
-LIBFLAGS = -shared
-LDFLAGS = -L. -ldcor
+#CC = x86_64-w64-mingw32-gcc
+CFLAGS = -O3 -march=native -ffast-math -fPIC
+LDFLAGS = -shared
+DCOR_LIB_NAME = dcor.so
+CFUNC_LIB_NAME = Cfunc.so
+OMP_FLAGS = -fopenmp
 
-all: Cfunc.so dcor.so test_dcor
+all: $(DCOR_LIB_NAME) $(CFUNC_LIB_NAME)
 
-Cfunc.so: Cfunc.c
-	$(CC) $(CFLAGS) $(OMPFLAGS) $(LIBFLAGS) -o $@ $<
+$(DCOR_LIB_NAME): dcor.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(DCOR_LIB_NAME) dcor.c
 
-dcor.so: dcor.c
-	$(CC) $(CFLAGS) -ffast-math $(LIBFLAGS) -o $@ $<
-
-test_dcor: test_dcor.c dcor.so
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+$(CFUNC_LIB_NAME): Cfunc.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OMP_FLAGS) -o $(CFUNC_LIB_NAME) Cfunc.c
 
 clean:
-	rm -f Cfunc.so dcor.so test_dcor
+	rm -f $(DCOR_LIB_NAME) $(CFUNC_LIB_NAME)
