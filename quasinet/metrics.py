@@ -8,7 +8,7 @@ import os
 lib_path = os.path.join(os.path.dirname(__file__), 'bin/Cfunc.so')
 Cfunc = ctypes.CDLL(lib_path)
 
-# Define the input type and return type of the C functions
+#  Define the input type and return type of the C functions
 Cfunc.jsd.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.c_size_t]
 Cfunc.jsd.restype = ctypes.c_double
 Cfunc.avg_jsd.argtypes = [ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
