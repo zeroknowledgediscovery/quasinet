@@ -1,1 +1,0 @@
-gcc -shared -O3 -march=native -o Cfunc.so Cfunc.c -fPIC -fopenmp
