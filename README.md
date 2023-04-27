@@ -40,11 +40,17 @@ To install with pip:
 pip install quasinet
 ```
 
-To fix error in Mac:
+To fix error with Mac or Windows:
 
 ```
-from quasinet.macfix import macfix
-macfix()
+from quasinet.osfix import osfix
+# for windows
+osfix('win')
+# for max x86_64 (macbook pro)
+osfix('macx86')
+# mac arm (macbook air)
+osfix('macarm')
+
 ```
 
 
