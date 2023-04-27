@@ -15,5 +15,10 @@ def macfix(OS=None):
                         install_path+'/bin/dcor.so')
             shutil.copy(install_path+'/bin/win_Cfunc.so',
                     install_path+'/bin/Cfunc.so')
+    if OS == 'macx86':
+            shutil.copy(install_path+'/bin/x86mac_dcor.so',
+                        install_path+'/bin/dcor.so')
+            shutil.copy(install_path+'/bin/x86mac_Cfunc.so',
+                    install_path+'/bin/Cfunc.so')
         
         
