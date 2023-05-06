@@ -969,7 +969,8 @@ def fit_save(df,
              n_jobs=10,
              alpha=0.1,
              file_prefix='model',
-             low_mem=True,
+             strtype='U5',
+             low_mem=True, 
              compress=True):
     """Fit and save qnet model as gz.
 
@@ -993,6 +994,9 @@ def fit_save(df,
     compress : bool
         True if we want gzipped models (default: True)
 
+    strtype : str
+        string type specification (default: U5)
+
     Returns
     -------
     qnet : Qnet
@@ -1001,10 +1005,10 @@ def fit_save(df,
 
     model = Qnet(feature_names=df.columns,
                  alpha=alpha, n_jobs=n_jobs)
-    model.fit(df.values.astype(STRTYPE),
+    model.fit(df.values.astype(strtype),
               index_array=slice_range)
 
-    file_name = f'{file_prefix}{flag}.joblib.gz'
+    file_name = f'{file_prefix}{flag}.joblib'
     save_qnet(model,
               file_name,
               low_mem=low_mem,
