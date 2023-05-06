@@ -703,14 +703,6 @@ coefficient</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-quasinet.macfix">
-<span id="quasinet-macfix-module"></span><h2>quasinet.macfix module<a class="headerlink" href="#module-quasinet.macfix" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="quasinet.macfix.macfix">
-<span class="sig-prename descclassname"><span class="pre">quasinet.macfix.</span></span><span class="sig-name descname"><span class="pre">macfix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.macfix.macfix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
 <div class="section" id="module-quasinet.metrics">
 <span id="quasinet-metrics-module"></span><h2>quasinet.metrics module<a class="headerlink" href="#module-quasinet.metrics" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
@@ -793,6 +785,14 @@ is intended to deal with categories with zero probability.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.metrics.theta_matrix_par">
 <span class="sig-prename descclassname"><span class="pre">quasinet.metrics.</span></span><span class="sig-name descname"><span class="pre">theta_matrix_par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_dict1_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dict2_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.metrics.theta_matrix_par" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.osfix">
+<span id="quasinet-osfix-module"></span><h2>quasinet.osfix module<a class="headerlink" href="#module-quasinet.osfix" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.osfix.osfix">
+<span class="sig-prename descclassname"><span class="pre">quasinet.osfix.</span></span><span class="sig-name descname"><span class="pre">osfix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">OS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.osfix.osfix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -989,12 +989,39 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="quasinet.qnet.fit_save">
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">fit_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'model'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.fit_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit and save qnet model as gz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – pandas dataframe input data with featurenames as columns</p></li>
+<li><p><strong>slice_range</strong> (<em>numpy 1D array of ints</em>) – Index array to use to make model, paased to index_arry in fit</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – qnet fit significance level</p></li>
+<li><p><strong>file_prefix</strong> (<em>str</em>) – filename prefix for model file</p></li>
+<li><p><strong>low_mem</strong> (<em>bool</em>) – turning on low memory save (default: True)</p></li>
+<li><p><strong>compress</strong> (<em>bool</em>) – True if we want gzipped models (default: True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>qnet</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet">Qnet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="quasinet.qnet.load_qnet">
-<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">load_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.load_qnet" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">load_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.load_qnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the qnet from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>str</em>) – File name.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>str</em>) – File name.</p></li>
+<li><p><strong>gz</strong> (<em>bool</em>) – Bool to indicate if file is gzipped (default: False)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>qnet</strong></p>
@@ -1072,7 +1099,7 @@ can then compile using a command like <cite>dot -Tpng file.dot -o file.png</cite
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.qnet.save_qnet">
-<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">save_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.save_qnet" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">quasinet.qnet.</span></span><span class="sig-name descname"><span class="pre">save_qnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.save_qnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the qnet to a file.</p>
 <p>NOTE: The file name must end in <cite>.joblib</cite></p>
 <p>TODO: using joblib is actually less memory efficient than using pickle.
@@ -1086,7 +1113,8 @@ to save memory. For example, <cite>.feature_importances_</cite>, <cite>.availabl
 <li><p><strong>qnet1</strong> (<a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><em>Qnet</em></a>) – A Qnet instance</p></li>
 <li><p><strong>f</strong> (<em>str</em>) – File name</p></li>
 <li><p><strong>low_mem</strong> (<em>bool</em>) – If True, save the Qnet with low memory by deleting all data attributes
-except the tree structure</p></li>
+except the tree structure (default: False)</p></li>
+<li><p><strong>gz</strong> (<em>bool</em>) – Specification if we want gzipped output (default: False)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1771,8 +1799,8 @@ estimated class probability</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.citrees">quasinet.citrees module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.export">quasinet.export module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.feature_selectors">quasinet.feature_selectors module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.macfix">quasinet.macfix module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.metrics">quasinet.metrics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.osfix">quasinet.osfix module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.qnet">quasinet.qnet module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.qsampling">quasinet.qsampling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.qseqtools">quasinet.qseqtools module</a></li>

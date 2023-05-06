@@ -2,6 +2,7 @@
 import numpy as np
 from numpy.linalg import norm
 from joblib import dump, load, delayed, Parallel
+import gzip
 import numba
 # from numba import njit, prange
 # from numba.core import types
@@ -748,25 +749,36 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
     return distance_matrix
     
 
-def load_qnet(f):
+def load_qnet(f, gz=False):
     """Load the qnet from a file.
 
     Parameters
     ----------
     f : str
         File name.
+    
+    gz : bool
+        Bool to indicate if file is gzipped (default: False)
  
     Returns
     -------
     qnet : Qnet
     """
 
-    qnet = load(f)
+    if not gz:
+        qnet = load(f)
+    else:
+        import dill as pickle
+        file = gzip.GzipFile(f, 'rb')
+        data = file.read()
+        qnet = pickle.loads(data)
+        file.close()        
+     
     assert isinstance(qnet, Qnet)
 
     return qnet
 
-def save_qnet(qnet, f, low_mem=False):
+def save_qnet(qnet, f, low_mem=False, gz=False):
     """Save the qnet to a file.
 
     NOTE: The file name must end in `.joblib`
@@ -788,7 +800,10 @@ def save_qnet(qnet, f, low_mem=False):
 
     low_mem : bool
         If True, save the Qnet with low memory by deleting all data attributes 
-        except the tree structure
+        except the tree structure (default: False)
+
+    gz : bool
+        Specification if we want gzipped output (default: False)
  
     Returns
     -------
@@ -805,8 +820,13 @@ def save_qnet(qnet, f, low_mem=False):
         else:
             if not qnet.mixed:
                 qnet.clear_attributes()
-    filehandler = open(f,"wb")    
-    pickle.dump(qnet, filehandler) 
+    if not gz:
+        filehandler = open(f,"wb")    
+        pickle.dump(qnet, filehandler)
+        filehandler.close()
+    else:
+        with gzip.open(f+'.gz', 'wb') as f_:
+            pickle.dump(qnet, f_)
 
 
 def export_qnet_tree(qnet, index,
@@ -938,3 +958,55 @@ def export_qnet_graph(qnet, threshold, outfile):
     exporter.export()
 
     
+
+
+#def save_qnet_gz(model, filename, compress=True):
+#    with gzip.open(filename, 'wb') as f:
+#        joblib.dump(model, f, compress=compress)
+
+def fit_save(df,
+             slice_range=None,
+             n_jobs=10,
+             alpha=0.1,
+             file_prefix='model',
+             low_mem=True,
+             compress=True):
+    """Fit and save qnet model as gz.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        pandas dataframe input data with featurenames as columns
+ 
+    slice_range : numpy 1D array of ints
+        Index array to use to make model, paased to index_arry in fit
+
+    alpha : float
+        qnet fit significance level
+
+    file_prefix : str
+        filename prefix for model file
+
+    low_mem : bool
+        turning on low memory save (default: True)
+
+    compress : bool
+        True if we want gzipped models (default: True)
+
+    Returns
+    -------
+    qnet : Qnet
+    """
+    flag = f'-{slice_range[0]}-{slice_range[-1]}'
+
+    model = Qnet(feature_names=df.columns,
+                 alpha=alpha, n_jobs=n_jobs)
+    model.fit(df.values.astype(STRTYPE),
+              index_array=slice_range)
+
+    file_name = f'{file_prefix}{flag}.joblib.gz'
+    save_qnet(model,
+              file_name,
+              low_mem=low_mem,
+              gz=compress)
+    return model
