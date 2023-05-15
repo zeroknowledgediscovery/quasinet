@@ -221,3 +221,11 @@ def getNull(model,strtype='U5'):
         An array of empty strings.
     """
     return np.array(['']*len(model.feature_names)).astype(strtype)
+
+
+def find_matching_indices(A, B):
+    indices = []
+    for i, value in enumerate(A):
+        if value in B:
+            indices.append(i)
+    return indices
