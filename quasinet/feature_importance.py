@@ -87,4 +87,4 @@ def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimat
     sf['shapvalabs']=sf.shapval.abs()
     sf=sf.sort_values('shapvalabs',ascending=False)
 
-    return sf
+    return pd.DataFrame(sf.shapval)
