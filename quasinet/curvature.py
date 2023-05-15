@@ -215,7 +215,7 @@ def compute_metric_tensor(p_distrib, delta, progress=False):
     with ProcessPoolExecutor() as executor:
         args = [(p_distrib, delta, i, n) for i in range(n)]
         if progress:
-            G = list(tqdm(executor.map(worker, args), total=n))
+            G = list(tqdm(executor.map(mt_worker, args), total=n))
         else:
             G = list(executor.map(mt_worker, args))
     return np.array(G)+np.array(G).T

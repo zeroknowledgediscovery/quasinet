@@ -2,7 +2,7 @@ import numpy as np
 from .qsampling import qsample
 from .qnet import qdistance
 from .qnet import qdistance_matrix
-from .utils import getNull, find_matching_indices
+from .utils import getNull
 from catboost import CatBoostRegressor
 import shap
 import pandas as pd
@@ -87,8 +87,13 @@ def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimat
     sf.index=model.feature_names
     sf=sf.sort_values('shapval')
     sf['shapvalabs']=sf.shapval.abs()
-    sf=sf.sort_values('shapvalabs',ascending=False)
+    sf=pd.DataFrame(sf.sort_values('shapvalabs',ascending=False).shapval)
+
+
+    xf=pd.DataFrame(np.array(model.feature_names),columns=['feature_names'])
+    xf=xf.reset_index().set_index('feature_names').T
+    xf=xf[sf.index.values].T
+    xf.columns=['id']
 
     
-    
-    return pd.DataFrame(sf.shapval), find_matching_indices(model.feature_names, sf.index.values)
+    return sf,xf1
