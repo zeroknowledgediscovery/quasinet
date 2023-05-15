@@ -201,3 +201,23 @@ def sample_from_dict(distrib):
     item = np.random.choice(keys, p=probs)
 
     return item
+
+
+def getNull(model,strtype='U5'):
+    """
+    Function to generate an array of empty strings of same length as feature names in the model.
+
+    Parameters
+    ----------
+    model : Qnet object
+        The Qnet model.
+
+    STRTYPE : str
+        String type to be used for the generated numpy array. Default is 'U5'.
+
+    Returns
+    -------
+    numpy.ndarray
+        An array of empty strings.
+    """
+    return np.array(['']*len(model.feature_names)).astype(strtype)

@@ -12,6 +12,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quasinet" href="modules.html" />
@@ -447,6 +448,205 @@ and the label</p></li>
 </dd></dl>
 
 </div>
+<div class="section" id="module-quasinet.curvature">
+<span id="quasinet-curvature-module"></span><h2>quasinet.curvature module<a class="headerlink" href="#module-quasinet.curvature" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.compute_curvature">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">compute_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.compute_curvature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the curvature (scalar curvature) at a given point in the space of Quasinets.</p>
+<p>The curvature R is computed as:</p>
+<div class="math notranslate nohighlight">
+\[R = G^{ij} R_{ij}\]</div>
+<p>where G^{ij} is the inverse of the metric tensor G_{ij}, and R_{ij} is the Ricci curvature.</p>
+<p>Parameters:
+p (list[dict(str,float]):  quasinet.predict_distributions() for the quasinet ‘p’
+delta (float): A small number representing a change in each coordinate direction.</p>
+<p>Returns:
+float: The curvature at point p.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.compute_metric_tensor">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">compute_metric_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_distrib</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.compute_metric_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the metric tensor at a given point in the space of Quasinets.</p>
+<p>The metric tensor G_ij is defined as:</p>
+<div class="math notranslate nohighlight">
+\[G_{ij} = \frac{1}{2} \left( D(p + \delta p_i + \delta p_j, p) - D(p + \delta p_i, p) - D(p + \delta p_j, p) + D(p, p) \right)\]</div>
+<p>where D is the distance function, p_i is the i-th unit Quasinet, and delta is a small perturbation.</p>
+<p>Parameters:
+p_distrib (list[dict(str,float]): quasinet.predict_distributions() for the quasinet ‘p’ at which metric tensor is calculated
+delta (float): A small number representing a change in each coordinate direction.
+progress (bool): show progress bar</p>
+<p>Returns:
+ndarray: The metric tensor at point p (the quasinet for which p_distrib is calculatd).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.compute_metric_tensor_derivative">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">compute_metric_tensor_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.compute_metric_tensor_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the derivative of the metric tensor at a given point in the space of Quasinets.</p>
+<p>The derivative of the metric tensor G_ij with respect to the k-th coordinate is computed as:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial G_{ij}}{\partial p_k} = \frac{G_{ij}(p + \delta p_k) - G_{ij}(p)}{\delta}\]</div>
+<p>Parameters:
+p (list[dict(str,float]):  quasinet.predict_distributions() for the quasinet ‘p’ at which compute the metric tensor derivative.
+delta (float): A small number representing a change in each coordinate direction.</p>
+<p>Returns:
+ndarray: The derivative of the metric tensor at point p.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.compute_ricci_curvature">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">compute_ricci_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.compute_ricci_curvature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Ricci curvature at a given point in the space of Quasinets.</p>
+<p>The Ricci curvature R_ij is computed as:</p>
+<div class="math notranslate nohighlight">
+\[R_{ij} = G^{kl} \left( \frac{\partial^2 G_{ij}}{\partial p_k \partial p_l} - \frac{1}{2} \frac{\partial^2 G_{kl}}{\partial p_i \partial p_j} \right)\]</div>
+<p>where G^{kl} is the inverse of the metric tensor G_{kl}, and the partial derivatives are computed by taking the limit as delta goes to zero.</p>
+<p>Parameters:
+p (list[dict(str,float]):  quasinet.predict_distributions() for the quasinet ‘p’
+delta (float): A small number representing a change in each coordinate direction.</p>
+<p>Returns:
+ndarray: The Ricci curvature at point p.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.delta_pi">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">delta_pi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet_instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.delta_pi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function modifies the distribution of the given Quasinet instance by scaling it
+with a scalar value in the direction of the given index.</p>
+<p>Parameters:
+qnet_instance (Quasinet): The Quasinet instance to modify.
+index (int): The index of the feature direction to scale.
+delta (float): The scalar to scale the distribution with.</p>
+<p>Returns:
+Quasinet: The Quasinet instance with modified distribution.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.dist_scalr_mult">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">dist_scalr_mult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.dist_scalr_mult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiply each value in the dictionary with scalar ‘a’ and renormalize
+to get a valid probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1</strong> (<em>dict</em>) – Dictionary where each key-value pair represents an item and its probability.</p></li>
+<li><p><strong>a</strong> (<em>float</em>) – Scalar to multiply with each value of D1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New dictionary with each value scaled and renormalized.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.dist_sum">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">dist_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.dist_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add each corresponding value in D1 and D2, then renormalize to get
+a valid probability distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1</strong> (<em>dict</em>) – Two dictionaries where each key-value pair represents an item
+and its probability.</p></li>
+<li><p><strong>D2</strong> (<em>dict</em>) – Two dictionaries where each key-value pair represents an item
+and its probability.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New dictionary with each value being the sum of the corresponding
+values in D1 and D2, renormalized.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.distance_function">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">distance_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NULL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'U5'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.distance_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the distance between two Quasinets.</p>
+<p>Parameters:
+p, q (Quasinet): The Quasinets to compute the distance between.</p>
+<p>Returns:
+float: The distance between p and q.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.distance_function_distrib">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">distance_function_distrib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.distance_function_distrib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute distance between two quasinets assumeing that p, q only differ at  estimator coordinates listed in i
+Parameters:
+p (list[dict(str,flaot]): quasinet.predict_distributions()
+q (list[dict(str,flaot]): quasinet.predict_distributions()
+i (1d numpy arra): list of indices on which p and q differ</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.mt_worker">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">mt_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.mt_worker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.perturb_quasinet">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">perturb_quasinet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnet_instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.perturb_quasinet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perturbs a Quasinet in the direction of the i-th feature.</p>
+<p>Parameters:
+p (list[dict(str,flaot]): quasinet.predict_distributions()
+i (int): The index of the feature direction to perturb in.
+delta (float): The magnitude of the perturbation.</p>
+<p>Returns:
+Quasinet: The perturbed Quasinet.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.perturb_quasinet_distrib">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">perturb_quasinet_distrib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_distrib_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.perturb_quasinet_distrib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perturbs a Quasinet in the direction of the i-th feature, using only the distributions at
+each estimator, which are produced by the predict_distributions function</p>
+<p>Parameters:
+p (list[dict(str,flaot]): quasinet.predict_distributions()
+i (int): The index of the feature direction to perturb in.
+delta (float): The magnitude of the perturbation.</p>
+<p>Returns:
+Quasinet: The perturbed Quasinet.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.scalarmod_predict_distribution">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">scalarmod_predict_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.scalarmod_predict_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the predict_distribution function of the Quasinet object
+to scale the output probabilities for a specified feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<em>Quasinet object</em>) – The Quasinet instance.</p></li>
+<li><p><strong>column_to_item</strong> (<em>dict</em>) – A dictionary mapping from column names to specific items.</p></li>
+<li><p><strong>column</strong> (<em>str</em>) – The name of the column (feature) to scale.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – Additional arguments passed to the predict_distribution function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of probabilities for each item in the specified column.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.curvature.sum_predict_distribution">
+<span class="sig-prename descclassname"><span class="pre">quasinet.curvature.</span></span><span class="sig-name descname"><span class="pre">sum_predict_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.curvature.sum_predict_distribution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
 <div class="section" id="module-quasinet.export">
 <span id="quasinet-export-module"></span><h2>quasinet.export module<a class="headerlink" href="#module-quasinet.export" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
@@ -513,6 +713,50 @@ this cutoff, then we include it into the graph.</p></li>
 <span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.export.QnetGraphExporter.export" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="module-quasinet.feature_importance">
+<span id="quasinet-feature-importance-module"></span><h2>quasinet.feature_importance module<a class="headerlink" href="#module-quasinet.feature_importance" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.feature_importance.getShap">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_importance.</span></span><span class="sig-name descname"><span class="pre">getShap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_backgrounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'U5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_estimate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_importance.getShap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to compute SHAP values for feature importance analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>Qnet object</em>) – The Qnet model.</p></li>
+<li><p><strong>num_backgrounds</strong> (<em>int</em>) – Number of background samples to generate. Default is 1.</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – Number of samples for the SHAP analysis. Default is 5.</p></li>
+<li><p><strong>strtype</strong> (<em>str</em>) – String type to be used for the generated numpy array. Default is ‘U5’.</p></li>
+<li><p><strong>fast_estimate</strong> (<em>bool</em>) – If True, use tree explainer with a CatBoostRegressor model
+for faster estimation. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dataframe containing the SHAP values for each feature.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.feature_importance.qnet_model_func">
+<span class="sig-prename descclassname"><span class="pre">quasinet.feature_importance.</span></span><span class="sig-name descname"><span class="pre">qnet_model_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_importance.qnet_model_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to compute the distance matrix for a given set of sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>numpy.ndarray</em>) – Array of sequences.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The computed distance matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -1704,6 +1948,26 @@ estimated class probability</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="quasinet.utils.getNull">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">getNull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'U5'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.getNull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to generate an array of empty strings of same length as feature names in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>Qnet object</em>) – The Qnet model.</p></li>
+<li><p><strong>STRTYPE</strong> (<em>str</em>) – String type to be used for the generated numpy array. Default is ‘U5’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array of empty strings.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="quasinet.utils.logger">
 <span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints messages with style “[NAME] message”</p>
@@ -1798,7 +2062,9 @@ estimated class probability</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.ciforest">quasinet.ciforest module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.citrees">quasinet.citrees module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.curvature">quasinet.curvature module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.export">quasinet.export module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.feature_importance">quasinet.feature_importance module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.feature_selectors">quasinet.feature_selectors module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.metrics">quasinet.metrics module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.osfix">quasinet.osfix module</a></li>

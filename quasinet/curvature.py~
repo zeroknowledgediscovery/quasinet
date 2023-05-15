@@ -1,0 +1,165 @@
+import numpy as np
+from quasinet.qnet import load_qnet
+from quasinet.qsampling import qsample
+from quasinet.qnet import qdistance
+from tqdm import tqdm
+from quasinet.qnet import Qnet
+import copy
+from concurrent.futures import ProcessPoolExecutor
+from quasinet.metrics import theta
+
+GZ=False
+MODELNAME='/home/ishanu/ZED/Research/zcad/qanalysis/catptsd.joblib'
+
+model=load_qnet(MODELNAME,gz=GZ)
+
+
+def dist_scalr_mult(D1,a):
+    S=0.0
+    D={}
+    for i in D1.keys():
+        S+=D1[i]**a
+    for i in D1.keys():
+        D[i]=(D1[i]**a)/S
+    return D
+
+def dist_sum(D1,D2):
+    S=0.0
+    D={}
+    for i in D1.keys():
+        S+=D1[i]*D2[i]
+    for i in D1.keys():
+        D[i]=(D1[i]*D2[i])/S
+    return D
+  
+def distance_function(p, q,NULL=None):
+    """
+    Computes the distance between two Quasinets.
+
+    Parameters:
+    p, q (Quasinet): The Quasinets to compute the distance between.
+ 
+    Returns:
+    float: The distance between p and q.
+    """
+    if NULL is None:
+        NULL=getNull(p)
+    return qdistance(NULL,NULL,p,q)
+
+
+def scalarmod_predict_distribution(self, column_to_item, column, **kwargs):
+    distrib = Qnet.predict_distribution(self, column_to_item, column, **kwargs)
+    if column == self.direction:
+        distrib = dist_scalr_mult(distrib,self.delta)
+
+    return distrib
+
+def sum_predict_distribution(self, column_to_item, column, **kwargs):
+    distrib = Qnet.predict_distribution(self, column_to_item, column, **kwargs)
+    if column == self.direction:
+        return dist_sum(distrib,dist_scalr_mult(distrib,self.delta))
+    return distrib
+
+
+def delta_pi(qnet_instance,index,delta):
+    p=copy.copy(qnet_instance)
+    p.predict_distribution = scalarmod_predict_distribution.__get__(p)
+    p.direction = index
+    p.delta = delta
+    return p
+
+def perturb_quasinet(qnet_instance,index,delta):
+    """
+    Perturbs a Quasinet in the direction of the i-th feature.
+
+    Parameters:
+    p (Quasinet): The Quasinet to perturb.
+    i (int): The index of the feature direction to perturb in.
+    delta (float): The magnitude of the perturbation.
+
+    Returns:
+    Quasinet: The perturbed Quasinet.
+    """
+    
+    p=copy.copy(qnet_instance)
+    p.predict_distribution = sum_predict_distribution.__get__(p)
+    p.direction = index
+    p.delta = delta
+    return p
+
+def perturb_quasinet_distrib(p_distrib_,index,delta):
+    """
+    Perturbs a Quasinet in the direction of the i-th feature, using only the distributions at 
+    each estimator, which are produced by the predict_distributions function
+
+    Parameters:
+    p (Quasinet): The Quasinet to perturb.
+    i (int): The index of the feature direction to perturb in.
+    delta (float): The magnitude of the perturbation.
+
+    Returns:
+    Quasinet: The perturbed Quasinet.
+    """
+    p_distrib=copy.copy(p_distrib_)
+    p_distrib[index] = dist_sum(p_distrib_[index],dist_scalr_mult(p_distrib_[index],delta))
+    return np.array(p_distrib)
+
+
+def distance_function_distrib(p, q,i):
+    """
+    Compute distance between two quasinets assumeing that p, q only differ at  estimator coordinates listed in i
+    Parameters:
+    p (Quasinet): 
+    q (Quasinet): 
+    i (1d numpy arra): list of indices on which p and q differ
+
+
+    """
+       
+    return theta(p[i],q[i])*(len(i)/len(p))
+    
+        
+		
+
+def mt_worker(args):
+    p_distrib, delta, i, n = args
+    row = np.zeros(n)
+    Pi=perturb_quasinet_distrib(p_distrib, i, delta)
+    dpi = distance_function_distrib(Pi, p_distrib,[i])
+    for j in range(i):
+        Pj=perturb_quasinet_distrib(p_distrib, j, delta)
+        
+        row[j] = 0.5 * (distance_function_distrib(Pi, Pj,[i,j])**2 -
+                        dpi**2 -
+                        distance_function_distrib(Pj, p_distrib,[j])**2) / delta**2
+    return row
+
+def compute_metric_tensor(p_distrib, delta, progress=False):
+    """
+    Computes the metric tensor at a given point in the space of Quasinets.
+
+    The metric tensor G_ij is defined as:
+
+    .. math::
+        G_{ij} = \\frac{1}{2} \\left( D(p + \\delta p_i + \\delta p_j, p) - D(p + \\delta p_i, p) - D(p + \\delta p_j, p) + D(p, p) \\right)
+
+    where D is the distance function, p_i is the i-th unit Quasinet, and delta is a small perturbation.
+
+    Parameters:
+    p (Quasinet): The point at which to compute the metric tensor.
+    delta (float): A small number representing a change in each coordinate direction.
+    progress (bool): show progress bar
+
+    Returns:
+    ndarray: The metric tensor at point p.
+    """
+    n = len(p_distrib)
+    with ProcessPoolExecutor() as executor:
+        args = [(p_distrib, delta, i, n) for i in range(n)]
+        if progress:
+            G = list(tqdm(executor.map(worker, args), total=n))
+        else:
+            G = list(executor.map(mt_worker, args))
+    return np.array(G)+np.array(G).T
+
+

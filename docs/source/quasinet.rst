@@ -20,10 +20,26 @@ quasinet.citrees module
    :undoc-members:
    :show-inheritance:
 
+quasinet.curvature module
+-------------------------
+
+.. automodule:: quasinet.curvature
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 quasinet.export module
 ----------------------
 
 .. automodule:: quasinet.export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+quasinet.feature\_importance module
+-----------------------------------
+
+.. automodule:: quasinet.feature_importance
    :members:
    :undoc-members:
    :show-inheritance:
