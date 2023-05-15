@@ -778,7 +778,7 @@ def load_qnet(f, gz=False):
 
     return qnet
 
-def save_qnet(qnet, f, low_mem=False, gz=False):
+def save_qnet(qnet, f, low_mem=True, gz=False):
     """Save the qnet to a file.
 
     NOTE: The file name must end in `.joblib`
