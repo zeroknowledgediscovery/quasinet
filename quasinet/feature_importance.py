@@ -96,4 +96,4 @@ def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimat
     xf.columns=['id']
 
     
-    return sf,xf1
+    return sf,xf
