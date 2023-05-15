@@ -1,0 +1,3 @@
+gcc -shared -O3 -march=native -o Cfunc.so Cfunc.c -fPIC -fopenmp
+gcc -O3 -march=native -ffast-math -fPIC -shared -o dcor.so dcor_opt.c
+clang -shared -undefined dynamic_lookup -o ../bin/dcor.so dcor.c
