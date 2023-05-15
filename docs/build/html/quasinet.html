@@ -716,49 +716,8 @@ this cutoff, then we include it into the graph.</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-quasinet.feature_importance">
-<span id="quasinet-feature-importance-module"></span><h2>quasinet.feature_importance module<a class="headerlink" href="#module-quasinet.feature_importance" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="quasinet.feature_importance.getShap">
-<span class="sig-prename descclassname"><span class="pre">quasinet.feature_importance.</span></span><span class="sig-name descname"><span class="pre">getShap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_backgrounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'U5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_estimate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_importance.getShap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to compute SHAP values for feature importance analysis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>Qnet object</em>) – The Qnet model.</p></li>
-<li><p><strong>num_backgrounds</strong> (<em>int</em>) – Number of background samples to generate. Default is 1.</p></li>
-<li><p><strong>num_samples</strong> (<em>int</em>) – Number of samples for the SHAP analysis. Default is 5.</p></li>
-<li><p><strong>strtype</strong> (<em>str</em>) – String type to be used for the generated numpy array. Default is ‘U5’.</p></li>
-<li><p><strong>fast_estimate</strong> (<em>bool</em>) – If True, use tree explainer with a CatBoostRegressor model
-for faster estimation. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dataframe containing the SHAP values for each feature.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="quasinet.feature_importance.qnet_model_func">
-<span class="sig-prename descclassname"><span class="pre">quasinet.feature_importance.</span></span><span class="sig-name descname"><span class="pre">qnet_model_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.feature_importance.qnet_model_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to compute the distance matrix for a given set of sequences.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>numpy.ndarray</em>) – Array of sequences.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The computed distance matrix.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="quasinet-feature-importance-module">
+<h2>quasinet.feature_importance module<a class="headerlink" href="#quasinet-feature-importance-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-quasinet.feature_selectors">
 <span id="quasinet-feature-selectors-module"></span><h2>quasinet.feature_selectors module<a class="headerlink" href="#module-quasinet.feature_selectors" title="Permalink to this headline">¶</a></h2>
@@ -2064,7 +2023,7 @@ estimated class probability</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.citrees">quasinet.citrees module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.curvature">quasinet.curvature module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.export">quasinet.export module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.feature_importance">quasinet.feature_importance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quasinet-feature-importance-module">quasinet.feature_importance module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.feature_selectors">quasinet.feature_selectors module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.metrics">quasinet.metrics module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.osfix">quasinet.osfix module</a></li>

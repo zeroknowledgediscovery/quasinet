@@ -9,6 +9,7 @@ import pandas as pd
 
 
 global NULL
+global model
 
 def qnet_model_func(X):
     """
@@ -25,9 +26,10 @@ def qnet_model_func(X):
         The computed distance matrix.
     """
     global NULL
+    global model
     return np.atleast_1d(qdistance_matrix(X, np.array([NULL]), model, model).squeeze())
 
-def getShap(model, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimate=False):
+def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimate=False):
     """
     Function to compute SHAP values for feature importance analysis.
 
@@ -55,6 +57,10 @@ def getShap(model, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimate
         A dataframe containing the SHAP values for each feature.
     """
     global NULL
+    global model
+
+    model=model_
+    
     NULL=getNull(model,strtype=strtype)
     background_samples = np.array([qsample(NULL,
                                            model, steps=5000) for _ in range(num_backgrounds)])
