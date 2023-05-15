@@ -8,6 +8,7 @@ import shap
 import pandas as pd
 
 
+global NULL
 
 def qnet_model_func(X):
     """
