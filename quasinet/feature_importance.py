@@ -52,7 +52,7 @@ def getShap(model, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimate
     pandas.DataFrame
         A dataframe containing the SHAP values for each feature.
     """
-    NULL=getNull(model,STRTYPE=strtype)
+    NULL=getNull(model,strtype=strtype)
     background_samples = np.array([qsample(NULL,
                                            model, steps=5000) for _ in range(num_backgrounds)])
 
