@@ -811,8 +811,8 @@ def save_qnet(qnet, f, low_mem=True, gz=False):
     """
     import dill as pickle
     assert isinstance(qnet, Qnet)
-    if not f.endswith('.joblib'):
-        raise ValueError('The outfile must end with `.joblib`')
+    #if not f.endswith('.joblib'):
+    #    raise ValueError('The outfile must end with `.joblib`')
 
     if low_mem:
         if not hasattr(qnet, 'mixed'):
