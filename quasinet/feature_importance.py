@@ -29,7 +29,7 @@ def qnet_model_func(X):
     global model
     return np.atleast_1d(qdistance_matrix(X, np.array([NULL]), model, model).squeeze())
 
-def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimate=False):
+def getShap(model_, num_backgrounds=1, samples=None, num_samples=5, strtype='U5', fast_estimate=False):
     """
     Function to compute SHAP values for feature importance analysis.
 
@@ -46,6 +46,9 @@ def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimat
 
     strtype : str
         String type to be used for the generated numpy array. Default is 'U5'.
+
+    samples : numpy array
+        samples to run shap analysis on. Default is None. If None, generate via qsampling
 
     fast_estimate : bool
         If True, use tree explainer with a CatBoostRegressor model 
@@ -68,8 +71,9 @@ def getShap(model_, num_backgrounds=1, num_samples=5, strtype='U5', fast_estimat
                                            model, steps=5000) for _ in range(num_backgrounds)])
 
     # Generate samples for the SHAP analysis
-    samples = np.array([qsample(NULL, model,
-                                steps=len(model.feature_names)) for _ in range(num_samples)])
+    if samples is None:
+        samples = np.array([qsample(NULL, model,
+                            steps=len(model.feature_names)) for _ in range(num_samples)])
 
     if fast_estimate:
         # Train a CatBoostRegressor model
