@@ -116,6 +116,14 @@ quasinet.utils module
    :undoc-members:
    :show-inheritance:
 
+quasinet.zqnet module
+---------------------
+
+.. automodule:: quasinet.zqnet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

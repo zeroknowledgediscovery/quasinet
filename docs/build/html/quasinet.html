@@ -2041,6 +2041,133 @@ estimated class probability</p></li>
 </dd></dl>
 
 </div>
+<div class="section" id="module-quasinet.zqnet">
+<span id="quasinet-zqnet-module"></span><h2>quasinet.zqnet module<a class="headerlink" href="#module-quasinet.zqnet" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.zqnet.</span></span><span class="sig-name descname"><span class="pre">zQnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quasinet.qnet.Qnet" title="quasinet.qnet.Qnet"><code class="xref py py-class docutils literal notranslate"><span class="pre">quasinet.qnet.Qnet</span></code></a></p>
+<p>Extended Qnet architecture (<cite>zQnet</cite>).</p>
+<p>An extension of the Qnet class with added functionality and attributes. This class
+introduces risk computation based on a series of metrics and provides a way to
+set and retrieve a model description.</p>
+<p>Qnet : Base class</p>
+<dl class="simple">
+<dt>nullsequences<span class="classifier">array-like</span></dt><dd><p>Collection of sequences considered null or baseline for risk calculations.</p>
+</dd>
+<dt>target<span class="classifier">str, optional</span></dt><dd><p>Target variable or description. Not currently utilized in methods.</p>
+</dd>
+<dt>description<span class="classifier">str</span></dt><dd><p>Descriptive notes or commentary about the model.</p>
+</dd>
+<dt>training_index<span class="classifier">array-like, optional</span></dt><dd><p>Indices used during the training phase. Not currently utilized in methods.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk_median">
+<span class="sig-name descname"><span class="pre">risk_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk_median" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the median risk value for the given input X.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk">
+<span class="sig-name descname"><span class="pre">risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the mean risk value for the given input X.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk_max">
+<span class="sig-name descname"><span class="pre">risk_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the maximum risk value for the given input X.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.set_description">
+<span class="sig-name descname"><span class="pre">set_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.set_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the model’s description attribute using content from a markdown file.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Variable length argument list inherited from Qnet.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments inherited from Qnet.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the mean risk value for input X based on its distance
+from null sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Input data whose risk is to be computed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Mean risk value for the input X.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">risk_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the maximum risk value for input X based on its distance
+from null sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Input data whose risk is to be computed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Maximum risk value for the input X.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">risk_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the median risk value for input X based on its distance
+from null sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>2d array-like</em>) – Input data whose risk is to be computed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Median risk value for the input X.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">set_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the description attribute for the model using content from a markdown file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>markdown_file</strong> (<em>str</em>) – Path to the markdown file containing the model’s description.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Content of the markdown file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-quasinet">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-quasinet" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -2081,6 +2208,7 @@ estimated class probability</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.scorers">quasinet.scorers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.tree">quasinet.tree module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet.utils">quasinet.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quasinet.zqnet">quasinet.zqnet module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quasinet">Module contents</a></li>
 </ul>
 </li>
