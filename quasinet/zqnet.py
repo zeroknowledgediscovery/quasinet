@@ -23,22 +23,11 @@ class zQnet(Qnet):
     description : str
         Descriptive notes or commentary about the model.
 
+    auc_estimate : array-like
+        AUCs obtained during optimization of null sequences.
+
     training_index : array-like, optional
         Indices used during the training phase. Not currently utilized in methods.
-
-    Methods
-    -------
-    risk_median(X)
-        Compute the median risk value for the given input X.
-
-    risk(X)
-        Compute the mean risk value for the given input X.
-
-    risk_max(X)
-        Compute the maximum risk value for the given input X.
-
-    set_description(markdown_file)
-        Set the model's description attribute using content from a markdown file.
 
     Parameters
     ----------
@@ -56,6 +45,7 @@ class zQnet(Qnet):
         self.target = None
         self.description = None
         self.training_index = None
+        self.auc_estimate = None
         
     def risk_median(self, X):
         """

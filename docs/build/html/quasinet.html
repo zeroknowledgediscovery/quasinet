@@ -2059,33 +2059,11 @@ set and retrieve a model description.</p>
 </dd>
 <dt>description<span class="classifier">str</span></dt><dd><p>Descriptive notes or commentary about the model.</p>
 </dd>
+<dt>auc_estimate<span class="classifier">array-like</span></dt><dd><p>AUCs obtained during optimization of null sequences.</p>
+</dd>
 <dt>training_index<span class="classifier">array-like, optional</span></dt><dd><p>Indices used during the training phase. Not currently utilized in methods.</p>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk_median">
-<span class="sig-name descname"><span class="pre">risk_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk_median" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the median risk value for the given input X.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk">
-<span class="sig-name descname"><span class="pre">risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the mean risk value for the given input X.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk_max">
-<span class="sig-name descname"><span class="pre">risk_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk_max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the maximum risk value for the given input X.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.set_description">
-<span class="sig-name descname"><span class="pre">set_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.set_description" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the model’s description attribute using content from a markdown file.</p>
-</dd></dl>
-
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2095,8 +2073,8 @@ set and retrieve a model description.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk">
+<span class="sig-name descname"><span class="pre">risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the mean risk value for input X based on its distance
 from null sequences.</p>
 <dl class="field-list simple">
@@ -2113,8 +2091,8 @@ from null sequences.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">risk_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk_max">
+<span class="sig-name descname"><span class="pre">risk_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk_max" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the maximum risk value for input X based on its distance
 from null sequences.</p>
 <dl class="field-list simple">
@@ -2131,8 +2109,8 @@ from null sequences.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">risk_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk_median">
+<span class="sig-name descname"><span class="pre">risk_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk_median" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the median risk value for input X based on its distance
 from null sequences.</p>
 <dl class="field-list simple">
@@ -2149,8 +2127,8 @@ from null sequences.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">set_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.set_description">
+<span class="sig-name descname"><span class="pre">set_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.set_description" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the description attribute for the model using content from a markdown file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
