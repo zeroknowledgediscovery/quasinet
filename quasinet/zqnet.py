@@ -187,14 +187,14 @@ class zQnet(Qnet):
         
         if seq is None:
             seq=np.array(['']*len(self.feature_names))
-        pdist=model.predict_distributions(seq)
+        pdist=self.predict_distributions(seq)
         L=[len(pdist[i].keys()) for i in range(len(pdist))]
         A=[]
         for index_ in range(len(seq)):
             A.extend(replace_with_d(seq, index_, list(pdist[index_].keys())))
         D=qdistance_matrix(np.array(A),np.array(A),self,self)
         Shm=[np.std(m) for m in extract_diagonal_blocks(D, L)]
-        sf=pd.DataFrame(Shm,model.feature_names,columns=['shap']).sort_values('shap').tail(m)
+        sf=pd.DataFrame(Shm,self.feature_names,columns=['shap']).sort_values('shap').tail(m)
         sf['code']=sf.index.values
         sf.index=[get_description_curl(code) for code in sf.index.values]
         return sf
