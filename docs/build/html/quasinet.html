@@ -2043,6 +2043,26 @@ estimated class probability</p></li>
 </div>
 <div class="section" id="module-quasinet.zqnet">
 <span id="quasinet-zqnet-module"></span><h2>quasinet.zqnet module<a class="headerlink" href="#module-quasinet.zqnet" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.zqnet.extract_diagonal_blocks">
+<span class="sig-prename descclassname"><span class="pre">quasinet.zqnet.</span></span><span class="sig-name descname"><span class="pre">extract_diagonal_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.extract_diagonal_blocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.zqnet.get_description_curl">
+<span class="sig-prename descclassname"><span class="pre">quasinet.zqnet.</span></span><span class="sig-name descname"><span class="pre">get_description_curl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.get_description_curl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.zqnet.remove_suffix">
+<span class="sig-prename descclassname"><span class="pre">quasinet.zqnet.</span></span><span class="sig-name descname"><span class="pre">remove_suffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.remove_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.zqnet.replace_with_d">
+<span class="sig-prename descclassname"><span class="pre">quasinet.zqnet.</span></span><span class="sig-name descname"><span class="pre">replace_with_d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.replace_with_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="quasinet.zqnet.zQnet">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quasinet.zqnet.</span></span><span class="sig-name descname"><span class="pre">zQnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet" title="Permalink to this definition">¶</a></dt>
@@ -2072,6 +2092,26 @@ set and retrieve a model description.</p>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.personal_zshap">
+<span class="sig-name descname"><span class="pre">personal_zshap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.personal_zshap" title="Permalink to this definition">¶</a></dt>
+<dd><p>A superfast approximation of SHAP for zQnet for individual samples</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>numpy array of str</em>) – The sequence around which we are evaluating perturbations.</p></li>
+<li><p><strong>eps</strong> (<em>float</em>) – shap value cutoff</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe with shapo values and index mapped to short description of icd10 codes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="quasinet.zqnet.zQnet.risk">
 <span class="sig-name descname"><span class="pre">risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.risk" title="Permalink to this definition">¶</a></dt>
@@ -2139,6 +2179,27 @@ from null sequences.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.zqnet.zQnet.zshap">
+<span class="sig-name descname"><span class="pre">zshap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">35</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.zqnet.zQnet.zshap" title="Permalink to this definition">¶</a></dt>
+<dd><p>A superfast approximation of SHAP for zQnet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> (<em>numpy array of str</em>) – The sequence around which we are evaluating perturbations.
+By default it is the array oif empty strings, which represents average behavior</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – Length of shap return dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe with shapo values and index mapped to short description of icd10 codes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
