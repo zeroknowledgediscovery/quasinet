@@ -6,6 +6,27 @@ import numpy as np
 # from externals.six.moves import range
 
 
+def remove_newline_in_dotfile(file_path):
+    """remove newlines from edge labels in dotfile
+    """
+    
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+
+    new_lines = []
+    for line in lines:
+        if '--' in line:
+            line = line.replace('\\n ', '')
+        new_lines.append(line)
+
+    with open(file_path, 'w') as f:
+        f.writelines(new_lines)
+
+    return 
+
+
+
+
 def powerset(s):
     """Get the power set of a list or set.
     """
