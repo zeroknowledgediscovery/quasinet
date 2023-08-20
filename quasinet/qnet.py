@@ -5,6 +5,7 @@ from joblib import dump, load, delayed, Parallel
 import gzip
 import numba
 import glob
+import os
 
 from .citrees import CITreeClassifier
 from .metrics import js_divergence
