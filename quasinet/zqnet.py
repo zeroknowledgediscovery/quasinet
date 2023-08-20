@@ -3,7 +3,7 @@ import glob
 import numpy as np
 import json
 import subprocess
-
+import pandas as pd
 
 
 def extract_diagonal_blocks(M, L):
