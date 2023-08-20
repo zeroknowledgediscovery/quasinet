@@ -1,5 +1,8 @@
 from quasinet.qnet import qdistance_matrix, Qnet
+import glob
 import numpy as np
+import json
+import subprocess
 
 
 
@@ -18,8 +21,6 @@ def extract_diagonal_blocks(M, L):
     return blocks
 
 
-import json
-import subprocess
 def remove_suffix(s):
     if s.endswith('.H'):
         return s[:-2]
@@ -46,6 +47,10 @@ def replace_with_d(S, j, d):
     output = np.tile(S, (len(d), 1))
     output[:, j] = d_array[:, 0]
     return output
+
+
+
+
 
 
 
@@ -227,4 +232,4 @@ class zQnet(Qnet):
         return sf
 
 
-    
+

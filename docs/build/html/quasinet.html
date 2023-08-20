@@ -1176,6 +1176,30 @@ this value is the empty string.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="quasinet.qnet.Qnet.viz_trees">
+<span class="sig-name descname"><span class="pre">viz_trees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">draw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">big_enough_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_dotfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qnet.Qnet.viz_trees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate dot files for individual estimators, and optionally render them to pdf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree_path</strong> (<em>string</em>) – path to where dotfiles will be generated. Creates directory if not present</p></li>
+<li><p><strong>draw</strong> (<em>bool</em>) – Set to True to render dotfiles (default True)</p></li>
+<li><p><strong>prog</strong> (<em>str</em>) – Graphviz program used for rendering (default: dot, other values: neato, fdp, sfdp)</p></li>
+<li><p><strong>format</strong> (<em>str</em>) – Format of rendered file (default: pdf, other values png, svg)</p></li>
+<li><p><strong>remove_dotfile</strong> (<em>bool</em>) – Deleted all dot files if set to True (default: True)</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional keyword arguments to be passed to <cite>export_qnet_tree</cite>.  Refer to the documentation of <cite>export_qnet_tree</cite> for details on accepted arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1864,6 +1888,11 @@ we will get all the nodes.</p>
 <div class="section" id="module-quasinet.utils">
 <span id="quasinet-utils-module"></span><h2>quasinet.utils module<a class="headerlink" href="#module-quasinet.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="quasinet.utils.analyze_dot_file">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">analyze_dot_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dot_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracThreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.analyze_dot_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="quasinet.utils.assert_array_rank">
 <span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">assert_array_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.assert_array_rank" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the input is an numpy array and has a certain rank.</p>
@@ -1925,6 +1954,16 @@ we will get all the nodes.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.utils.big_enough">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">big_enough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dot_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">big_enough_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.big_enough" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.utils.drawtrees">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">drawtrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dotfiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">big_enough_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.drawtrees" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.utils.estimate_margin">
