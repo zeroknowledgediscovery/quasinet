@@ -13,7 +13,7 @@ from .metrics import theta
 from .metrics import theta_
 from .metrics import theta_matrix
 from .tree import Node, get_nodes
-from .utils import assert_array_rank, assert_string_type, drawtrees
+from .utils import assert_array_rank, assert_string_type
 from .export import GraphvizTreeExporter, QnetGraphExporter
 from ._config import get_config
 
@@ -436,58 +436,6 @@ class Qnet(object):
         self._check_is_fitted()
 
         raise NotImplementedError
-
-
-    def viz_trees(self,tree_path,
-                 draw=True,
-                 big_enough_threshold=-1,
-                 prog='dot',
-                 format='pdf',
-                  remove_dotfile=True,
-                  **kwargs):
-        """Generate dot files for individual estimators, and optionally render them to pdf.
-
-        Parameters
-        ----------
-        tree_path : string
-            path to where dotfiles will be generated. Creates directory if not present
-
-        draw : bool
-            Set to True to render dotfiles (default True)
-
-        prog : str
-            Graphviz program used for rendering (default: dot, other values: neato, fdp, sfdp)
-
-        format : str
-            Format of rendered file (default: pdf, other values png, svg)
-
-        remove_dotfile : bool
-            Deleted all dot files if set to True (default: True)
-
-        **kwargs : dict, optional
-            Additional keyword arguments to be passed to `export_qnet_tree`.  Refer to the documentation of `export_qnet_tree` for details on accepted arguments.
-
-        Returns
-        -------
-        None
-        """
-        
-        if not os.path.exists(tree_path):
-            os.makedirs(tree_path)
-        def func(i):
-            export_qnet_tree(self,
-                             outfile=os.path.join(tree_path,
-                                                  self.feature_names[i] + '.dot'),
-                             index=i,**kwargs)
-        A=[func(i) for i in list(self.estimators_.keys())]
-        if draw:
-            dot_pattern = os.path.join(tree_path, '*.dot')
-            drawtrees(glob.glob(dot_pattern),
-                                prog=prog,format=format,
-                                big_enough_threshold=big_enough_threshold)
-            if remove_dotfile:
-                for dotfile in glob.glob(dot_pattern):
-                    os.remove(dotfile)
 
 
 
