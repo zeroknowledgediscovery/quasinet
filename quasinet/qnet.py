@@ -13,7 +13,8 @@ from .metrics import theta
 from .metrics import theta_
 from .metrics import theta_matrix
 from .tree import Node, get_nodes
-from .utils import assert_array_rank, assert_string_type
+from .utils import assert_array_rank, assert_string_type, drawtrees
+from .export import GraphvizTreeExporter, QnetGraphExporter
 from ._config import get_config
 
 
@@ -437,6 +438,57 @@ class Qnet(object):
         raise NotImplementedError
 
 
+    def viz_trees(self,tree_path,
+                 draw=True,
+                 big_enough_threshold=-1,
+                 prog='dot',
+                 format='pdf',
+                  remove_dotfile=True,
+                  **kwargs):
+        """Generate dot files for individual estimators, and optionally render them to pdf.
+
+        Parameters
+        ----------
+        tree_path : string
+            path to where dotfiles will be generated. Creates directory if not present
+
+        draw : bool
+            Set to True to render dotfiles (default True)
+
+        prog : str
+            Graphviz program used for rendering (default: dot, other values: neato, fdp, sfdp)
+
+        format : str
+            Format of rendered file (default: pdf, other values png, svg)
+
+        remove_dotfile : bool
+            Deleted all dot files if set to True (default: True)
+
+        **kwargs : dict, optional
+            Additional keyword arguments to be passed to `export_qnet_tree`.  Refer to the documentation of `export_qnet_tree` for details on accepted arguments.
+
+        Returns
+        -------
+        None
+        """
+        
+        if not os.path.exists(tree_path):
+            os.makedirs(tree_path)
+        def func(i):
+            export_qnet_tree(self,
+                             outfile=os.path.join(tree_path,
+                                                  self.feature_names[i] + '.dot'),
+                             index=i,**kwargs)
+        A=[func(i) for i in list(self.estimators_.keys())]
+        if draw:
+            dot_pattern = os.path.join(tree_path, '*.dot')
+            drawtrees(glob.glob(dot_pattern),
+                                prog=prog,format=format,
+                                big_enough_threshold=big_enough_threshold)
+            if remove_dotfile:
+                for dotfile in glob.glob(dot_pattern):
+                    os.remove(dotfile)
+
 
 
 def _assert_is_qnet(object_):
@@ -831,6 +883,134 @@ def save_qnet(qnet, f, low_mem=True, gz=False):
         with gzip.open(f+'.gz', 'wb') as f_:
             pickle.dump(qnet, f_)
 
+
+def export_qnet_tree(qnet, index,
+                     outfile,
+                     outformat='graphviz',
+                     detailed_output=False,
+                     pen_width=3,
+                     edge_color='black',
+                     edge_label_color='black',
+                     dpi=200,
+                     text_color='black',
+                     font_size=10,
+                     background_color='transparent',
+                     rotate=False,
+                     edge_fontcolor='grey14',
+                     min_size = 1,
+                     color_alpha = 1.5,
+                     labels=None,
+                     add_legend=False):
+    """Export a tree from `qnet`. The `index` determines which tree to export. 
+
+    Parameters
+    ----------
+    qnet : Qnet
+        A Qnet instance
+
+    index : int
+        Index of the tree to export
+ 
+    outformat : str
+        Can only be `graphviz` for now. This will output a `.dot` file, which you 
+        can then compile using a command like `dot -Tpng file.dot -o file.png`
+    detailed_output : bool
+        If True return detailed probabilities of output labels in leaf nodes. default: False
+    text_color : str
+        Color to set the text
+
+    edge_color : str
+        Color to set the edges
+
+    pen_width : int
+        Width of pen for drawing boundaries
+ 
+    dpi : int
+        Image resolution
+        
+    rotate : bool
+        If True, rotate the tree
+
+    add_legend : bool
+        If True, add a legend to the tree
+
+    edge_font_color : str
+        Color of edge label text
+
+    min_size : int
+        Minimum number of nodes to draw the tree
+
+    color_alpha : float
+        Parameter for color brightness
+
+    labels : list
+        List of all labels, optional
+
+    Returns
+    -------
+    None
+    """
+
+    if index not in qnet.estimators_:
+        print('We do not have a tree for index {}! '.format(index))
+        return 
+
+    tree = qnet.estimators_[index]
+    feature_names = qnet.feature_names
+
+    if outformat == 'graphviz':
+        exporter = GraphvizTreeExporter(
+            tree=tree,
+            outfile=outfile,
+            response_name=feature_names[index],
+            feature_names=feature_names,
+            pen_width=pen_width,
+            edge_color=edge_color,
+            edge_label_color=edge_label_color,
+            add_legend=add_legend,
+            font_size = font_size,
+            background_color = background_color,
+            dpi = dpi,
+            rotate = rotate,
+            text_color = text_color,
+            edge_fontcolor=edge_fontcolor,
+            min_size=min_size,
+            color_alpha=color_alpha,
+            labels = labels,
+            detailed_output=detailed_output)
+        exporter.export()
+
+    else:
+        raise NotImplementedError
+
+
+def export_qnet_graph(qnet, threshold, outfile):
+    """Export the `qnet` as a graph of dependencies. The output will be in
+    the `.dot` file format for graphs.
+
+    Parameters
+    ----------
+    qnet : Qnet
+        A Qnet instance
+ 
+    threshold : float
+        Numeric cutoff for edge weights. If the edge weights exceed 
+        this cutoff, then we include it into the graph.
+
+    outfile : str
+        File name to save to.
+
+    Returns
+    -------
+    None
+    """
+
+    exporter = QnetGraphExporter(
+        qnet, 
+        outfile=outfile,
+        threshold=threshold)
+
+    exporter.export()
 
     
 
