@@ -252,3 +252,49 @@ def find_matching_indices(A, B):
     return indices
 
 
+import pygraphviz as pgv
+import re
+import os
+import glob
+
+
+def big_enough(dot_file,big_enough_threshold=-1):
+    return len(analyze_dot_file(str(dot_file),
+                                fracThreshold=.25)[1]) > big_enough_threshold
+
+
+def analyze_dot_file(dot_file,fracThreshold=0.0):
+    graph = pgv.AGraph(dot_file)
+
+    non_leaf_nodes = [node for node in graph.nodes() if graph.out_degree(node) > 0]
+    if len(non_leaf_nodes) <= 1:
+        return False, []
+    nodes_leading_to_big_frac = []
+
+    def dfs(node):
+        if graph.out_degree(node) == 0:  # if leaf node
+            frac_value = re.search('Frac: ([0-9\.]+)', node.attr['label'])
+            if frac_value is not None:
+                return float(frac_value.group(1))
+            else:
+                return 0
+        else:  # if non-leaf node
+            frac_sum = 0
+            for edge in graph.out_edges(node):
+                destination_node = graph.get_node(edge[1])
+                frac_sum += dfs(destination_node)
+            return frac_sum
+
+    for node in non_leaf_nodes:
+        if dfs(node) > fracThreshold:
+            nodes_leading_to_big_frac.append(node.attr['label'])
+
+    return True, nodes_leading_to_big_frac
+
+def drawtrees(dotfiles,prog='dot',format='pdf',big_enough_threshold=-1):
+   for dot_file in dotfiles:
+        if big_enough(dot_file,big_enough_threshold):
+            graph = pgv.AGraph(str(dot_file))
+            graph.draw(dot_file.replace('dot',format),
+                   prog=prog, format=format) 
+    
