@@ -8,7 +8,7 @@ from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
 
-def _qsample_once(seq, qnet, baseline_prob, force_change):
+def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None):
     """Perform one instance of q-sampling.
 
     NOTE: `seq` is modified in-place
@@ -57,6 +57,13 @@ def _qsample_once(seq, qnet, baseline_prob, force_change):
     col_to_item = {i: seq[i] for i in index_to_non_leaf_nodes[index]}
     distrib = qnet.predict_distribution(col_to_item, index)
 
+    if alpha:
+        d_ = {k:(v**alpha) for k,v in distrib.items()}
+        S_=np.array([v for k,v in d_.items()]).sum()
+        if S_ > 0.0:
+            distrib = {k:v/S_ for k,v in d_.items()}
+            
+
     if force_change:
         if seq[index] in distrib:
             del distrib[seq[index]]
@@ -71,7 +78,7 @@ def _qsample_once(seq, qnet, baseline_prob, force_change):
 
     seq[index] = item
 
-def qsample(seq, qnet, steps, baseline_prob=None, force_change=False):
+def qsample(seq, qnet, steps, baseline_prob=None, force_change=False, alpha=None):
     """Perform q-sampling for multiple steps.
 
     Qsampling works as follows: Say you have a sequence and a qnet. Then 
@@ -95,6 +102,9 @@ def qsample(seq, qnet, steps, baseline_prob=None, force_change=False):
     force_change : bool
         Whether to force the sequence to change when sampling. 
 
+    alpha : float
+        scalr multiple of qnet object, can be any real number
+
     Returns
     -------
     seq : 1d array-like
@@ -113,7 +123,7 @@ def qsample(seq, qnet, steps, baseline_prob=None, force_change=False):
             seq, 
             qnet, 
             baseline_prob,
-            force_change=force_change)
+            force_change=force_change,alpha=alpha)
 
     return seq
 

@@ -1402,7 +1402,7 @@ except the tree structure (default: False)</p></li>
 <span id="quasinet-qsampling-module"></span><h2>quasinet.qsampling module<a class="headerlink" href="#module-quasinet.qsampling" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.qsampling.qsample">
-<span class="sig-prename descclassname"><span class="pre">quasinet.qsampling.</span></span><span class="sig-name descname"><span class="pre">qsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">quasinet.qsampling.</span></span><span class="sig-name descname"><span class="pre">qsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform q-sampling for multiple steps.</p>
 <p>Qsampling works as follows: Say you have a sequence and a qnet. Then
 we randomly pick one of the items in the sequence and then change the
@@ -1415,6 +1415,7 @@ value of that item based on the prediction of the qnet.</p>
 <li><p><strong>steps</strong> (<em>int</em>) – Number of steps to run q-sampling</p></li>
 <li><p><strong>baseline_prob</strong> (<em>1d array-like</em>) – Baseline probability for sampling which index</p></li>
 <li><p><strong>force_change</strong> (<em>bool</em>) – Whether to force the sequence to change when sampling.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – scalr multiple of qnet object, can be any real number</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
