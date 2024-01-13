@@ -298,3 +298,19 @@ def drawtrees(dotfiles,prog='dot',format='pdf',big_enough_threshold=-1):
             graph.draw(dot_file.replace('dot',format),
                    prog=prog, format=format) 
     
+from .tree import get_nodes
+
+def numparameters(qnetmodel):
+    '''
+    computes total number of prameters in qnet
+    '''
+    
+    leaves_all = list()
+    for tree in qnetmodel.estimators_.values():
+        leaves_all.append(get_nodes(tree.root, get_non_leaves=False))
+
+    N=0
+    for leaves in leaves_all:
+        for leaf_distr in leaves:
+            N=N+(len(leaf_distr.value)-1)
+    return N
