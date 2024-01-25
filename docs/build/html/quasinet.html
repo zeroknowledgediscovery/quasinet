@@ -1402,7 +1402,7 @@ except the tree structure (default: False)</p></li>
 <span id="quasinet-qsampling-module"></span><h2>quasinet.qsampling module<a class="headerlink" href="#module-quasinet.qsampling" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.qsampling.qsample">
-<span class="sig-prename descclassname"><span class="pre">quasinet.qsampling.</span></span><span class="sig-name descname"><span class="pre">qsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">quasinet.qsampling.</span></span><span class="sig-name descname"><span class="pre">qsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.qsampling.qsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform q-sampling for multiple steps.</p>
 <p>Qsampling works as follows: Say you have a sequence and a qnet. Then
 we randomly pick one of the items in the sequence and then change the
@@ -1993,6 +1993,13 @@ estimated class probability</p></li>
 <dt class="sig sig-object py" id="quasinet.utils.find_matching_indices">
 <span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">find_matching_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.find_matching_indices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quasinet.utils.generate_seed">
+<span class="sig-prename descclassname"><span class="pre">quasinet.utils.</span></span><span class="sig-name descname"><span class="pre">generate_seed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quasinet.utils.generate_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>generates a seed as function of current time and thread id for random number generator seed.
+Must be used when large number of qsamples are drawn in parallel</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quasinet.utils.getNull">
