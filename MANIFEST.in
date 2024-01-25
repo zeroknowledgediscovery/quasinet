@@ -1,1 +1,1 @@
-recursive-include quasinet *.joblib *.c *.so *.pyx src/makefile src/makefile_Cfunc src/*.c src/*
+recursive-include quasinet version.py *.joblib *.c *.so *.pyx src/makefile src/makefile_Cfunc src/*.c src/*
