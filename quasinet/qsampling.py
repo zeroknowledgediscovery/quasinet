@@ -3,12 +3,12 @@ import warnings
 
 import numpy as np
 
-from .utils import assert_array_rank, sample_from_dict, assert_string_type
+from .utils import assert_array_rank, sample_from_dict, assert_string_type, generate_seed
 from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
 
-def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None):
+def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=np.random):
     """Perform one instance of q-sampling.
 
     NOTE: `seq` is modified in-place
@@ -46,9 +46,9 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None):
 
     # get the index distribution from a distribution
     if baseline_prob is None:
-        index = np.random.randint(0, seq_len)
+        index = RNG.randint(0, seq_len)
     else:
-        index = np.random.choice(
+        index = RNG.choice(
             np.arange(0, seq_len),
             p=baseline_prob)
 
@@ -78,7 +78,7 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None):
 
     seq[index] = item
 
-def qsample(seq, qnet, steps, baseline_prob=None, force_change=False, alpha=None):
+def qsample(seq, qnet, steps, baseline_prob=None, force_change=False, alpha=None, random_seed=None):
     """Perform q-sampling for multiple steps.
 
     Qsampling works as follows: Say you have a sequence and a qnet. Then 
@@ -117,13 +117,20 @@ def qsample(seq, qnet, steps, baseline_prob=None, force_change=False, alpha=None
     if baseline_prob is not None:
         assert_array_rank(baseline_prob, 1)
 
+    
+    if random_seed:
+        seed = generate_seed()
+        RNG = np.random.default_rng(seed)
+    else:
+        RNG=np.random
+        
     seq = seq.copy()
     for _ in range(steps):
         _qsample_once(
             seq, 
             qnet, 
             baseline_prob,
-            force_change=force_change,alpha=alpha)
+            force_change=force_change,alpha=alpha,RNG=RNG)
 
     return seq
 

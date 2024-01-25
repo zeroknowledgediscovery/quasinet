@@ -1,9 +1,27 @@
 from decimal import Decimal
+import threading
+import time
 
 # from numba import autojit
 import numpy as np
 
 # from externals.six.moves import range
+
+def generate_seed():
+    '''
+    generates a seed as function of current time and thread id for random number generator seed.
+    Must be used when large number of qsamples are drawn in parallel
+    '''
+    # Get the current time
+    current_time = int(time.time() * 1000000)  # Convert time to microseconds for more precision
+    # Extract the last 6 digits of the current time
+    last_6_digits = current_time % 1000000
+    # Get the current thread ID
+    thread_id = threading.get_ident()
+    # Combine the thread ID and the last 6 digits of the current time
+    seed = (thread_id + last_6_digits) % 1000000  # Ensure the seed fits within a typical integer size
+    return seed
+
 
 
 def remove_newline_in_dotfile(file_path):
