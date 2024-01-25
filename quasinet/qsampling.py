@@ -46,7 +46,7 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=np.rand
 
     # get the index distribution from a distribution
     if baseline_prob is None:
-        index = RNG.randint(0, seq_len)
+        index = RNG.integers(0, seq_len, endpoint=False)
     else:
         index = RNG.choice(
             np.arange(0, seq_len),
@@ -78,7 +78,8 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=np.rand
 
     seq[index] = item
 
-def qsample(seq, qnet, steps, baseline_prob=None, force_change=False, alpha=None, random_seed=None):
+def qsample(seq, qnet, steps, baseline_prob=None,
+            force_change=False, alpha=None, random_seed=None):
     """Perform q-sampling for multiple steps.
 
     Qsampling works as follows: Say you have a sequence and a qnet. Then 
