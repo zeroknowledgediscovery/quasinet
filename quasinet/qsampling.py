@@ -8,7 +8,7 @@ from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
 
-def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=np.random):
+def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=None):
     """Perform one instance of q-sampling.
 
     NOTE: `seq` is modified in-place
@@ -46,11 +46,19 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=np.rand
 
     # get the index distribution from a distribution
     if baseline_prob is None:
-        index = RNG.integers(0, seq_len, endpoint=False)
+        if RNG:
+            index = RNG.integers(0, seq_len, endpoint=False)
+        else:
+            index = np.random.randint(0,seq_len)
     else:
-        index = RNG.choice(
-            np.arange(0, seq_len),
-            p=baseline_prob)
+        if RNG:
+            index = RNG.choice(
+                np.arange(0, seq_len),
+                p=baseline_prob)
+        else:
+            index = np.random.choice(
+                np.arange(0, seq_len),
+                p=baseline_prob)            
 
     # get distribution corresponding to the index
     index_to_non_leaf_nodes = qnet._map_col_to_non_leaf_nodes()
