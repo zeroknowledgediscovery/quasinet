@@ -131,7 +131,7 @@ def qsample(seq, qnet, steps, baseline_prob=None,
         seed = generate_seed()
         RNG = np.random.default_rng(seed)
     else:
-        RNG=np.random
+        RNG= None
         
     seq = seq.copy()
     for _ in range(steps):
