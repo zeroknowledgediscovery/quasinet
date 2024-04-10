@@ -444,6 +444,7 @@ class Qnet(object):
                  prog='dot',
                  format='pdf',
                   remove_dotfile=True,
+                  remove_newline=False,
                   **kwargs):
         """Generate dot files for individual estimators, and optionally render them to pdf.
 
@@ -464,6 +465,9 @@ class Qnet(object):
         remove_dotfile : bool
             Deleted all dot files if set to True (default: True)
 
+        remove_newline: bool
+            Remove newlines from edge labels in tree visualiztion to prettify
+
         **kwargs : dict, optional
             Additional keyword arguments to be passed to `export_qnet_tree`.  Refer to the documentation of `export_qnet_tree` for details on accepted arguments.
 
@@ -480,6 +484,14 @@ class Qnet(object):
                                                   self.feature_names[i] + '.dot'),
                              index=i,**kwargs)
         A=[func(i) for i in list(self.estimators_.keys())]
+        if remove_newline:
+            from quasinet.utils import remove_newline_in_dotfile
+            import glob
+            
+            for dotfile in glob.glob(tree_path+'/*dot'):
+                remove_newline_in_dotfile(dotfile)
+        
+        
         if draw:
             dot_pattern = os.path.join(tree_path, '*.dot')
             drawtrees(glob.glob(dot_pattern),
