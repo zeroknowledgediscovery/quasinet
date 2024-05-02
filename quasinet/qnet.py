@@ -486,7 +486,6 @@ class Qnet(object):
         A=[func(i) for i in list(self.estimators_.keys())]
         if remove_newline:
             from quasinet.utils import remove_newline_in_dotfile
-            import glob
             
             for dotfile in glob.glob(tree_path+'/*dot'):
                 remove_newline_in_dotfile(dotfile)
