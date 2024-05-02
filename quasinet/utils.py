@@ -321,6 +321,19 @@ from .tree import get_nodes
 def numparameters(qnetmodel):
     '''
     computes total number of prameters in qnet
+    
+    Parameters
+    ----------
+    model : Qnet object
+        The Qnet model.
+
+    Returns
+    -------
+    int
+        number of independent parameters.
+    float
+        number of internal nodes per model column.
+
     '''
     
     leaves_all = list()
@@ -330,5 +343,14 @@ def numparameters(qnetmodel):
     N=0
     for leaves in leaves_all:
         for leaf_distr in leaves:
-            N=N+(len(leaf_distr.value)-1)
-    return N
+            N=N+(len(leaf_distr.value)) # -1 for prob, and +1 for frac
+
+    leaves_all_ = list()
+    for tree in qnetmodel.estimators_.values():
+        leaves_all_.append(get_nodes(tree.root, get_non_leaves=True))
+
+    # number of internal nodes
+    M=np.sum([len(x) for x in leaves_all_]) - np.sum([len(x) for x in leaves_all])
+    # each internal node has 3 parameters (the node label and two edge labels)
+    N=N+3*M  
+    return N, M/len(qnetmodel.feature_names)
