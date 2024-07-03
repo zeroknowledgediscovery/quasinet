@@ -258,12 +258,18 @@ class CITreeBase(object):
         self : CITreeBase
             Instance of CITreeBase class
         """
-
+        
+        if len(X.shape) == 3 and X.shape[0] == 1:
+            X = X.squeeze()
+            
+        if len(y.shape) == 2 and y.shape[0] == 1:
+            y = y.squeeze()
+        
         if not isinstance(X, np.ndarray) or len(X.shape) != 2:
             raise ValueError('X must be a 2d numpy array!')
 
-        if not np.issubdtype(X.dtype, np.str_):
-            raise ValueError('X must contain only strings! This is because this implementation only allows for categorical inputs.')
+        #if not np.issubdtype(X.dtype, np.str_):
+        #    raise ValueError('X must contain only strings! This is because this implementation only allows for categorical inputs.')
 
         if not isinstance(y, np.ndarray) or len(y.shape) != 1:
             raise ValueError('y must be a 1d numpy array!')

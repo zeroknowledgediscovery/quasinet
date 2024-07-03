@@ -128,17 +128,18 @@ class Qnet(object):
         self : Qnet
             Instance of Qnet class
         """
-
         assert_array_rank(X, 2)
         
         self._check_input_size(X.shape[1])
 
-        assert_string_type(X, 'X')
+        #assert_string_type(X, 'X')
 
         # Instantiate base tree models
         self.estimators_ = {}
 
         nan_value = get_config()['nan_value']
+        
+        
         if np.any(np.all(X == nan_value, axis=0)):
             raise ValueError('There is at least one column where all'
                 + ' values are `{}`. Please remove those columns!'.format(nan_value))

@@ -4,7 +4,7 @@ TODO: allow for config values to be set by users
 """
 
 _global_config = {
-    'nan_value': '',
+    'nan_value': b'',
 }
 
 
