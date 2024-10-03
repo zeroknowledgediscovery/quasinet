@@ -1,4 +1,3 @@
-
 import numpy as np
 from numpy.linalg import norm
 from joblib import dump, load, delayed, Parallel
@@ -13,7 +12,7 @@ from .metrics import theta
 from .metrics import theta_
 from .metrics import theta_matrix
 from .tree import Node, get_nodes
-from .utils import assert_array_rank, assert_string_type, drawtrees
+from .utils import assert_array_rank, assert_string_type, assert_bytestring_type, drawtrees
 from .export import GraphvizTreeExporter, QnetGraphExporter
 from ._config import get_config
 
@@ -58,16 +57,16 @@ class Qnet(object):
     """
 
     def __init__(
-        self, 
-        feature_names,
-        min_samples_split=2,
-        alpha=.05,
-        max_depth=-1,
-        max_feats=-1,
-        early_stopping=False,
-        verbose=0,
-        random_state=None,
-        n_jobs=1):
+            self,
+            feature_names,
+            min_samples_split=2,
+            alpha=.05,
+            max_depth=-1,
+            max_feats=-1,
+            early_stopping=False,
+            verbose=0,
+            random_state=None,
+            n_jobs=1):
 
         self.feature_names = feature_names
         self.min_samples_split = min_samples_split
@@ -128,20 +127,22 @@ class Qnet(object):
         self : Qnet
             Instance of Qnet class
         """
-
         assert_array_rank(X, 2)
-        
+
         self._check_input_size(X.shape[1])
 
-        assert_string_type(X, 'X')
+        ##assert_string_type(X, 'X')
+
+        ##assert_bytestring_type(X, 'X')
 
         # Instantiate base tree models
         self.estimators_ = {}
 
         nan_value = get_config()['nan_value']
+
         if np.any(np.all(X == nan_value, axis=0)):
             raise ValueError('There is at least one column where all'
-                + ' values are `{}`. Please remove those columns!'.format(nan_value))
+                             + ' values are `{}`. Please remove those columns!'.format(nan_value))
 
         # TODO: we may not have any trees created. When that's the
         # case, we may want to predict an equal probability distribution
@@ -195,7 +196,7 @@ class Qnet(object):
         #check if qnet_2 is a qnet
         if not hasattr(qnet_2, 'feature_names'):
             raise ValueError('qnet_2 must be a qnet! ')
-        
+
         #check if columns match
         if len([x for x in qnet_2.feature_names if x not in self.feature_names])>0:
             print("some qnet_2 features not present in current qnet. cannot mix")
@@ -236,13 +237,13 @@ class Qnet(object):
             pass
         else:
             self._check_is_fitted()
-            
+
             col_to_nodes = {}
             for col, clf_tree in self.estimators_.items():
                 nodes = get_nodes(
-                    clf_tree.root, 
+                    clf_tree.root,
                     get_leaves=False, get_non_leaves=True)
-                
+
                 node_cols = np.array([node.col for node in nodes])
 
                 col_to_nodes[col] = np.unique(node_cols)
@@ -370,8 +371,8 @@ class Qnet(object):
             distributions = [root.label_frequency]
 
         distributions, columns = self._combine_distributions(distributions)
-        
-        total_frequency = np.sum(distributions)        
+
+        total_frequency = np.sum(distributions)
         distributions = distributions * np.sum(distributions, axis=1)[:, None]
         distributions /= total_frequency
 
@@ -439,10 +440,10 @@ class Qnet(object):
 
 
     def viz_trees(self,tree_path,
-                 draw=True,
-                 big_enough_threshold=-1,
-                 prog='dot',
-                 format='pdf',
+                  draw=True,
+                  big_enough_threshold=-1,
+                  prog='dot',
+                  format='pdf',
                   remove_dotfile=True,
                   remove_newline=False,
                   **kwargs):
@@ -475,7 +476,7 @@ class Qnet(object):
         -------
         None
         """
-        
+
         if not os.path.exists(tree_path):
             os.makedirs(tree_path)
         def func(i):
@@ -486,16 +487,16 @@ class Qnet(object):
         A=[func(i) for i in list(self.estimators_.keys())]
         if remove_newline:
             from quasinet.utils import remove_newline_in_dotfile
-            
+
             for dotfile in glob.glob(tree_path+'/*dot'):
                 remove_newline_in_dotfile(dotfile)
-        
-        
+
+
         if draw:
             dot_pattern = os.path.join(tree_path, '*.dot')
             drawtrees(glob.glob(dot_pattern),
-                                prog=prog,format=format,
-                                big_enough_threshold=big_enough_threshold)
+                      prog=prog,format=format,
+                      big_enough_threshold=big_enough_threshold)
             if remove_dotfile:
                 for dotfile in glob.glob(dot_pattern):
                     os.remove(dotfile)
@@ -586,16 +587,16 @@ def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.00000001):
     total_divergence = 0
     total = 0
     for i, seq1_distrib in enumerate(distrib1):
-        total += 1    
+        total += 1
         seq2_distrib = distrib2[i]
 
         if seq2_distrib is None or seq1_distrib is None:
             continue
-        
+
         distrib = _combine_two_distribs(seq1_distrib, seq2_distrib)
 
         print(distrib)
-        
+
         if np.max(distrib[0]-distrib[1]) < MC_PREC:
             continue
 
@@ -605,7 +606,7 @@ def _qdistance_with_prob_distribs(distrib1, distrib2, MC_PREC=0.00000001):
 
     avg_divergence = total_divergence / total
 
-    
+
 
     return avg_divergence
 
@@ -645,9 +646,9 @@ def qdistance(seq1, seq2, qnet1, qnet2, mismatch=False, FULL_C=False):
     seq1_distribs = qnet1.predict_distributions(seq1)
     seq2_distribs = qnet2.predict_distributions(seq2)
 
-    if mismatch and not (qnet1.feature_names == qnet2.feature_names): 
+    if mismatch and not (qnet1.feature_names == qnet2.feature_names):
         common_features = set(qnet1.feature_names).intersection(set(qnet2.feature_names))
-        
+
         seq1_d=[]
         seq2_d=[]
         for feature in common_features:
@@ -656,12 +657,12 @@ def qdistance(seq1, seq2, qnet1, qnet2, mismatch=False, FULL_C=False):
             index2=np.where(np.array(qnet2.feature_names) == feature)[0][0]
             seq2_d.append(seq2_distribs[index2])
         return theta(seq1_d, seq2_d)
-        
+
     #divergence = _qdistance_with_prob_distribs(seq1_distribs, seq2_distribs)
     if FULL_C:
         return theta_(seq1_distribs,seq2_distribs)
     return theta(seq1_distribs,seq2_distribs)
-    
+
 
 def membership_degree(seq, qnet):
     """Compute the membership degree of a sequence in a qnet.
@@ -684,7 +685,7 @@ def membership_degree(seq, qnet):
 
     if len(seq) == 0:
         raise ValueError('The sequence cannot be empty.')
-    
+
     seq_distribs = qnet.predict_distributions(seq)
 
     index_probs = []
@@ -695,10 +696,10 @@ def membership_degree(seq, qnet):
         distrib = seq_distribs[index]
         if distrib is None:
             continue
-        
+
         if c in distrib:
             index_prob = distrib[c]
-            
+
             if index_prob != 0:
                 index_probs.append(index_prob)
 
@@ -728,11 +729,11 @@ def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
     """
 
     num_seqs1 = len(seqs1_distribs)
-    num_seqs2 = len(seqs2_distribs) 
+    num_seqs2 = len(seqs2_distribs)
 
     distance_matrix = np.empty((num_seqs1, num_seqs2))
     for i in np.arange(num_seqs1):
-    # for i in prange(num_seqs1):
+        # for i in prange(num_seqs1):
         for j in np.arange(num_seqs2):
 
             if symmetric and (i >= j):
@@ -744,7 +745,7 @@ def _qdistance_matrix_with_distribs(seqs1_distribs, seqs2_distribs, symmetric):
 
             distance_matrix[i, j] = dist
 
-    if symmetric: 
+    if symmetric:
         distance_matrix = distance_matrix + distance_matrix.T
     return distance_matrix
 
@@ -813,7 +814,7 @@ def qdistance_matrix(seqs1, seqs2, qnet1, qnet2):
         #                                                  symmetric=symmetric)
 
     return distance_matrix
-    
+
 
 def load_qnet(f, gz=False):
     """Load the qnet from a file.
@@ -838,8 +839,8 @@ def load_qnet(f, gz=False):
         file = gzip.GzipFile(f, 'rb')
         data = file.read()
         qnet = pickle.loads(data)
-        file.close()        
-     
+        file.close()
+
     assert isinstance(qnet, Qnet)
 
     return qnet
@@ -887,7 +888,7 @@ def save_qnet(qnet, f, low_mem=True, gz=False):
             if not qnet.mixed:
                 qnet.clear_attributes()
     if not gz:
-        filehandler = open(f,"wb")    
+        filehandler = open(f,"wb")
         pickle.dump(qnet, filehandler)
         filehandler.close()
     else:
@@ -964,7 +965,7 @@ def export_qnet_tree(qnet, index,
 
     if index not in qnet.estimators_:
         print('We do not have a tree for index {}! '.format(index))
-        return 
+        return
 
     tree = qnet.estimators_[index]
     feature_names = qnet.feature_names
@@ -1017,13 +1018,13 @@ def export_qnet_graph(qnet, threshold, outfile):
     """
 
     exporter = QnetGraphExporter(
-        qnet, 
+        qnet,
         outfile=outfile,
         threshold=threshold)
 
     exporter.export()
 
-    
+
 
 
 #def save_qnet_gz(model, filename, compress=True):
@@ -1036,7 +1037,7 @@ def fit_save(df,
              alpha=0.1,
              file_prefix='model',
              strtype='U5',
-             low_mem=True, 
+             low_mem=True,
              compress=True):
     """Fit and save qnet model as gz.
 

@@ -3,7 +3,13 @@ import warnings
 
 import numpy as np
 
-from .utils import assert_array_rank, sample_from_dict, assert_string_type, generate_seed
+from .utils import (
+    assert_array_rank,
+    sample_from_dict,
+    assert_string_type,
+    assert_bytestring_type,
+    generate_seed
+)
 from ._config import get_config
 
 # def _qsample_with_prob_distribs(seq, distrib):
@@ -40,8 +46,8 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=None):
     seq_len = len(seq)
 
     if seq_len != len(qnet.estimators_):
-        message = ('The input sequence length ({}) must match the' 
-                  'number of features trained on the qnet ({})')
+        message = ('The input sequence length ({}) must match the'
+                   'number of features trained on the qnet ({})')
         warnings.warn(message.format(seq_len, len(qnet.estimators_)))
 
     # get the index distribution from a distribution
@@ -58,9 +64,9 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=None):
         else:
             index = np.random.choice(
                 np.arange(0, seq_len),
-                p=baseline_prob)            
+                p=baseline_prob)
 
-    # get distribution corresponding to the index
+            # get distribution corresponding to the index
     index_to_non_leaf_nodes = qnet._map_col_to_non_leaf_nodes()
     col_to_item = {i: seq[i] for i in index_to_non_leaf_nodes[index]}
     distrib = qnet.predict_distribution(col_to_item, index)
@@ -70,7 +76,7 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=None):
         S_=np.array([v for k,v in d_.items()]).sum()
         if S_ > 0.0:
             distrib = {k:v/S_ for k,v in d_.items()}
-            
+
 
     if force_change:
         if seq[index] in distrib:
@@ -121,23 +127,25 @@ def qsample(seq, qnet, steps, baseline_prob=None,
     """
 
     assert_array_rank(seq, 1)
-    assert_string_type(seq, 'seq')
+    #assert_string_type(seq, 'seq')
+
+    #assert_bytestring_type(seq, 'seq')
 
     if baseline_prob is not None:
         assert_array_rank(baseline_prob, 1)
 
-    
+
     if random_seed:
         seed = generate_seed()
         RNG = np.random.default_rng(seed)
     else:
         RNG= None
-        
+
     seq = seq.copy()
     for _ in range(steps):
         _qsample_once(
-            seq, 
-            qnet, 
+            seq,
+            qnet,
             baseline_prob,
             force_change=force_change,alpha=alpha,RNG=RNG)
 
@@ -157,16 +165,16 @@ def targeted_qsample(seq1, seq2, qnet, steps, force_change=False):
         Array of values
 
     seq2 : 1d array-like
-        Array of values. 
+        Array of values.
 
     qnet : Qnet
-        The Qnet that `seq1` belongs to 
+        The Qnet that `seq1` belongs to
 
     steps : int
         Number of steps to run q-sampling
 
     force_change : bool
-        Whether to force the sequence to change when sampling. 
+        Whether to force the sequence to change when sampling.
 
     Returns
     -------
@@ -176,8 +184,11 @@ def targeted_qsample(seq1, seq2, qnet, steps, force_change=False):
 
     assert_array_rank(seq1, 1)
     assert_array_rank(seq2, 1)
-    assert_string_type(seq1, 'seq1')
-    assert_string_type(seq2, 'seq2')
+    #assert_string_type(seq1, 'seq1')
+    #assert_string_type(seq2, 'seq2')
+
+    #assert_bytestring_type(seq1, 'seq1')
+    #assert_bytestring_type(seq2, 'seq2')
 
     if seq1.shape[0] != seq2.shape[0]:
         raise ValueError('The lengths of the two sequences must be equal!')
@@ -196,8 +207,8 @@ def targeted_qsample(seq1, seq2, qnet, steps, force_change=False):
         probs /= np.sum(probs)
 
         _qsample_once(
-            seq, 
-            qnet, 
+            seq,
+            qnet,
             baseline_prob=probs,
             force_change=force_change)
 

@@ -214,6 +214,30 @@ def assert_string_type(X, name):
     if not np.issubdtype(X.dtype, np.str_):
         raise ValueError('{} must contain only strings!'.format(name))
 
+
+def assert_bytestring_type(X, name):
+    """Check if the input is of bytestring datatype.
+
+    TODO: Find the best way to handle the input dtypes for QNet:
+    either accept both strings and bytestrings,
+    or have qnet with preset dtype preference for either
+
+    Parameters
+    ----------
+    X : array-like
+        Array to check
+
+    name : str
+        Name of the input
+
+    Returns
+    -------
+    None
+    """
+
+    if not np.issubdtype(X.dtype, np.bytes_):
+        raise ValueError('{} must contain only bytestrings!'.format(name))
+
 def sample_from_dict(distrib):
     """Choose an item from the distribution
 
