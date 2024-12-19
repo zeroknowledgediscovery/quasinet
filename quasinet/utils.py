@@ -270,7 +270,12 @@ def find_matching_indices(A, B):
     return indices
 
 
-import pygraphviz as pgv
+try:
+    import pygraphviz as pgv
+except ImportError:
+    import warnings
+    warnings.warn("pygraphviz is not installed. Some functionality may be unavailable.", ImportWarning)
+
 import re
 import os
 import glob

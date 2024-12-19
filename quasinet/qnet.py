@@ -90,7 +90,8 @@ class Qnet(object):
         new_features = np.copy(X)
         new_features[:, col] = get_config()['nan_value']
         tree.fit(new_features, X[:, col])
-
+        if self.verbose:
+            print(col, end=" ")
         return tree
 
     def _check_input_size(self, size):
@@ -128,7 +129,9 @@ class Qnet(object):
         self : Qnet
             Instance of Qnet class
         """
-
+        if self.verbose:
+            print('training..', end=" ")
+            
         assert_array_rank(X, 2)
         
         self._check_input_size(X.shape[1])
@@ -173,6 +176,9 @@ class Qnet(object):
         for col, tree in zip(index_array, trees):
             self.estimators_[col] = tree
 
+        if self.verbose:
+            print('..complete')
+            
         return self
 
 
