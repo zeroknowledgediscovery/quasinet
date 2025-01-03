@@ -445,12 +445,14 @@ class Qnet(object):
 
 
     def viz_trees(self,tree_path,
-                 draw=True,
-                 big_enough_threshold=-1,
-                 prog='dot',
-                 format='pdf',
+                  draw=True,
+                  big_enough_threshold=-1,
+                  prog='dot',
+                  format='pdf',
                   remove_dotfile=True,
                   remove_newline=False,
+                  addurl=False,
+                  base_url='https://zed.createuky.net/',
                   **kwargs):
         """Generate dot files for individual estimators, and optionally render them to pdf.
 
@@ -474,6 +476,12 @@ class Qnet(object):
         remove_newline: bool
             Remove newlines from edge labels in tree visualiztion to prettify
 
+        addurl: bool
+            Add url links to the node labels
+
+        base_url: str
+            Url base for node url links
+
         **kwargs : dict, optional
             Additional keyword arguments to be passed to `export_qnet_tree`.  Refer to the documentation of `export_qnet_tree` for details on accepted arguments.
 
@@ -496,7 +504,15 @@ class Qnet(object):
             for dotfile in glob.glob(tree_path+'/*dot'):
                 remove_newline_in_dotfile(dotfile)
         
-        
+        if addurl:
+            from quasinet.utils import dot4svg
+
+            for dotfile in glob.glob(tree_path+'/*dot'):
+                dot4svg(dotfile,dotfile,dotfile.replace('.dot','.svg'),
+                        directory=tree_path,
+                        base_url=base_url)
+
+            
         if draw:
             dot_pattern = os.path.join(tree_path, '*.dot')
             drawtrees(glob.glob(dot_pattern),
@@ -853,7 +869,6 @@ def load_qnet(f, gz=False):
 def save_qnet(qnet, f, low_mem=True, gz=False):
     """Save the qnet to a file.
 
-    NOTE: The file name must end in `.joblib`
 
     TODO: using joblib is actually less memory efficient than using pickle.
     However, I don't know if this is a general problem or this only happens
@@ -1080,7 +1095,7 @@ def fit_save(df,
     model.fit(df.values.astype(strtype),
               index_array=slice_range)
 
-    file_name = f'{file_prefix}{flag}.joblib'
+    file_name = f'{file_prefix}{flag}.pkl'
     save_qnet(model,
               file_name,
               low_mem=low_mem,

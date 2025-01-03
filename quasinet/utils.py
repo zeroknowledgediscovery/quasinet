@@ -319,7 +319,43 @@ def drawtrees(dotfiles,prog='dot',format='pdf',big_enough_threshold=-1):
         if big_enough(dot_file,big_enough_threshold):
             graph = pgv.AGraph(str(dot_file))
             graph.draw(dot_file.replace('dot',format),
-                   prog=prog, format=format) 
+                   prog=prog, format=format)
+
+
+
+def dot4svg(dot_file,
+            output_file,
+            output_svg_file,
+            directory='trees1/',
+            dpi=70,
+            draw=True,
+            base_url='https://zed.createuky.net/'):
+    # Load the graph from the DOT file
+    graph = pgv.AGraph(dot_file)
+    base_url=base_url+directory
+    # Set the DPI for the graph
+    graph.graph_attr['dpi'] = dpi
+
+    # Identify non-leaf nodes
+    non_leaf_nodes = [node for node in graph.nodes() if graph.out_degree(node) > 0]
+
+    # Modify the label or URL of each non-leaf node
+    for node in non_leaf_nodes:
+        # Get the label attribute
+        label = node.attr.get('label', '').strip()
+        if label:  # Only modify if a label exists
+            # Create the URL using the label and set it as the node's URL attribute
+            sanitized_label = label.replace(" ", "_")  # Replace spaces with underscores for URL compatibility
+            node.attr['URL'] = f"{base_url}{sanitized_label}.svg"
+
+    # Write the modified graph to the output file
+    graph.write(output_file)
+
+    # Render the graph with the specified DPI to an SVG file
+    if draw:
+        graph.draw(output_svg_file, format='svg', prog='dot', args=f"-Gdpi={dpi}")
+
+            
     
 from .tree import get_nodes
 
