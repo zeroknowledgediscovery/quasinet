@@ -86,13 +86,14 @@ def _qsample_once(seq, qnet, baseline_prob, force_change, alpha=None,RNG=None):
 
     seq[index] = item
 
+
 def qsample(seq, qnet, steps, baseline_prob=None,
             force_change=False, alpha=None, random_seed=None):
-    """Perform q-sampling for multiple steps.
+    """Perform q-sampling for multiple steps or specified indices.
 
     Qsampling works as follows: Say you have a sequence and a qnet. Then 
-    we randomly pick one of the items in the sequence and then change the
-    value of that item based on the prediction of the qnet.
+    we randomly pick one of the items in the sequence (or a specified index)
+    and change the value of that item based on the prediction of the qnet.
 
     Parameters
     ----------
@@ -102,17 +103,21 @@ def qsample(seq, qnet, steps, baseline_prob=None,
     qnet : Qnet
         The Qnet that `seq` belongs to 
 
-    steps : int
-        Number of steps to run q-sampling
+    steps : int or 1d array-like
+        If an integer, the number of steps to run q-sampling.
+        If an array, specifies the indices to q-sample in order.
 
-    baseline_prob : 1d array-like
-        Baseline probability for sampling which index
+    baseline_prob : 1d array-like, optional
+        Baseline probability for sampling which index. Ignored if `steps` is an array.
 
-    force_change : bool
+    force_change : bool, optional
         Whether to force the sequence to change when sampling. 
 
-    alpha : float
-        scalr multiple of qnet object, can be any real number
+    alpha : float, optional
+        Scalar multiple of qnet object, can be any real number.
+
+    random_seed : int, optional
+        Seed for reproducible randomness.
 
     Returns
     -------
@@ -126,22 +131,90 @@ def qsample(seq, qnet, steps, baseline_prob=None,
     if baseline_prob is not None:
         assert_array_rank(baseline_prob, 1)
 
-    
     if random_seed:
-        seed = generate_seed()
-        RNG = np.random.default_rng(seed)
+        RNG = np.random.default_rng(random_seed)
     else:
-        RNG= None
-        
+        RNG = None
+
     seq = seq.copy()
-    for _ in range(steps):
-        _qsample_once(
-            seq, 
-            qnet, 
-            baseline_prob,
-            force_change=force_change,alpha=alpha,RNG=RNG)
+
+    if isinstance(steps, int):
+        # Perform q-sampling for a fixed number of random steps
+        for _ in range(steps):
+            _qsample_once(seq, qnet, baseline_prob,
+                          force_change=force_change, alpha=alpha, RNG=RNG)
+    elif isinstance(steps, (list, np.ndarray)):
+        # Perform q-sampling for specific indices in `steps`
+        steps = np.asarray(steps)
+        for idx in steps:
+            # Create a temporary baseline_prob focusing only on the given index
+            temp_baseline_prob = np.zeros(len(seq))
+            temp_baseline_prob[idx] = 1.0
+            _qsample_once(seq, qnet, temp_baseline_prob,
+                          force_change=force_change, alpha=alpha, RNG=RNG)
+    else:
+        raise ValueError("`steps` must be an integer or a 1D array-like of indices.")
 
     return seq
+
+
+    
+#def qsample(seq, qnet, steps, baseline_prob=None,
+#            force_change=False, alpha=None, random_seed=None):
+#    """Perform q-sampling for multiple steps.#
+#
+#    Qsampling works as follows: Say you have a sequence and a qnet. Then 
+#    we randomly pick one of the items in the sequence and then change the
+#    value of that item based on the prediction of the qnet.
+#
+#    Parameters
+#    ----------
+#    seq : 1d array-like
+#        Array of values
+#
+#    qnet : Qnet
+#        The Qnet that `seq` belongs to 
+#
+#    steps : int
+#        Number of steps to run q-sampling
+#
+#    baseline_prob : 1d array-like
+#        Baseline probability for sampling which index
+#
+#    force_change : bool
+#        Whether to force the sequence to change when sampling. 
+#
+#    alpha : float
+#        scalr multiple of qnet object, can be any real number
+#
+#    Returns
+#    -------
+#    seq : 1d array-like
+#        q-sampled sequence
+#    """
+#
+#    assert_array_rank(seq, 1)
+#    assert_string_type(seq, 'seq')
+#
+#    if baseline_prob is not None:
+#        assert_array_rank(baseline_prob, 1)
+#
+#    
+#    if random_seed:
+#        seed = generate_seed()
+#        RNG = np.random.default_rng(seed)
+#    else:
+#        RNG= None
+#        
+#    seq = seq.copy()
+#    for _ in range(steps):
+#        _qsample_once(
+#            seq, 
+#            qnet, 
+#            baseline_prob,
+#            force_change=force_change,alpha=alpha,RNG=RNG)
+#
+#    return seq
 
 def targeted_qsample(seq1, seq2, qnet, steps, force_change=False):
     """Perform targeted q-sampling for multiple steps.
