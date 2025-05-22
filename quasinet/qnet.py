@@ -932,7 +932,8 @@ def export_qnet_tree(qnet, index,
                      min_size = 1,
                      color_alpha = 1.5,
                      labels=None,
-                     add_legend=False):
+                     add_legend=False,
+                  **kwargs):
     """Export a tree from `qnet`. The `index` determines which tree to export. 
 
     Parameters
@@ -1009,7 +1010,8 @@ def export_qnet_tree(qnet, index,
             min_size=min_size,
             color_alpha=color_alpha,
             labels = labels,
-            detailed_output=detailed_output)
+            detailed_output=detailed_output,
+                  **kwargs)
         exporter.export()
 
     else:
