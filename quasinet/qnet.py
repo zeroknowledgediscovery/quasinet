@@ -564,7 +564,7 @@ class Qnet(object):
         """
         if s is None:
             s = getNull(self)
-        P = model.predict_distributions(s)
+        P = self.predict_distributions(s)
 
         it = (
             (dist.get(key, m)) / (m if m > eps else 1.0)
