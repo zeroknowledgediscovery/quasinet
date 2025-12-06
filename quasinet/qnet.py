@@ -567,12 +567,12 @@ class Qnet(object):
         P = self.predict_distributions(s)
 
         it = (
-            (dist.get(key, m)) / (m if m > eps else 1.0)
+            (dist.get(key, np.nan)) / (m if m > eps else 1.0)
             for dist, key, m in ((d, k, max(d.values(), default=0.0)) for d, k in zip(P, s))
         )
 
         r = np.fromiter(it, dtype=float, count=len(P))
-        return (r.mean() if r.size else 0.0), r
+        return (np.nanmean(r) if r.size else 0.0), r
 
                     
 
