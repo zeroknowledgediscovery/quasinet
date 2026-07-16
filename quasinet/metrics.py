@@ -4,8 +4,15 @@ from scipy.stats import entropy
 from numpy.linalg import norm
 import ctypes
 import os
+import platform 
 
-lib_path = os.path.join(os.path.dirname(__file__), 'bin/Cfunc.so')
+if (platform.system() == "Windows"):
+    lib_path = os.path.join(os.path.dirname(__file__),f"bin/win_Cfunc.dll")
+elif (platform.system() == "Darwin"):
+    lib_path = os.path.join(os.path.dirname(__file__),f"bin/mac_Cfunc.dylib")
+elif(platform.system() == "Linux"):
+    lib_path = os.path.join(os.path.dirname(__file__),f"bin/Cfunc.so")
+
 Cfunc = ctypes.CDLL(lib_path)
 
 #  Define the input type and return type of the C functions

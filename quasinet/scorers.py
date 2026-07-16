@@ -8,6 +8,7 @@ from sklearn.feature_selection import mutual_info_classif
 
 from .utils import remove_zeros
 
+import platform
 #######################
 """CREATE C WRAPPERS"""
 #######################
@@ -16,7 +17,13 @@ from .utils import remove_zeros
 SHARED_OBJECT_DIR = join(dirname(__file__), 'bin')
 
 # Weighted distance correlation
-CFUNC_DCORS_PATH               = join(SHARED_OBJECT_DIR, 'dcor.so')
+if (platform.system() == "Windows"):
+    CFUNC_DCORS_PATH               = join(SHARED_OBJECT_DIR, 'win_dcor.dll')
+elif (platform.system() == "Darwin"):
+    CFUNC_DCORS_PATH               = join(SHARED_OBJECT_DIR, 'mac_dcor.dylib')
+elif (platform.system() == "Linux"):
+    CFUNC_DCORS_PATH               = join(SHARED_OBJECT_DIR, 'dcor.so')
+
 CFUNC_DCORS_DLL                = ctypes.CDLL(CFUNC_DCORS_PATH)
 CFUNC_DCORS_DLL.wdcor.argtypes = (
         ctypes.POINTER(ctypes.c_double), # x
